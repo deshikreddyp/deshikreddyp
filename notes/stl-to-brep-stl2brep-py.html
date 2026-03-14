@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STL to brep (stl2brep.py) | Notes | Deshik Reddy Putluru</title>
+  <meta name="description" content="Technical notes on STL to brep (stl2brep.py) by Deshik Reddy Putluru.">
+  <link rel="stylesheet" href="note-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand">Deshik Reddy Putluru</div>
+    <nav class="navlinks">
+      <a href="../index.html">Home</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../coursework.html">Coursework</a>
+      <a class="active" href="../notes.html">Notes</a>
+      <a href="../cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<div class="note-content">
+  <div class="container">
+    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
+<header><div class="page-header-icon undefined"><span class="icon">💫</span></div><h1 class="page-title" dir="auto">STL to brep (stl<strong>2brep.py)</strong></h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="87254213-7d12-4398-b6ea-5553d74ebab4" class="code code-wrap"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all"># This script takes an STL triangulation and creates a brep with a plane surface
+# for each triangle
+
+import gmsh
+import sys
+import numpy as np
+
+if len(sys.argv) &lt; 2:
+    print(&#x27;usage: {} file.stl&#x27;.format(sys.argv[0]))
+    exit(0)
+
+gmsh.initialize()
+
+# load the STL mesh and retrieve the element, node and edge data
+gmsh.open(sys.argv[1])
+typ = 2 # 3-node triangles
+elementTags, elementNodes = gmsh.model.mesh.getElementsByType(typ)
+nodeTags, nodeCoord, _ = gmsh.model.mesh.getNodesByElementType(typ)
+edgeNodes = gmsh.model.mesh.getElementEdgeNodes(typ)
+
+# create a new model to store the BREP
+gmsh.model.add(&#x27;my brep&#x27;)
+
+# create a geometrical point for each mesh node
+nodes = dict(zip(nodeTags, np.reshape(nodeCoord, (len(nodeTags), 3))))
+for n in nodes.items():
+    gmsh.model.occ.addPoint(n[1][0], n[1][1], n[1][2], tag=n[0])
+
+# create a geometrical plane surface for each (triangular) element
+allsurfaces = []
+allcurves = {}
+elements = dict(zip(elementTags, np.reshape(edgeNodes, (len(elementTags), 3, 2))))
+for e in elements.items():
+    curves = []
+    for edge in e[1]:
+        ed = tuple(np.sort(edge))
+        if ed not in allcurves:
+            t = gmsh.model.occ.addLine(edge[0], edge[1])
+            allcurves[ed] = t
+        else:
+            t = allcurves[ed]
+        curves.append(t)
+    cl = gmsh.model.occ.addCurveLoop(curves)
+    allsurfaces.append(gmsh.model.occ.addPlaneSurface([cl]))
+
+# create a volume bounded by all the surfaces
+sl = gmsh.model.occ.addSurfaceLoop(allsurfaces)
+gmsh.model.occ.addVolume([sl])
+
+gmsh.model.occ.synchronize()
+gmsh.write(&quot;CORD.brep&quot;)
+
+gmsh.fltk.run()
+
+gmsh.finalize()</code></pre></div></div>
+  </div>
+</div>
+
+<footer><div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div></footer>
+</body>
+</html>

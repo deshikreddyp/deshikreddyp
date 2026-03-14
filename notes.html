@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Notes | Deshik Reddy Putluru</title>
-  <meta name="description" content="Reading notes and technical write-ups by Deshik Reddy Putluru.">
+  <meta name="description" content="Technical notes on CFD, FSI, FEM, OpenFOAM, and scientific computing by Deshik Reddy Putluru.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,34 +23,107 @@
 
 <main>
   <div class="container">
+
     <section class="section">
       <div class="kicker">Technical knowledge base</div>
       <h1>Notes</h1>
-      <p class="muted">A curated overview of technical areas I actively read and document for research and group discussions.</p>
+      <p class="muted">Technical notes on computational fluid dynamics, numerical methods, finite element analysis, and scientific software — compiled across coursework and research.</p>
     </section>
 
+    <!-- CFD & Computational Methods -->
     <section class="section">
       <article class="card">
-        <h2>Current note topics</h2>
+        <h2>CFD &amp; Computational Methods</h2>
         <ul class="list-clean">
-          <li><strong>CFD and multiphase modeling</strong><br><span class="muted">Shock-capturing methods, boundary conditions, turbulence modeling, and OpenFOAM validation workflows.</span></li>
-          <li><strong>Fluid-structure interaction</strong><br><span class="muted">ALE formulations, mixed-dimensional FSI approaches, solver behavior, and preconditioning strategies.</span></li>
-          <li><strong>Finite element methods</strong><br><span class="muted">Weak forms, Galerkin methods, quadrature rules, and implementation details for PDE systems.</span></li>
-          <li><strong>Scientific computing foundations</strong><br><span class="muted">Numerical linear algebra, discretization error, and reproducible simulation practices.</span></li>
+          <li><a href="notes/behind-cfd.html"><strong>Behind CFD</strong></a><br><span class="muted">SIMPLE and PISO algorithms, pressure-velocity coupling, matrix decomposition of the momentum equation.</span></li>
+          <li><a href="notes/governing-equations.html"><strong>Governing Equations</strong></a><br><span class="muted">Navier-Stokes, continuity, energy, and species transport equations in their general forms.</span></li>
+          <li><a href="notes/variational-form-of-ns.html"><strong>Variational Form of NS</strong></a><br><span class="muted">Weak formulation of the Navier-Stokes equations and Galerkin discretization.</span></li>
+          <li><a href="notes/pressure-poisson-equation-incompressibility-constr.html"><strong>Pressure Poisson Equation &amp; Incompressibility</strong></a><br><span class="muted">Derivation of the pressure Poisson equation from the incompressibility constraint.</span></li>
+          <li><a href="notes/flow-boundary-conditions.html"><strong>Flow Boundary Conditions</strong></a><br><span class="muted">Types of inflow, outflow, wall, and symmetry boundary conditions in CFD.</span></li>
+          <li><a href="notes/boundary-layer-problem.html"><strong>Boundary Layer Problem</strong></a><br><span class="muted">Blasius solution, thickness definitions, and numerical treatment of boundary layers.</span></li>
+          <li><a href="notes/what-is-boussinesq-approximation.html"><strong>Boussinesq Approximation</strong></a><br><span class="muted">Linearization of buoyancy-driven flows and when the approximation is valid.</span></li>
+          <li><a href="notes/reynolds-grashof-prandtl-eckert-nusselt-number.html"><strong>Dimensionless Numbers</strong></a><br><span class="muted">Reynolds, Grashof, Prandtl, Eckert, and Nusselt numbers — definitions and physical interpretation.</span></li>
+          <li><a href="notes/front-tracking-method.html"><strong>Front Tracking Method</strong></a><br><span class="muted">Interface capturing using explicit marker particles for multiphase flows.</span></li>
+          <li><a href="notes/level-set-method.html"><strong>Level Set Method</strong></a><br><span class="muted">Implicit interface representation, reinitialization, and signed distance functions.</span></li>
+          <li><a href="notes/volume-of-fluid-method-vof.html"><strong>Volume of Fluid Method (VoF)</strong></a><br><span class="muted">Phase fraction advection, interface reconstruction, and OpenFOAM VoF solvers.</span></li>
         </ul>
       </article>
     </section>
 
+    <!-- Fluid Structure Interaction -->
     <section class="section">
       <article class="card">
-        <h2>Related pages</h2>
-        <p><a href="projects.html">Projects page →</a></p>
-        <p><a href="coursework.html">Coursework page →</a></p>
+        <h2>Fluid Structure Interaction</h2>
+        <ul class="list-clean">
+          <li><a href="notes/fluid-structure-interaction-ale.html"><strong>Fluid Structure Interaction — ALE</strong></a><br><span class="muted">Arbitrary Lagrangian-Eulerian formulation, mesh motion, and coupling strategies for FSI problems.</span></li>
+          <li><a href="notes/fsi-solver-notes-and-preconditioner-study.html"><strong>FSI Solver Notes &amp; Preconditioner Study</strong></a><br><span class="muted">Monolithic vs. partitioned solvers, preconditioning strategies, and convergence behavior.</span></li>
+        </ul>
       </article>
     </section>
+
+    <!-- Mathematical Foundations -->
+    <section class="section">
+      <article class="card">
+        <h2>Mathematical Foundations</h2>
+        <ul class="list-clean">
+          <li><a href="notes/classification-of-pdes.html"><strong>Classification of PDEs</strong></a><br><span class="muted">Elliptic, parabolic, and hyperbolic PDEs — classification, canonical forms, and examples.</span></li>
+          <li><a href="notes/fundamentals-of-differential-equations.html"><strong>Fundamentals of Differential Equations</strong></a><br><span class="muted">ODEs and PDEs, existence and uniqueness, initial and boundary value problems.</span></li>
+          <li><a href="notes/numerical-solution-of-parbolic-and-elliptic-differ.html"><strong>Numerical Solution of Parabolic &amp; Elliptic PDEs</strong></a><br><span class="muted">Finite difference and finite element schemes for heat equation, Laplace, and related problems.</span></li>
+          <li><a href="notes/quadrature-rule-riemann-lebesgue-integration.html"><strong>Quadrature, Riemann &amp; Lebesgue Integration</strong></a><br><span class="muted">Gaussian quadrature, numerical integration schemes, and measure theory fundamentals.</span></li>
+          <li><a href="notes/lagrange-multipliers.html"><strong>Lagrange Multipliers</strong></a><br><span class="muted">Constrained optimization and their role in enforcing incompressibility in FEM formulations.</span></li>
+          <li><a href="notes/coleman-noll-procedure.html"><strong>Coleman-Noll Procedure</strong></a><br><span class="muted">Deriving constitutive relations consistent with the second law of thermodynamics.</span></li>
+          <li><a href="notes/thoughts-on-solving-system-of-linear-equations.html"><strong>Thoughts on Solving Systems of Linear Equations</strong></a><br><span class="muted">Direct vs. iterative solvers, conditioning, sparsity, and practical solver selection.</span></li>
+          <li><a href="notes/the-generalized-minimal-residual-gmres-method.html"><strong>GMRES Method</strong></a><br><span class="muted">Krylov subspace methods, the GMRES algorithm, restart strategies, and preconditioning.</span></li>
+          <li><a href="notes/some-good-resources-on-newton-raphson-method.html"><strong>Newton-Raphson Method — Resources</strong></a><br><span class="muted">Newton's method for nonlinear systems, convergence, and references.</span></li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- OpenFOAM -->
+    <section class="section">
+      <article class="card">
+        <h2>OpenFOAM</h2>
+        <ul class="list-clean">
+          <li><a href="notes/everything-in-openfoam.html"><strong>Everything in OpenFOAM</strong></a><br><span class="muted">Case structure, solvers, boundary conditions, fvSchemes, blockMesh, and practical workflow overview.</span></li>
+          <li><a href="notes/getting-started.html"><strong>Getting Started</strong></a><br><span class="muted">Installation, first test case, running a simulation, and post-processing basics.</span></li>
+          <li><a href="notes/fpl-project.html"><strong>FPL Project Notes</strong></a><br><span class="muted">Flow Physics Lab OpenFOAM simulation project notes.</span></li>
+        </ul>
+        <h3 style="margin-top:1.2rem;">Field Variables Reference</h3>
+        <ul class="list-clean">
+          <li><a href="notes/pressure.html">Pressure <code>p</code></a></li>
+          <li><a href="notes/static-pressure.html">Static Pressure <code>p_rgh</code></a></li>
+          <li><a href="notes/temperature.html">Temperature <code>T</code></a></li>
+          <li><a href="notes/velocity-of-fluid.html">Velocity of Fluid <code>U</code></a></li>
+          <li><a href="notes/velocity-potential.html">Velocity Potential <code>phi</code></a></li>
+          <li><a href="notes/volume-of-fluid.html">Volume of Fluid <code>alpha*</code></a></li>
+          <li><a href="notes/o2-h2-reactant-fractions.html">Reactant Fractions <code>O2, H2</code></a></li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- Software & Tools -->
+    <section class="section">
+      <article class="card">
+        <h2>Software &amp; Tools</h2>
+        <ul class="list-clean">
+          <li><a href="notes/dealing-with-complex-geometries-in-cfd.html"><strong>Dealing with Complex Geometries in CFD</strong></a><br><span class="muted">STL files, GMSH, boundary marking, and mesh import workflows.</span></li>
+          <li><a href="notes/installing-gmsh-on-cluster.html"><strong>Installing GMSH on Cluster</strong></a><br><span class="muted">Step-by-step setup of GMSH on HPC systems without root access.</span></li>
+          <li><a href="notes/inflation-bl.html"><strong>Inflation Boundary Layer Meshing</strong></a><br><span class="muted">Generating inflation layers in GMSH for boundary layer resolution in CFD.</span></li>
+          <li><a href="notes/stl-to-brep-stl2brep-py.html"><strong>STL to BRep (stl2brep.py)</strong></a><br><span class="muted">Converting STL surface meshes to BRep (GMSH/OCC) for volume meshing.</span></li>
+          <li><a href="notes/markboundaries-py.html"><strong>mark_boundaries.py</strong></a><br><span class="muted">Tagging mesh boundaries programmatically for FEniCS and FEniCSx workflows.</span></li>
+          <li><a href="notes/ale-move.html"><strong>ALE Mesh Motion</strong></a><br><span class="muted">Moving mesh implementation and velocity field assignment for ALE simulations.</span></li>
+          <li><a href="notes/fenics-interpolation-across-non-matching-meshes.html"><strong>FEniCS Interpolation Across Non-Matching Meshes</strong></a><br><span class="muted">Transferring fields between meshes in FEniCS/FEniCSx using interpolation utilities.</span></li>
+          <li><a href="notes/reference-values.html"><strong>Reference Values</strong></a><br><span class="muted">Common physical reference values used in non-dimensionalization and OpenFOAM setups.</span></li>
+          <li><a href="notes/latex-plug-in-for-inkscape.html"><strong>LaTeX Plug-in for Inkscape</strong></a><br><span class="muted">Rendering LaTeX equations inside Inkscape vector graphics for publication figures.</span></li>
+        </ul>
+      </article>
+    </section>
+
   </div>
 </main>
 
-<footer><div class="container small">Notes page</div></footer>
+<footer>
+  <div class="container small">Technical notes compiled during PhD research at Purdue University.</div>
+</footer>
 </body>
 </html>

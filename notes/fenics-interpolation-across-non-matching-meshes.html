@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FEniCS: Interpolation across non-matching meshes | Notes | Deshik Reddy Putluru</title>
+  <meta name="description" content="Technical notes on FEniCS: Interpolation across non-matching meshes by Deshik Reddy Putluru.">
+  <link rel="stylesheet" href="note-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand">Deshik Reddy Putluru</div>
+    <nav class="navlinks">
+      <a href="../index.html">Home</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../coursework.html">Coursework</a>
+      <a class="active" href="../notes.html">Notes</a>
+      <a href="../cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<div class="note-content">
+  <div class="container">
+    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
+<header><h1 class="page-title" dir="auto">FEniCS: Interpolation across non-matching meshes </h1><p class="page-description" dir="auto"></p><table class="properties"><tbody><tr class="property-row property-row-created_time"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/clock_gray.svg" style="width:14px;height:14px;display:block"/></span>Created</th><td><time>@November 17, 2025 4:50 PM</time></td></tr><tr class="property-row property-row-multi_select"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/list_gray.svg" style="width:14px;height:14px;display:block"/></span>Tags</th><td></td></tr></tbody></table></header><div class="page-body"><div style="display:contents" dir="auto"><p id="2ae6911b-971d-80ba-a7c0-dd167053226b" class="">This code demonstrates how to interpolate solution fields (specifically displacement fields) from one mesh to another in FEniCS. This process is often called &quot;regridding&quot; and is useful when:</p></div><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-8089-b9da-d23f9cfc2a7c" class="bulleted-list"><li style="list-style-type:disc">You need to transfer simulation results to a different discretization</li></ul></div><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-80e5-a61c-ece1e5859347" class="bulleted-list"><li style="list-style-type:disc">You want to continue a simulation on a refined or modified mesh</li></ul></div><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-8092-849d-cd8c743783a1" class="bulleted-list"><li style="list-style-type:disc">You need to compare or combine results from different simulations</li></ul></div><div style="display:contents" dir="auto"><h3 id="2ae6911b-971d-8078-abaf-eb741faef03f" class="">Key Components</h3></div><div style="display:contents" dir="auto"><ol type="1" id="2ae6911b-971d-80d6-a147-e90590c69d49" class="numbered-list" start="1"><li><strong>Mesh Loading</strong><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-8006-ae1b-fb3f230dd599" class="bulleted-list"><li style="list-style-type:disc">Source mesh: The original mesh where displacement data exists</li></ul></div><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-80ca-942f-ea536207fb50" class="bulleted-list"><li style="list-style-type:disc">Target mesh: The new mesh where data will be interpolated to</li></ul></div><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-80f5-8ec2-ff6688527815" class="bulleted-list"><li style="list-style-type:disc">Domain information is preserved during transfer</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2ae6911b-971d-8024-8ed1-faaec12b2436" class="numbered-list" start="2"><li><strong>Function Spaces</strong><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-8046-ab1e-f1e07d29ac32" class="bulleted-list"><li style="list-style-type:disc">Vector function spaces are created on both meshes (CG1 elements)</li></ul></div><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-8039-8172-f92965a8a99f" class="bulleted-list"><li style="list-style-type:disc"><code>set_allow_extrapolation(True)</code> enables interpolation for points slightly outside the source domain</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2ae6911b-971d-8029-98d4-c3bfee8e8cc4" class="numbered-list" start="3"><li><strong>Interpolation Process</strong><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-8031-824e-e0ce910e05ce" class="bulleted-list"><li style="list-style-type:disc">For each time snapshot:<div style="display:contents" dir="auto"><ol type="1" id="2ae6911b-971d-8043-a59b-d42cd19dbf39" class="numbered-list" start="1"><li>Read displacement field from source mesh</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2ae6911b-971d-803e-8456-da410a5b24d6" class="numbered-list" start="2"><li>Interpolate to target mesh using <code>LagrangeInterpolator</code></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2ae6911b-971d-8088-8cba-f12388c1cbef" class="numbered-list" start="3"><li>Write interpolated field to output files</li></ol></div></li></ul></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="2ae6911b-971d-8027-810e-ff252eb979fc" class="numbered-list" start="4"><li><strong>Output Generation</strong><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-80f0-aacf-f47e2af64ddb" class="bulleted-list"><li style="list-style-type:disc">HDF5 file containing all interpolated displacement fields</li></ul></div><div style="display:contents" dir="auto"><ul id="2ae6911b-971d-800f-8e79-e7cc7f82a86c" class="bulleted-list"><li style="list-style-type:disc">XDMF time series for easy visualization in ParaView</li></ul></div></li></ol></div><div style="display:contents" dir="auto"><p id="2ae6911b-971d-805f-9f6b-c41f4a73ad34" class="">This interpolation technique preserves the mathematical properties of the original solution while transferring it to a new discretization, making it valuable for multi-stage simulations or post-processing workflows.</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ae6911b-971d-80dd-999e-e39c7b9466bf" class="code code-wrap"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all"># regrid_displacement_only_no_defs.py
+from dolfin import *
+import os
+
+# ────────────────────── MPI &amp; logging ──────────────────────
+COMM = MPI.comm_world
+RANK = COMM.Get_rank()
+from dolfin.cpp.log import set_log_active
+set_log_active(RANK == 0)
+
+# ────────────────────── EDIT THESE PATHS ───────────────────
+# Mesh that was used for the original snapshots (checkpoint mesh)
+SRC_MESH_H5   = &quot;/home/dputluru/fenics_run/navier-stokes/clinical_trials/clinical_wo_injection.h5&quot;
+
+# NEW mesh to regrid onto (must contain /mesh and /domains)
+NEW_MESH_H5   = &quot;/depot/hgomezdi/data/dputluru/clinical_trials/pre-process/meshes/aswanth.h5&quot;  # ← TODO
+
+# Single HDF5 with periodic displacement snapshots under /displacement/{i}
+SNAPSHOTS_H5  = &quot;/scratch/negishi/dputluru/clinical_trials/C4_phase2_new/final_snapshots3.h5&quot;
+
+# Periodic timing info
+PERIOD = 0.8
+NUM_SNAPSHOTS = 64
+DT_SNAP = PERIOD / float(NUM_SNAPSHOTS)
+
+# Outputs
+OUT_DIR       = &quot;/scratch/negishi/dputluru/regridded_to_newmesh_phase2&quot;
+os.makedirs(OUT_DIR, exist_ok=True)
+OUT_H5        = os.path.join(OUT_DIR, &quot;regridded_displacement.h5&quot;)
+OUT_XDMF_DISP = os.path.join(OUT_DIR, &quot;displacement_timeseries.xdmf&quot;)
+
+# ────────────────────── SOURCE (checkpoint) MESH ───────────
+src_mesh = Mesh()
+hdf_src = HDF5File(COMM, SRC_MESH_H5, &quot;r&quot;)
+hdf_src.read(src_mesh, &quot;/mesh&quot;, False)
+hdf_src.close()
+
+V_src = VectorFunctionSpace(src_mesh, &quot;CG&quot;, 1)  # displacement space on source mesh
+
+# ────────────────────── TARGET (new) MESH + DOMAINS ────────
+tgt_mesh = Mesh()
+hdf_tgt_in = HDF5File(COMM, NEW_MESH_H5, &quot;r&quot;)
+hdf_tgt_in.read(tgt_mesh, &quot;/mesh&quot;, False)
+
+nsd_tgt = tgt_mesh.topology().dim()
+tgt_dom = MeshFunction(&quot;size_t&quot;, tgt_mesh, nsd_tgt, 0)
+hdf_tgt_in.read(tgt_dom, &quot;/domains&quot;)  # require domains as requested
+hdf_tgt_in.close()
+
+V_tgt = VectorFunctionSpace(tgt_mesh, &quot;CG&quot;, 1)  # displacement space on target mesh
+
+# ────────────────────── OPEN INPUT/OUTPUT FILES ────────────
+snap_h5 = HDF5File(COMM, SNAPSHOTS_H5, &quot;r&quot;)
+
+h5_out = HDF5File(COMM, OUT_H5, &quot;w&quot;)
+h5_out.write(tgt_mesh, &quot;/mesh&quot;)
+h5_out.write(tgt_dom,  &quot;/domains&quot;)
+
+xmf_disp = XDMFFile(COMM, OUT_XDMF_DISP)
+xmf_disp.parameters[&quot;flush_output&quot;] = True
+xmf_disp.parameters[&quot;functions_share_mesh&quot;] = True
+xmf_disp.parameters[&quot;rewrite_function_mesh&quot;] = False
+xmf_disp.write(tgt_mesh)  # write mesh once
+
+# Buffers
+u_src = Function(V_src); u_src.rename(&quot;Displacement&quot;, &quot;Displacement&quot;)
+u_src.set_allow_extrapolation(True)
+u_tgt = Function(V_tgt); u_tgt.rename(&quot;Displacement&quot;, &quot;Displacement&quot;)
+
+
+if RANK == 0:
+    print(f&quot;[info] Regridding {NUM_SNAPSHOTS} displacement snapshots onto NEW mesh...&quot;)
+
+# ────────────────────── LOOP: read → interpolate → write ───
+t0 = 0.0
+for i in range(NUM_SNAPSHOTS):
+    t_snap = t0 + i * DT_SNAP
+    if RANK == 0:
+        print(f&quot;[{i+1}/{NUM_SNAPSHOTS}] t = {t_snap:.6f} s&quot;)
+
+    # read displacement on source mesh
+    snap_h5.read(u_src, f&quot;/displacement/{i}&quot;)
+
+    # interpolate to target mesh
+    LagrangeInterpolator.interpolate(u_tgt, u_src)
+
+    # write to consolidated HDF5
+    h5_out.write(u_tgt, f&quot;/displacement/{i}&quot;)
+
+    # write to XDMF series for ParaView
+    xmf_disp.write(u_tgt, t_snap)
+
+# ────────────────────── CLOSE ──────────────────────────────
+snap_h5.close()
+xmf_disp.close()
+h5_out.close()
+
+if RANK == 0:
+    print(&quot;[done] Wrote:&quot;)
+    print(&quot;  •&quot;, OUT_H5,        &quot; (mesh, domains, displacement/{i})&quot;)
+    print(&quot;  •&quot;, OUT_XDMF_DISP, &quot; (ParaView time series)&quot;)</code></pre></div></div>
+  </div>
+</div>
+
+<footer><div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div></footer>
+</body>
+</html>

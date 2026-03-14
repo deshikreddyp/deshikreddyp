@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Installing GMSH on cluster | Notes | Deshik Reddy Putluru</title>
+  <meta name="description" content="Technical notes on Installing GMSH on cluster by Deshik Reddy Putluru.">
+  <link rel="stylesheet" href="note-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand">Deshik Reddy Putluru</div>
+    <nav class="navlinks">
+      <a href="../index.html">Home</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../coursework.html">Coursework</a>
+      <a class="active" href="../notes.html">Notes</a>
+      <a href="../cv.html">CV</a>
+    </nav>
+  </div>
+</header>
+
+<div class="note-content">
+  <div class="container">
+    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
+<header><div class="page-header-icon undefined"><span class="icon">💫</span></div><h1 class="page-title" dir="auto"><strong>Installing GMSH on cluster</strong></h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><p id="b431d002-6c0b-4178-9e8d-7617b077769a" class="">Making conformal meshes, especially of complex geometries might demand excessive resources. Generating a conformal mesh on 6000 faceted geometry takes approximately 4 hrs on a 32 GB RAM intel processor. Biological simulations often requires the geometry to be very accurate, which means more faceted goemetry, and more resources. </p></div><div style="display:contents" dir="auto"><p id="9147a0b5-0edf-4e79-9896-68e36aeafc97" class="">Although GMSH features are still in experimental stage in parallel, one can use the cluster resources in serial. </p></div><div style="display:contents" dir="auto"><p id="5bb2194d-1dae-4e2e-b49f-b17f3d94bda9" class="">Required modules for GMSH working,</p></div><div style="display:contents" dir="auto"><ol type="1" id="1803846e-c286-4aad-a59f-1b787517bbf0" class="numbered-list" start="1"><li>RCAC</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="d8b01a67-01fb-4303-b45f-dec9171b2e48" class="numbered-list" start="2"><li><strong>mesa-glu/9.0.2</strong> <em>(available only on Negishi)</em></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="31f1d4de-8e60-4895-b38a-9bc78075e541" class="numbered-list" start="3"><li>mpc</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="0ce8e8f9-7d83-4f10-8237-a8acc86773da" class="numbered-list" start="4"><li>mpfr (optional)</li></ol></div><div style="display:contents" dir="auto"><p id="97c6c0f3-acb2-451c-8c3e-3ff39c59f938" class="">Install GMSH using the pip+</p></div><div style="display:contents" dir="auto"><p id="d8292fea-d630-4ab0-b19f-716939718257" class=""><code>pip install gmsh</code></p></div><div style="display:contents" dir="auto"><p id="9cd5c31d-b7f1-42c3-8ebb-c638fabf8a36" class="">Run GMSH</p></div><div style="display:contents" dir="auto"><p id="ad740927-0bc8-4290-84af-d3c7184d28a8" class=""><code>gmsh</code></p></div><div style="display:contents" dir="auto"><p id="06c2f8ea-e825-4adc-992e-21c98bf05206" class="">
+</p></div></div>
+  </div>
+</div>
+
+<footer><div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div></footer>
+</body>
+</html>
