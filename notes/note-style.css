@@ -125,10 +125,21 @@ code {
   font-family: "SFMono-Regular", Menlo, Consolas, monospace;
   color: #e2e8f0;
   line-height: 1.6;
-  white-space: pre;
+  white-space: pre !important; /* Force pre-formatted */
   margin: 1rem 0;
 }
-.code > code { background: none; border: none; padding: 0; color: inherit; font-size: 100%; }
+.code > code { 
+  background: none; 
+  border: none; 
+  padding: 0; 
+  color: inherit; 
+  font-size: 100%; 
+  white-space: inherit !important;
+  word-break: normal !important;
+}
+
+/* ── Notion Properties (Metadata) ── */
+.properties { display: none; }
 
 /* ── Blockquote ── */
 blockquote {
@@ -249,4 +260,15 @@ footer { border-top: 1px solid var(--border); color: var(--muted); padding: 2rem
 /* Responsive */
 @media (max-width: 600px) {
   .column-list { flex-direction: column; }
+}
+
+/* ── Prose highlights (misused code tags from Notion) ── */
+.note-highlight {
+  background: rgba(96,165,250,0.07);
+  border-left: 3px solid rgba(96,165,250,0.5);
+  border-radius: 0 6px 6px 0;
+  padding: 0.55rem 0.9rem;
+  margin: 0.7rem 0;
+  color: var(--text);
+  font-style: italic;
 }
