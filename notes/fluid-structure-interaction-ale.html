@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fluid Structure Interaction - ALE | Notes | Deshik Reddy Putluru</title>
-  <meta name="description" content="Technical notes on Fluid Structure Interaction - ALE by Deshik Reddy Putluru.">
+  <title>Fluid Structure Interaction — ALE | Notes | Deshik Reddy Putluru</title>
+  <meta name="description" content="Notes on the Arbitrary Lagrangian-Eulerian (ALE) formulation for fluid-structure interaction problems.">
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
 </head>
@@ -25,21 +25,231 @@
 <div class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-<header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/solid_blue.png" style="object-position:center 40%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">💡</span></div><h1 class="page-title" dir="auto">Fluid Structure Interaction - ALE</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><p id="943d1504-3440-4200-a8b0-1dc996a47981" class="">Fluid Structure Interaction modelling is classified into two types, </p></div><div style="display:contents" dir="auto"><ol type="1" id="79926496-d29a-492a-978c-0da6f860ff50" class="numbered-list" start="1"><li>Monolithic approach</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="ca75b1ae-9172-45f8-b29d-986d8a588101" class="numbered-list" start="2"><li>Non-partitioned approach</li></ol></div><div style="display:contents" dir="auto"><p id="2930bce9-a757-4c7a-bfc0-66cbc4db6c2f" class="">Let us look at the various other approaches to model FSI.,</p></div><div style="display:contents" dir="auto"><ol type="1" id="4377912a-61a3-4bb0-b042-d12beaa4d74d" class="numbered-list" start="1"><li>Body fitted method</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="ae54ffe5-687f-42a6-b157-a683c26805c2" class="numbered-list" start="2"><li>Immersed boundary method</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="d1f94286-7363-4fb1-8648-16a3d33c106f" class="numbered-list" start="3"><li>Mesh free method</li></ol></div><div style="display:contents" dir="auto"><p id="4cf82adf-1421-4206-9da7-27b82aea3f24" class="">One other way to look at the classification is method of modelling the fluid-structure interface,</p></div><div style="display:contents" dir="auto"><div id="61681869-66f8-4bcf-8b37-e75bcb78dd72" class="column-list"><div style="display:contents" dir="auto"><div id="e0fe4518-d75c-4991-b59b-61c81ec15fe3" style="width:37.5%" class="column"><div style="display:contents" dir="auto"><ol type="1" id="75f20aae-cccd-4806-8a35-56e569042407" class="numbered-list" start="1"><li>Strong method (conformal meshes)</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="f7bd8fc9-9ce5-4508-ad3c-ae163f698794" class="numbered-list" start="2"><li>Weak or Nitsche method (non-conformal meshes)</li></ol></div><div style="display:contents" dir="auto"><p id="e5cb2610-08d7-4311-9be2-053d12b16958" class="">
-</p></div><div style="display:contents" dir="auto"><p id="a77b3e4d-ae47-4efe-8ef4-a5457aa1f2bc" class="block-color-gray_background">😶 I have been using the monolithic + boundary-fitted + fully coupled with quasi-direct coupling</p></div></div></div><div style="display:contents" dir="auto"><div id="a9e393b6-9423-4983-8ccc-6145012e684d" style="width:62.5%" class="column"><div style="display:contents" dir="ltr"><figure id="a9be70e5-c0fa-4e11-b033-da08ef7de203" class="image"><a href="Fluid%20Structure%20Interaction%20-%20ALE/Untitled.png"><img style="width:288px" src="images/Untitled.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><p id="cf4c7489-73a0-4f49-a9e3-3b81306430df" class="">Fluid mechanics often focuses on studying fluids within a specified domain, unless the importance lies in a tracer particle, such as in drug distribution. When conducting fluid dynamics simulations, we typically ignore the details of the fluid that exits the domain. However, this is not the case with solids, as they do not undergo significant deformations or flow. Hence, studying solid mechanics using eulerian approach is vague.</p></div><div style="display:contents" dir="auto"><p id="9e0e4767-1e52-4fcf-8f3b-a6f8931101cf" class="">One possible way to model a solid material is using the lagrangian domains. Solids when modelled in lagrangian framework, move with the material and the mesh deforms along with the material. However, when a structure interacts with a fluid, we need to use a different approach called ALE (Arbitrary Lagrangian-Eulerian) framework. The ALE framework is a combination of both Lagrangian and Eulerian approaches, which allows us to model the deformation of the mesh along with the material, while also allowing the fluid to flow in and out of the domain. This approach is commonly used in fluid-structure interaction problems, where the deformation of the solid affects the fluid flow and vice versa.</p></div><div style="display:contents" dir="auto"><p id="891bf3f4-ce71-44d6-acd5-6ed196d4ddc8" class="">
-</p></div><div style="display:contents" dir="auto"><p id="7e8caa09-3ae2-46fb-8d1c-fe015cab1240" class="">
-</p></div><div style="display:contents" dir="auto"><p id="053f5c5d-512d-4586-9c8c-9fd0bf0a8eeb" class="">In ALE we model fluid solid interaction as follows,</p></div><div style="display:contents" dir="auto"><ol type="1" id="1c34a7f0-8bda-4942-8b94-a79e74344a14" class="numbered-list" start="1"><li>We solve mesh motion problem and move the mesh. (mesh motion problem)</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="38d89346-d250-4d1f-baf9-5282c0b1748c" class="numbered-list" start="2"><li>Now, we solve fluid solid problem on the deformed mesh. (moving domain problem)</li></ol></div><div style="display:contents" dir="auto"><p id="9575ffc5-01f4-4116-b6d4-26a38b216797" class="">
-</p></div><div style="display:contents" dir="auto"><p id="40794285-b2e7-4d4e-bc98-dc49802aa51d" class=""><mark class="highlight-gray_background"><code>In ALE, the mesh motion field is simply displacement of solid in solid domain, but is is different in fluid domain. Mesh motion in fluid domain is not integral of velocity field.</code></mark></p></div><div style="display:contents" dir="auto"><p id="5eff07e9-d4cf-448f-977f-90f8d543e2a1" class=""><mark class="highlight-gray_background"><code>Mesh motion in fluid domain does not make any physical sense. But it does in mathematical sense.</code></mark></p></div><div style="display:contents" dir="auto"><p id="57bef2af-8b03-439d-a6d2-d658610e586e" class=""><mark class="highlight-gray_background"><code>In mathematical sense, it is like providing convection effects to fluid in Eulerian formulation. [sentence unclear]</code></mark></p></div><div style="display:contents" dir="auto"><p id="7f1320be-c24a-43ad-a2f3-82aec2ea652a" class="">
-</p></div><div style="display:contents" dir="auto"><p id="108d58f1-70f9-48ff-a513-01b0336c2a13" class="">
-</p></div><div style="display:contents" dir="auto"><p id="8a2bfba4-ee40-4478-a2ac-b38c1780232c" class="">The mesh motion problem is solved just using a elastic problem. Note that displacement field whatever solid problem solves, is given as boundary conditions to this mesh motion problem.</p></div><div style="display:contents" dir="auto"><p id="ff15b58e-2aed-4042-a5f4-d8fe1a9c7402" class="">
-</p></div><div style="display:contents" dir="auto"><p id="b9ad4184-1d36-4aa2-b342-1132d2e99234" class="">
-</p></div><div style="display:contents" dir="auto"><p id="ecbcc9b2-4197-41d4-94af-4d18b6564e84" class="">Coupling of fluid, solid, mesh motion problem can be done in several ways,</p></div><div style="display:contents" dir="auto"><div id="d19c0a23-a1fe-40b9-be7c-32367ef4f218" class="column-list"><div style="display:contents" dir="auto"><div id="fd881d19-1f07-46f6-b460-68fdc23f6808" style="width:37.5%" class="column"><div style="display:contents" dir="auto"><ol type="1" id="72a33279-e8a4-44c7-8d4a-4a429c3a4915" class="numbered-list" start="1"><li>Block-iterative method</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="50b8e110-2c9c-4746-839e-5e417b60e6c2" class="numbered-list" start="2"><li>Quasi-direct coupling</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="7884b786-3144-4800-a946-2cca346a2d91" class="numbered-list" start="3"><li>Direct strategy</li></ol></div><div style="display:contents" dir="auto"><p id="a06d5c58-26c5-45d5-bb89-c7db4e6e1c72" class="">
-</p></div><div style="display:contents" dir="ltr"><figure id="0abb11d7-60ba-4952-bbd4-dce597ddbaa9"><a href="https://link.springer.com/article/10.1007/s00466-008-0315-x" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Isogeometric fluid-structure interaction: theory, algorithms, and computations</div><div class="bookmark-description">Computational Mechanics - We present a fully-coupled monolithic formulation of the fluid-structure interaction of an incompressible fluid on a moving domain with a nonlinear hyperelastic solid. The...</div></div><div class="bookmark-href"><img src="https://link.springer.com/oscar-static/images/favicons/springerlink/app-icon-iphone@3x-f259d46347.png" class="icon bookmark-icon"/>https://link.springer.com/article/10.1007/s00466-008-0315-x</div></div><img src="https://media.springernature.com/w200/springer-static/cover/journal/466.jpg" class="bookmark-image"/></a></figure></div><div style="display:contents" dir="auto"><p id="a7493c69-ab85-4027-9ec5-e6892d7d7f34" class="">
-</p></div></div></div><div style="display:contents" dir="auto"><div id="43788c41-06f0-49b9-9288-ae93e65265e6" style="width:62.5%" class="column"><div style="display:contents" dir="ltr"><figure id="321ff061-4b05-419e-840e-2f817a2708f8" class="image"><a href="Fluid%20Structure%20Interaction%20-%20ALE/Untitled%201.png"><img style="width:579px" src="images/Untitled%201.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><p id="37484570-f82a-4c1f-884a-4e9757d64f29" class="">
-</p></div></div>
+
+    <h1 class="page-title">Fluid Structure Interaction — ALE</h1>
+    <p class="note-meta">Fluid mechanics · FSI · Mesh motion · ALE framework</p>
+
+    <!-- ── Overview ── -->
+    <section class="note-section">
+      <h2>Overview</h2>
+      <p>
+        Fluid-structure interaction (FSI) modelling broadly falls into two categories based on how the
+        governing equations are solved:
+      </p>
+      <ol>
+        <li><strong>Monolithic approach</strong> — fluid, solid, and mesh motion equations are assembled
+            into a single system and solved simultaneously.</li>
+        <li><strong>Partitioned (non-monolithic) approach</strong> — the fluid and solid solvers are
+            run separately and coupled at the interface iteratively.</li>
+      </ol>
+
+      <p>There are also several approaches based on how the <em>fluid-structure interface</em> is represented:</p>
+
+      <div class="two-col">
+        <div>
+          <ul>
+            <li><strong>Body-fitted method</strong> — mesh conforms to the structure boundary; typically
+                used with the ALE framework.</li>
+            <li><strong>Immersed boundary method</strong> — the structure is embedded in a fixed
+                background fluid mesh; interface conditions imposed via body forces.</li>
+            <li><strong>Mesh-free method</strong> — no background mesh; particles or radial basis
+                functions carry solution data.</li>
+          </ul>
+        </div>
+        <div class="note-image-wrap">
+          <img src="images/Untitled.png" alt="FSI classification diagram" class="note-image">
+        </div>
+      </div>
+
+      <p>The interface coupling itself can further be classified by the type of mesh matching:</p>
+      <ol>
+        <li><strong>Strong (conformal meshes)</strong> — fluid and solid meshes share nodes at the
+            interface; velocity and traction continuity are enforced exactly.</li>
+        <li><strong>Weak / Nitsche method (non-conformal meshes)</strong> — interface conditions are
+            enforced weakly via a penalty-like variational term, allowing independent fluid and solid
+            mesh refinements.</li>
+      </ol>
+
+      <div class="callout block-color-gray_background">
+        <div>😶</div>
+        <div>My own work uses the <strong>monolithic + body-fitted + fully coupled</strong> strategy
+             with <em>quasi-direct coupling</em>.</div>
+      </div>
+    </section>
+
+    <!-- ── Why ALE ── -->
+    <section class="note-section">
+      <h2>Why ALE? Lagrangian vs. Eulerian</h2>
+      <p>
+        In classical fluid mechanics we work in an <strong>Eulerian</strong> frame: the computational
+        domain is fixed in space and fluid flows through it. This is natural for fluids, which undergo
+        large deformations and flow, but it makes tracking solid deformation awkward — we do not care
+        which fluid particle is at a given point, only the field values there.
+      </p>
+      <p>
+        Solids, on the other hand, are naturally described in a <strong>Lagrangian</strong> frame: the
+        mesh moves with the material. Individual material points are tracked, and displacements are
+        physically meaningful. Using an Eulerian frame for solids would obscure the material identity
+        needed for constitutive modelling.
+      </p>
+      <p>
+        When a deformable solid interacts with a fluid, we need a formulation that accommodates both:
+        the <strong>Arbitrary Lagrangian-Eulerian (ALE)</strong> framework. In ALE, the computational
+        mesh can move independently of the material — it moves with the solid boundary (Lagrangian) but
+        deforms smoothly in the fluid interior (neither purely Eulerian nor purely Lagrangian). The
+        governing equations gain an additional <em>mesh velocity</em> term that accounts for the moving
+        reference frame.
+      </p>
+    </section>
+
+    <!-- ── ALE Procedure ── -->
+    <section class="note-section">
+      <h2>ALE Solution Procedure</h2>
+      <p>At each time step, an ALE-FSI solver performs two coupled sub-problems:</p>
+      <ol>
+        <li>
+          <strong>Mesh motion problem</strong> — given the solid displacement field at the interface as
+          a boundary condition, extend a smooth mesh deformation into the fluid domain. This is typically
+          posed as a harmonic extension or a pseudo-elastic problem:
+          <div class="note-eq">
+            <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true">
+              <span class="base"><span class="mord">∇·(μ<sub>m</sub> ∇<b>w</b>) = <b>0</b>&ensp;in&ensp;Ω<sub>f</sub></span>
+            </span></span></span>
+          </div>
+          where <strong>w</strong> is the mesh displacement field and μ<sub>m</sub> is a stiffening
+          parameter (often inverse-proportional to element size to protect small elements near the
+          interface).
+        </li>
+        <li>
+          <strong>Moving-domain problem</strong> — solve the fluid and solid equations on the updated
+          (deformed) mesh. The fluid momentum equation acquires an ALE convection term involving the
+          mesh velocity <strong>ẇ</strong>:
+          <div class="note-eq">
+            <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true">
+              <span class="base"><span class="mord">ρ(∂<b>u</b>/∂t|<sub>χ</sub> + (<b>u</b> − <b>ẇ</b>)·∇<b>u</b>) = −∇p + μ∇²<b>u</b></span>
+            </span></span></span>
+          </div>
+          where the derivative ∂/∂t|<sub>χ</sub> is taken at a fixed <em>ALE reference point</em> χ,
+          not a fixed material point or a fixed spatial point.
+        </li>
+      </ol>
+
+      <div class="callout block-color-blue_background">
+        <div>📌</div>
+        <div>
+          <p><strong>Key insight:</strong> In the solid domain, the mesh displacement equals the physical
+          material displacement — these coincide by definition. In the <em>fluid</em> domain, the mesh
+          motion carries no physical meaning for the fluid material; it is a purely computational device
+          that introduces a modified convection term into the Navier-Stokes equations.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Coupling Strategies ── -->
+    <section class="note-section">
+      <h2>Coupling Strategies</h2>
+      <p>
+        Once the three sub-problems (fluid, solid, mesh motion) are defined, they must be coupled. Common
+        strategies, roughly ordered from loosest to tightest coupling:
+      </p>
+
+      <div class="two-col">
+        <ol>
+          <li>
+            <strong>Block-iterative (Gauss-Seidel) method</strong> — fluid and solid are solved in
+            sequence, exchanging interface data, and the loop is iterated to convergence within each
+            time step. Robust but may converge slowly for strongly coupled problems (e.g. added-mass
+            instability for light structures).
+          </li>
+          <li>
+            <strong>Quasi-direct coupling</strong> — the Jacobian of the coupled system is approximated
+            using the individual sub-problem Jacobians. Faster convergence than block-iterative with
+            moderate implementation complexity. This is the approach used in my current solver.
+          </li>
+          <li>
+            <strong>Direct (monolithic) strategy</strong> — fluid, solid, and mesh motion DOFs are
+            assembled into a single system matrix and solved with a coupled preconditioner. Optimal
+            convergence but demands a unified discretization and a sophisticated solver/preconditioner
+            (e.g., nested block solvers with approximate Schur complements).
+          </li>
+        </ol>
+        <div class="note-image-wrap">
+          <img src="images/Untitled 1.png" alt="Coupling strategies diagram" class="note-image">
+        </div>
+      </div>
+
+      <p>Key reference for the isogeometric ALE-FSI formulation:</p>
+      <a href="https://link.springer.com/article/10.1007/s00466-008-0315-x" class="ref-card" target="_blank" rel="noopener">
+        <div class="ref-title">Isogeometric fluid-structure interaction: theory, algorithms, and computations</div>
+        <div class="ref-source">Bazilevs et al. · Computational Mechanics · link.springer.com</div>
+      </a>
+    </section>
+
   </div>
 </div>
 
-<footer><div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div></footer>
+<footer>
+  <div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div>
+</footer>
+
+<style>
+/* ── Page-specific styles ── */
+.note-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: -0.8rem 0 1.8rem;
+}
+.note-section {
+  margin: 2.5rem 0;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.note-section:last-child { border-bottom: none; }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  align-items: start;
+  margin: 1rem 0;
+}
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+.note-image-wrap { flex-shrink: 0; }
+.note-image {
+  max-width: 260px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.note-eq {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin: 0.8rem 0;
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* Reference card */
+.ref-card {
+  display: block;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin: 1rem 0;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.ref-card:hover { background: rgba(96,165,250,0.08); }
+.ref-title { color: var(--accent); font-weight: 600; font-size: 0.95rem; }
+.ref-source { color: var(--muted); font-size: 0.82rem; margin-top: 0.25rem; }
+</style>
+
 </body>
 </html>
