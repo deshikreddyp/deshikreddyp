@@ -1,4 +1,19 @@
-### Hi there 👋
+# deshikreddyp.github.io
 
-I work on the formulation and numerical solution of PDE-governed systems, with emphasis on finite element and variational methods.
-I have worked on surrogate modeling and PINNs; my current interests focus on scientific machine learning for PDEs, particularly uncertainty propagation, Bayesian inference, and PDE-constrained inverse problems.
+Personal academic website for **Deshik Reddy Putluru**, built as a static multi-page site.
+
+## Pages
+- `index.html` — home page and overview
+- `projects.html` — research and project highlights
+- `coursework.html` — graduate and undergraduate coursework
+- `notes.html` — curated notes overview
+- `cv.html` — CV page with instructions to add resume PDF
+
+## Local preview
+Open `index.html` directly in a browser, or run a local static server:
+
+```bash
+python -m http.server 8000
+```
+
+Then visit `http://localhost:8000`.

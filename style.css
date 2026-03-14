@@ -86,21 +86,3 @@ hr.sep { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
   background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25); color: #b7f7ca;
   font-size: 0.8rem; margin-right: 0.4rem; margin-bottom: 0.4rem;
 }
-
-
-.search-wrap{margin-top:1rem}
-.search-wrap input{width:min(520px,100%);padding:.85rem 1rem;border:1px solid #d7dbe2;border-radius:12px;font:inherit;background:#fff}
-.notes-group{margin:2rem 0}
-.notes-group h2{margin-bottom:1rem}
-.notes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
-.note-card{display:block;padding:1.1rem 1rem;border:1px solid #e5e7eb;border-radius:16px;background:#fff;text-decoration:none;color:inherit;box-shadow:0 4px 16px rgba(15,23,42,.04)}
-.note-card:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(15,23,42,.08)}
-.note-card h3{font-size:1.02rem;margin:.1rem 0 .5rem}
-.note-card p{font-size:.95rem;color:#4b5563;min-height:4.2em}
-.note-card span{font-size:.88rem;font-weight:600;color:#1d4ed8}
-.compact-hero{padding:2rem 0 1rem}
-.note-page{background:#f8fafc}
-.note-shell{max-width:980px;margin:0 auto;padding:1rem 1rem 0}
-.site-header.compact{padding-bottom:1rem}
-.note-back{margin-bottom:1rem}
-.note-back a{text-decoration:none;color:#1d4ed8;font-weight:600}
