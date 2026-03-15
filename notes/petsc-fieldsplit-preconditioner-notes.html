@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PETSc FieldSplit Preconditioner | Notes | Deshik Reddy Putluru</title>
+  <link rel="stylesheet" href="note-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="../theme.js"></script>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand">Deshik Reddy Putluru</div>
+    <nav class="navlinks">
+      <a href="../index.html">Home</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../coursework.html">Coursework</a>
+      <a class="active" href="../notes.html">Notes</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+      <span class="sun">☀️</span>
+      <span class="moon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="note-content">
+  <div class="container">
+    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
+    <h1 class="page-title">PETSc FieldSplit Preconditioner</h1>
+    <p class="small">Category: FSI · PETSc · Preconditioning · Linear Algebra</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+
+    <article class="article-body">
+      <p>These notes summarize the solver strategy for restarted FSI simulations using <strong>PETSc FieldSplit</strong>. In multiphysics problems, FieldSplit allows for block-based preconditioning by dividing the global Jacobian into logical sub-blocks (e.g., velocity and pressure).</p>
+
+      <div class="box">
+        <strong>Core Concept.</strong>
+        <p>A global Jacobian $J$ is viewed as a block matrix:</p>
+        $$J = \begin{bmatrix} A & B \\ C & D \end{bmatrix}$$
+        <p>where $A$ is the velocity block, $D$ the pressure block, and $B, C$ are the coupling terms. FieldSplit leverages these blocks to apply specialized preconditioners (like Schur complements).</p>
+      </div>
+
+      <h2>Block Factorization Variants</h2>
+      <p>FieldSplit supports several factorization patterns for the Schur split:</p>
+      <ul>
+        <li><strong>Lower:</strong> Solve the velocity side first, then the Schur side.</li>
+        <li><strong>Upper:</strong> Apply the coupling in the opposite triangular ordering. Often performs better if the coupling is physics-dominated in one direction.</li>
+        <li><strong>Full:</strong> Strongest but most expensive; applies the full block factorization.</li>
+      </ul>
+
+      <h2>Observed Performance Ranking</h2>
+      <p>In high-resolution FSI tests on 256 MPI ranks, various FieldSplit configurations were compared. The working ranking from the logs was:</p>
+      <pre class="language-bash"><code>fieldsplit4 (upper) > fieldsplit5 (full) > fieldsplit2 (lower) > fieldsplit6 >> fieldsplit3</code></pre>
+
+      <div class="warn">
+        <strong>Numerical Warning.</strong>
+        <p>ALE Jacobians reporting strongly negative values (e.g., -6 to -8) indicate an inverted mesh. While solver comparisons remain informative, absolute timings are affected by the numerically unhealthy state of the mesh distortion.</p>
+      </div>
+
+      <h2>Scaling Diagnostics</h2>
+      <p>To understand if the solid coefficients dominated the Jacobian, block norms were analyzed across different solid shear modulus scales:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Scale Factor</th>
+            <th>$\|J^{solid}_{VV}\|_F$</th>
+            <th>$\|J_{PP}\|_F$</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$0.1$</td>
+            <td>$6.36 \times 10^1$</td>
+            <td>$6.47 \times 10^5$</td>
+          </tr>
+          <tr>
+            <td>$1.0$</td>
+            <td>$6.37 \times 10^2$</td>
+            <td>$6.47 \times 10^5$</td>
+          </tr>
+          <tr>
+            <td>$10.0$</td>
+            <td>$6.38 \times 10^3$</td>
+            <td>$6.47 \times 10^5$</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        <strong>Key takeaway.</strong>
+        <p>The velocity block ($VV$) is solid-dominated, but the full Jacobian is globally dominated by the pressure block ($PP$). FieldSplit isolates the stiff solid-dominated velocity block, which can be both a strength and a bottleneck.</p>
+      </div>
+
+      <h2>Conclusions</h2>
+      <ol>
+        <li>The <code>fieldsplit4</code> (Upper) variant was the most robust Schur configuration.</li>
+        <li>The system's stiffness combines a stiff velocity block with a massive pressure block.</li>
+        <li>Monolithic <code>gamg</code> often beats FieldSplit here because it treats the whole operator more holistically.</li>
+      </ol>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <div class="container small">
+    Deshik Reddy Putluru · <a href="../notes.html">All Notes</a>
+  </div>
+</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script>Prism.highlightAll();</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PETSc GAMG Preconditioner | Notes | Deshik Reddy Putluru</title>
+  <link rel="stylesheet" href="note-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="../theme.js"></script>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="brand">Deshik Reddy Putluru</div>
+    <nav class="navlinks">
+      <a href="../index.html">Home</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../coursework.html">Coursework</a>
+      <a class="active" href="../notes.html">Notes</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+      <span class="sun">☀️</span>
+      <span class="moon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main class="note-content">
+  <div class="container">
+    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
+    <h1 class="page-title">PETSc GAMG Preconditioner</h1>
+    <p class="small">Category: FSI · PETSc · AMG · Multigrid</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+
+    <article class="article-body">
+      <p>Algebraic Multigrid (AMG) is an essential tool for solving large-scale linear systems. PETSc's <strong>GAMG (Geometric-Algebraic Multigrid)</strong> is a powerful implementation that builds hierarchies based on the matrix graph, making it ideal for monolithic CFD and FSI solvers.</p>
+
+      <div class="box">
+        <strong>Why AMG?</strong>
+        <p>Classical smoothers (like Jacobi) are excellent at removing high-frequency error but stall on low-frequency error. Multigrid shifts the slow error to coarser grids where it becomes easier to remove.</p>
+      </div>
+
+      <h2>How GAMG Works</h2>
+      <ol>
+        <li><strong>Graph Construction:</strong> Builds a graph from the sparse matrix connectivity.</li>
+        <li><strong>Aggregation:</strong> Groups unknowns into "aggregates" to form coarser levels.</li>
+        <li><strong>Galerkin Product:</strong> Builds coarse operators recursively: $A_c = R A_f P$.</li>
+        <li><strong>Cycle Application:</strong> Uses V-cycles or W-cycles to propagate error corrections across levels.</li>
+      </ol>
+
+      <h2>Optimal Monolithic GAMG Settings</h2>
+      <p>For a monolithic FSI solver on 256 ranks, the following <code>CustomSolver</code> configuration is a robust starting point:</p>
+      <pre class="language-python"><code>petsc_options={
+    "pc_gamg_type": "agg",
+    "pc_gamg_repartition": "true",
+    "pc_gamg_process_eq_limit": "200",
+    "pc_gamg_coarse_eq_limit": "1000",
+    "pc_mg_cycle_type": "v",
+    "mg_levels_ksp_type": "richardson",
+    "mg_levels_pc_type": "jacobi",
+    "mg_coarse_pc_type": "lu"
+}</code></pre>
+
+      <div class="note">
+        <strong>Parallel Efficiency.</strong>
+        <p>At high rank counts (e.g., 256), `pc_gamg_repartition` is critical to avoid load imbalances on coarse levels where the number of active processes decreases.</p>
+      </div>
+
+      <h2>Tuning Strategy</h2>
+      <ul>
+        <li><strong>Outer Solver:</strong> Use <code>fgmres</code> if the multigrid cycle is variable or nonlinear.</li>
+        <li><strong>Hierarchy Construction:</strong> Adjust <code>pc_gamg_threshold</code> to filter weak couplings (but be careful in mixed systems).</li>
+        <li><strong>Coarse Grid:</strong> Keep the coarsest grid small enough for <code>lu</code> to be efficient but large enough to capture global modes.</li>
+      </ul>
+
+      <div class="warn">
+        <strong>Structural Aids.</strong>
+        <p>GAMG works best when provided with <code>MatSetBlockSize()</code> or a near-null space. These are not just tuning knobs but fundamental algebraic inputs.</p>
+      </div>
+
+      <h2>Summary</h2>
+      <ol>
+        <li>Monolithic <code>gamg</code> often beats FieldSplit for complex Jacobian couplings.</li>
+        <li>Coarse-grid parallelism is the most important tuning area on large clusters.</li>
+        <li>Always monitor <code>ksp_monitor_true_residual</code> to verify the stability of the hierarchy.</li>
+      </ol>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <div class="container small">
+    Deshik Reddy Putluru · <a href="../notes.html">All Notes</a>
+  </div>
+</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script>Prism.highlightAll();</script>
+</body>
+</html>

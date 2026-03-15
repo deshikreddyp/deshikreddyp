@@ -31,7 +31,7 @@
     <section class="section">
       <div class="kicker">Technical knowledge base</div>
       <h1>Notes</h1>
-      <p class="muted">Technical notes on computational fluid dynamics, numerical methods, finite element analysis, and scientific software — sorted by recent updates.</p>
+      <p class="muted">Technical notes on computational fluid dynamics, numerical methods, finite element analysis, and scientific software.</p>
     </section>
 
     <!-- Recently Updated -->
@@ -39,11 +39,24 @@
       <article class="card">
         <h2 style="color: var(--accent);">Recently Updated</h2>
         <ul class="list-clean">
-          <li><a href="notes/behind-cfd.html"><strong>Behind CFD</strong></a><br><span class="muted">SIMPLE and PISO algorithms, pressure-velocity coupling, matrix decomposition.</span></li>
-          <li><a href="notes/fluid-structure-interaction-ale.html"><strong>Fluid Structure Interaction — ALE</strong></a><br><span class="muted">ALE formulation, mesh motion, and monolithic/partitioned coupling strategies.</span></li>
-          <li><a href="notes/reference-values.html"><strong>Reference Values</strong></a><br><span class="muted">Common physical reference values used in non-dimensionalization and solver setups.</span></li>
-          <li><a href="notes/pressure.html"><strong>Pressure</strong></a><br><span class="muted">Definitions of static, dynamic, and total pressure in CFD and thermodynamics.</span></li>
-          <li><a href="notes/velocity-potential.html"><strong>Velocity Potential</strong></a><br><span class="muted">Mathematical framework for irrotational and potential flow fields.</span></li>
+          <li><a href="notes/the-generalized-minimal-residual-gmres-method.html"><strong>GMRES Method</strong></a><br><span class="muted">Krylov subspace methods, the GMRES algorithm, restart strategies, and preconditioning.</span></li>
+          <li><a href="notes/fsi-solver-notes-and-preconditioner-study.html"><strong>FSI Solver Notes &amp; Preconditioner Study</strong></a><br><span class="muted">Monolithic vs. partitioned solvers, preconditioning strategies, and convergence behavior.</span></li>
+          <li><a href="notes/petsc-fieldsplit-preconditioner-notes.html"><strong>PETSc FieldSplit Preconditioner</strong></a><br><span class="muted">Block-based preconditioning, Schur complements, and observed performance on 256 ranks.</span></li>
+          <li><a href="notes/petsc-gamg-preconditioner-notes.html"><strong>PETSc GAMG Preconditioner</strong></a><br><span class="muted">Algebraic Multigrid (AMG) theory, GAMG hierarchy, and tuning for monolithic solvers.</span></li>
+          <li><a href="notes/checkpoint-restart-in-legacy-fenics.html"><strong>Checkpoint &amp; Restart in Legacy FEniCS</strong></a><br><span class="muted">Best practices for transient simulations: XDMF/HDF5, naming consistency, and history storage.</span></li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- Fluid Structure Interaction -->
+    <section class="section">
+      <article class="card">
+        <h2>Fluid Structure Interaction</h2>
+        <ul class="list-clean">
+          <li><a href="notes/fsi-solver-notes-and-preconditioner-study.html"><strong>FSI Solver Notes &amp; Preconditioner Study</strong></a><br><span class="muted">Monolithic vs. partitioned solvers, preconditioning strategies, and convergence behavior.</span></li>
+          <li><a href="notes/petsc-fieldsplit-preconditioner-notes.html"><strong>PETSc FieldSplit Preconditioner</strong></a><br><span class="muted">Block-based preconditioning, Schur complements, and block factorization patterns.</span></li>
+          <li><a href="notes/petsc-gamg-preconditioner-notes.html"><strong>PETSc GAMG Preconditioner</strong></a><br><span class="muted">Algebraic Multigrid (AMG) theory for monolithic fluid-structure coupling.</span></li>
+          <li><a href="notes/fluid-structure-interaction-ale.html"><strong>Fluid Structure Interaction — ALE</strong></a><br><span class="muted">Arbitrary Lagrangian-Eulerian formulation, mesh motion, and coupling strategies.</span></li>
         </ul>
       </article>
     </section>
@@ -64,17 +77,10 @@
           <li><a href="notes/governing-equations.html"><strong>Governing Equations</strong></a><br><span class="muted">Navier-Stokes, continuity, energy, and species transport equations in their general forms.</span></li>
           <li><a href="notes/front-tracking-method.html"><strong>Front Tracking Method</strong></a><br><span class="muted">Interface capturing using explicit marker particles for multiphase flows.</span></li>
           <li><a href="notes/level-set-method.html"><strong>Level Set Method</strong></a><br><span class="muted">Implicit interface representation, reinitialization, and signed distance functions.</span></li>
-        </ul>
-      </article>
-    </section>
-
-    <!-- Fluid Structure Interaction -->
-    <section class="section">
-      <article class="card">
-        <h2>Fluid Structure Interaction</h2>
-        <ul class="list-clean">
-          <li><a href="notes/fluid-structure-interaction-ale.html"><strong>Fluid Structure Interaction — ALE</strong></a><br><span class="muted">Arbitrary Lagrangian-Eulerian formulation, mesh motion, and coupling strategies for FSI problems.</span></li>
-          <li><a href="notes/fsi-solver-notes-and-preconditioner-study.html"><strong>FSI Solver Notes &amp; Preconditioner Study</strong></a><br><span class="muted">Monolithic vs. partitioned solvers, preconditioning strategies, and convergence behavior.</span></li>
+          <li><a href="notes/pressure.html"><strong>Pressure</strong></a><br><span class="muted">Definitions of static, dynamic, and total pressure in CFD and thermodynamics.</span></li>
+          <li><a href="notes/velocity-potential.html"><strong>Velocity Potential</strong></a><br><span class="muted">Mathematical framework for irrotational and potential flow fields.</span></li>
+          <li><a href="notes/velocity-of-fluid.html"><strong>Velocity of Fluid</strong></a><br><span class="muted">Kinematics, vector fields, and Navier-Stokes abstractions.</span></li>
+          <li><a href="notes/temperature.html"><strong>Temperature</strong></a><br><span class="muted">Thermodynamic definitions and energy equation coupling.</span></li>
         </ul>
       </article>
     </section>
@@ -84,14 +90,14 @@
       <article class="card">
         <h2>Mathematical Foundations</h2>
         <ul class="list-clean">
+          <li><a href="notes/the-generalized-minimal-residual-gmres-method.html"><strong>GMRES Method</strong></a><br><span class="muted">Krylov subspace methods, the GMRES algorithm, restart strategies, and preconditioning.</span></li>
+          <li><a href="notes/thoughts-on-solving-system-of-linear-equations.html"><strong>Thoughts on Solving Systems of Linear Equations</strong></a><br><span class="muted">Direct vs. iterative solvers, conditioning, sparsity, and practical solver selection.</span></li>
           <li><a href="notes/classification-of-pdes.html"><strong>Classification of PDEs</strong></a><br><span class="muted">Elliptic, parabolic, and hyperbolic PDEs — classification, canonical forms, and examples.</span></li>
           <li><a href="notes/fundamentals-of-differential-equations.html"><strong>Fundamentals of Differential Equations</strong></a><br><span class="muted">ODEs and PDEs, existence and uniqueness, initial and boundary value problems.</span></li>
           <li><a href="notes/numerical-solution-of-parbolic-and-elliptic-differ.html"><strong>Numerical Solution of Parabolic &amp; Elliptic PDEs</strong></a><br><span class="muted">Finite difference and finite element schemes for heat equation, Laplace, and related problems.</span></li>
           <li><a href="notes/quadrature-rule-riemann-lebesgue-integration.html"><strong>Quadrature, Riemann &amp; Lebesgue Integration</strong></a><br><span class="muted">Gaussian quadrature, numerical integration schemes, and measure theory fundamentals.</span></li>
           <li><a href="notes/lagrange-multipliers.html"><strong>Lagrange Multipliers</strong></a><br><span class="muted">Constrained optimization and their role in enforcing incompressibility in FEM formulations.</span></li>
           <li><a href="notes/coleman-noll-procedure.html"><strong>Coleman-Noll Procedure</strong></a><br><span class="muted">Deriving constitutive relations consistent with the second law of thermodynamics.</span></li>
-          <li><a href="notes/thoughts-on-solving-system-of-linear-equations.html"><strong>Thoughts on Solving Systems of Linear Equations</strong></a><br><span class="muted">Direct vs. iterative solvers, conditioning, sparsity, and practical solver selection.</span></li>
-          <li><a href="notes/the-generalized-minimal-residual-gmres-method.html"><strong>GMRES Method</strong></a><br><span class="muted">Krylov subspace methods, the GMRES algorithm, restart strategies, and preconditioning.</span></li>
           <li><a href="notes/some-good-resources-on-newton-raphson-method.html"><strong>Newton-Raphson Method — Resources</strong></a><br><span class="muted">Newton's method for nonlinear systems, convergence, and references.</span></li>
         </ul>
       </article>
@@ -102,6 +108,7 @@
       <article class="card">
         <h2>Software &amp; Tools</h2>
         <ul class="list-clean">
+          <li><a href="notes/checkpoint-restart-in-legacy-fenics.html"><strong>Checkpoint &amp; Restart in Legacy FEniCS</strong></a><br><span class="muted">Best practices for transient simulations: XDMF/HDF5, naming consistency, and history storage.</span></li>
           <li><a href="notes/reference-values.html"><strong>Reference Values</strong></a><br><span class="muted">Common physical reference values used in non-dimensionalization and solver setups.</span></li>
           <li><a href="notes/latex-plug-in-for-inkscape.html"><strong>LaTeX Plug-in for Inkscape</strong></a><br><span class="muted">Rendering LaTeX equations inside Inkscape vector graphics for publication figures.</span></li>
           <li><a href="notes/fenics-interpolation-across-non-matching-meshes.html"><strong>FEniCS Interpolation Across Non-Matching Meshes</strong></a><br><span class="muted">Transferring fields between meshes in FEniCS/FEniCSx using interpolation utilities.</span></li>
