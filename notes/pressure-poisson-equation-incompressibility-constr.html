@@ -31,8 +31,8 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Pressure Poisson Equation</h1>
     <article class="article-body">
-      <p><strong>The Pressure Poisson Equation (PPE)</strong> is a powerful mathematical tool used in CFD to enforce the incompressibility constraint ($\nabla \cdot \mathbf{u} = 0$) in pressure-based solvers.</p>
-      
+      <p><strong>The Pressure Poisson Equation (PPE)</strong> is a mathematical tool used in CFD to enforce the incompressibility constraint ($\nabla \cdot \mathbf{u} = 0$) in pressure-based solvers.</p>
+
       <p>The derivation begins with the Navier-Stokes momentum equation for an incompressible fluid:</p>
       <div class="equation-container">
         $$\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} = -\frac{1}{\rho}\nabla p + \nu \nabla^2 \mathbf{u} + \mathbf{f}$$
@@ -43,39 +43,38 @@
         $$\nabla \cdot \left( \frac{\partial \mathbf{u}}{\partial t} \right) + \nabla \cdot ((\mathbf{u} \cdot \nabla) \mathbf{u}) = \nabla \cdot \left( -\frac{1}{\rho}\nabla p \right) + \nabla \cdot (\nu \nabla^2 \mathbf{u}) + \nabla \cdot \mathbf{f}$$
       </div>
 
-      <p>Using the properties of the divergence operator and the incompressibility constraint:</p>
+      <p>Using incompressibility and constant viscosity:</p>
       <ol>
-        <li>$\nabla \cdot (\frac{\partial \mathbf{u}}{\partial t}) = \frac{\partial}{\partial t}(\nabla \cdot \mathbf{u}) = 0$</li>
+        <li>$\nabla \cdot \left(\frac{\partial \mathbf{u}}{\partial t}\right) = \frac{\partial}{\partial t}(\nabla \cdot \mathbf{u}) = 0$</li>
         <li>$\nabla \cdot (\nu \nabla^2 \mathbf{u}) = \nu \nabla^2 (\nabla \cdot \mathbf{u}) = 0$</li>
       </ol>
 
-      <p>Substituting these into the equation, we arrive at the Pressure Poisson Equation:</p>
+      <p>So the PPE is:</p>
       <div class="equation-container">
         $$\frac{1}{\rho}\nabla^2 p = \nabla \cdot [\mathbf{f} - (\mathbf{u} \cdot \nabla)\mathbf{u}]$$
       </div>
 
-      <p>In many CFD codes (like OpenFOAM), the convective term is often expressed using the identity $\nabla \cdot (\mathbf{u}\mathbf{u}) = (\mathbf{u} \cdot \nabla)\mathbf{u} + \mathbf{u}(\nabla \cdot \mathbf{u})$, which simplifies to $\nabla \cdot (\mathbf{u}\mathbf{u})$ for incompressible flows.</p>
+      <p>In many CFD codes (e.g., OpenFOAM), the convective term is also written as $\nabla \cdot (\mathbf{u}\mathbf{u})$ using
+        $\nabla \cdot (\mathbf{u}\mathbf{u}) = (\mathbf{u} \cdot \nabla)\mathbf{u} + \mathbf{u}(\nabla \cdot \mathbf{u})$.</p>
 
       <hr>
 
-      <h3>Mathematical Foundation: Pressure as a Lagrange Multiplier</h3>
-      <p>The pressure field $p$ can be interpreted as a Lagrange multiplier that enforces the divergence-free constraint on the velocity field.</p>
+      <h3>Pressure as a Lagrange Multiplier</h3>
+      <p>The pressure field $p$ can be interpreted as a Lagrange multiplier that enforces the divergence-free constraint on velocity.</p>
 
       <h4>1. Stokes Flow</h4>
-      <p>For Stokes flow ($\rho \to 0$), the equation is the Euler-Lagrange equation for the minimization of the dissipation functional:</p>
+      <p>For creeping-flow conditions ($Re \ll 1$), inertial terms are negligible and the Stokes equations are recovered. In variational form, pressure appears as the multiplier associated with $\nabla \cdot \mathbf{u}=0$.</p>
       <div class="equation-container">
         $$\min_{\mathbf{u}} \left( \frac{1}{2} \int_\Omega \mu |\nabla \mathbf{u}|^2 \, d\Omega - \int_\Omega \mathbf{f} \cdot \mathbf{u} \, d\Omega \right)$$
       </div>
-      <p>subject to $\nabla \cdot \mathbf{u} = 0$. The pressure $p$ arises as the multiplier for this constraint.</p>
+      <p>subject to $\nabla \cdot \mathbf{u} = 0$.</p>
 
       <h4>2. Euler Equations</h4>
-      <p>In Arnold's interpretation, the Euler equations describe a geodesic flow on the group of volume-preserving diffeomorphisms. The pressure gradient $\nabla p$ is the force required to keep the particle paths on this manifold (i.e., to keep the flow incompressible).</p>
+      <p>In Arnold's interpretation, the Euler equations describe geodesic flow on the manifold of volume-preserving diffeomorphisms. The pressure gradient $\nabla p$ is the force that keeps trajectories on this incompressible manifold.</p>
 
       <div class="callout block-color-gray_background">
-        <p>💡 <strong>Note:</strong> In numerical implementations like the SIMPLE or PISO algorithms, a "pressure correction" equation is solved, which is a discretized form of the PPE. </p>
+        <p>💡 <strong>Note:</strong> In numerical implementations like SIMPLE or PISO, one solves a pressure-correction equation, which is a discretized form of the PPE.</p>
       </div>
-    </article>
-
     </article>
   </div>
 </main>
