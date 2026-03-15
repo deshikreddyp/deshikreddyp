@@ -44,6 +44,12 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">STL to BRep (stl2brep.py)</h1>
     <p class="small">Category: Meshing · Geometry Conversion · Python · GMSH/OCC</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
       <p>In CFD mesh generation, raw STL files often lack the topological information required for advanced boolean operations or conformal meshing. Converting these surface triangulations into a <strong>BRep (Boundary Representation)</strong> allows GMSH's OpenCascade kernel to treat each facet as a geometric entity.</p>

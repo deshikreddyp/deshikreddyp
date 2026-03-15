@@ -44,9 +44,15 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Reference Values</h1>
     <p class="small">Category: CFD · Post-Processing · Nondimensionalization · Industry Solvers</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
-      <p>In industry-standard solvers like <strong>Abaqus</strong>, <strong>Ansys Fluent</strong>, and <strong>OpenFOAM</strong>, "Reference Values" are characteristic quantities used for normalization, reporting nondimensional coefficients (like $C_d$ or $C_l$), and post-processing flux data.</p>
+      <p>In industry-standard solvers like <strong>Abaqus</strong> and <strong>Ansys Fluent</strong>, "Reference Values" are characteristic quantities used for normalization, reporting nondimensional coefficients (like $C_d$ or $C_l$), and post-processing flux data.</p>
 
       <div class="box">
         <strong>Nondimensionalization.</strong>

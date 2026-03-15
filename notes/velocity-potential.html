@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Velocity Potential | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,34 +43,39 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Velocity Potential</h1>
+    <p class="small">Category: Fluid Mechanics · Potential Flow · Irrotational Flow · Mathematics</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+
     <article class="article-body">
-      <p>In fluid dynamics, the <strong>Velocity Potential</strong> ($\phi$) is a scalar function used to describe irrotational flow. When a flow is irrotational, the velocity field $\mathbf{u}$ can be expressed as the gradient of this potential function.</p>
+      <p>In fluid dynamics, the <strong>Velocity Potential</strong> ($\phi$) is a scalar function used to describe <strong>irrotational flow</strong>. When a flow is irrotational, the velocity field $\mathbf{u}$ can be expressed as the gradient of this potential.</p>
 
-      <h3>Mathematical Definition</h3>
-      <p>For an irrotational flow, the vorticity $\omega = \nabla \times \mathbf{u} = 0$. This condition allows us to define $\phi$ such that:</p>
-      <div class="equation-container">
-        $$\mathbf{u} = \nabla \phi$$
-      </div>
-      <p>In Cartesian coordinates $(x, y, z)$, the velocity components are:</p>
-      <div class="equation-container">
-        $$u = \frac{\partial \phi}{\partial x}, \quad v = \frac{\partial \phi}{\partial y}, \quad w = \frac{\partial \phi}{\partial z}$$
+      <div class="box">
+        <strong>Mathematical Definition.</strong>
+        <p>For an irrotational flow, the vorticity $\omega = \nabla \times \mathbf{u} = 0$. This vector identity allows us to define $\phi$ such that:</p>
+        \[ \mathbf{u} = \nabla \phi \]
       </div>
 
-      <h3>Laplace's Equation</h3>
-      <p>For an <strong>incompressible</strong> and <strong>irrotational</strong> flow, the continuity equation ($\nabla \cdot \mathbf{u} = 0$) leads to Laplace's equation for the velocity potential:</p>
-      <div class="equation-container">
-        $$\nabla \cdot (\nabla \phi) = \nabla^2 \phi = 0$$
-      </div>
-      <p>This is a fundamental result in potential flow theory, allowing complex flow fields to be solved using techniques from linear partial differential equations.</p>
+      <h2>Laplace’s Equation</h2>
+      <p>For an <strong>incompressible</strong> ($\nabla \cdot \mathbf{u} = 0$) and irrotational flow, substituting the potential into the continuity equation leads to Laplace's equation:</p>
+      
+      \[ \nabla^2 \phi = 0 \]
+      
+      <p>This is the foundation of <strong>Potential Flow Theory</strong>, where complex flow fields can be constructed by superposition of simple linear solutions (sources, sinks, vortices).</p>
 
-      <h3>Relation to Bernoulli's Equation</h3>
-      <p>For steady, irrotational, incompressible flow, the Bernoulli equation can be written in terms of the velocity potential:</p>
-      <div class="equation-container">
-        $$\frac{\partial \phi}{\partial t} + \frac{1}{2}|\nabla \phi|^2 + \frac{p}{\rho} + gz = f(t)$$
+      <div class="note">
+        <strong>Bernoulli for Potential Flow.</strong>
+        <p>For unsteady, irrotational, incompressible flow, the Bernoulli equation integrates to:
+        \[ \frac{\partial \phi}{\partial t} + \frac{1}{2}|\nabla \phi|^2 + \frac{p}{\rho} + gz = f(t) \]</p>
       </div>
 
-      <div class="callout block-color-gray_background">
-        <p>💡 <strong>Note:</strong> While velocity potential is defined for irrotational flows in any number of dimensions, the <em>stream function</em> is typically only defined for 2D or axisymmetric flows.</p>
+      <div class="warn">
+        <strong>Irrotationality.</strong>
+        <p>Velocity potential <strong>only</strong> exists if the flow is irrotational. In regions with significant vorticity (like boundary layers or wake regions), the theory breaks down and the full Navier-Stokes equations must be used.</p>
       </div>
     </article>
   </div>

@@ -44,6 +44,12 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Static Pressure</h1>
     <p class="small">Category: Fluid Mechanics · Pressure · Navier-Stokes · Thermodynamics</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
       <p><strong>Static Pressure</strong> is the actual thermodynamic pressure of a fluid. It is the internal energy per unit volume, excluding kinetic energy, and represents the pressure felt by a sensor moving exactly with the fluid flow.</p>

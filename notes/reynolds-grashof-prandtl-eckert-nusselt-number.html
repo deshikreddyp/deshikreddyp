@@ -44,6 +44,12 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Dimensionless Numbers in Heat Transfer</h1>
     <p class="small">Category: Fluid Mechanics · Heat Transfer · Dimensionless Numbers · Scaling</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
       <p>Dimensionless numbers are key parameters that govern fluid flow and heat transfer. They arise naturally during the non-dimensionalization of governing equations and provide a way to compare the relative importance of competing physical effects.</p>

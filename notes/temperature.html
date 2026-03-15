@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Temperature | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,7 +43,39 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Temperature</h1>
+    <p class="small">Category: Fluid Mechanics · Thermodynamics · Heat Transfer</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+
     <article class="article-body">
+      <p>In fluid dynamics, <strong>Temperature</strong> ($T$) is a scalar field representing the average kinetic energy of the fluid molecules. It is a fundamental thermodynamic variable required to close the system of equations for compressible flows or buoyancy-driven incompressible flows.</p>
+
+      <h2>The Energy Equation</h2>
+      <p>The transport of temperature is governed by the conservation of energy. For an incompressible fluid with constant properties, the temperature equation is:</p>
+      
+      \[ \rho C_p \left( \frac{\partial T}{\partial t} + \mathbf{u} \cdot \nabla T \right) = k \nabla^2 T + \Phi + Q \]
+      
+      <p>where $k$ is thermal conductivity, $\Phi$ is the viscous dissipation function, and $Q$ represents internal heat sources.</p>
+
+      <div class="box">
+        <strong>Thermal Diffusivity ($\alpha$).</strong>
+        <p>The rate at which heat spreads through a material is given by:
+        \[ \alpha = \frac{k}{\rho C_p} \]</p>
+      </div>
+
+      <div class="note">
+        <strong>Coupling via Boussinesq.</strong>
+        <p>In natural convection, temperature changes induce density variations that drive the flow via the buoyancy term in the momentum equation:
+        \[ \mathbf{f}_{buoyancy} = -\rho_0 \beta (T - T_0) \mathbf{g} \]</p>
+      </div>
+
+      <div class="warn">
+        <strong>Viscous Dissipation.</strong>
+        <p>The term $\Phi$ represents the conversion of mechanical energy into heat due to viscosity. It is often negligible except in high-speed aerodynamic flows or extremely viscous fluids (like polymer melts).</p>
       </div>
     </article>
   </div>

@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pressure Poisson Equation | Incompressibility Constraint | Notes | Deshik Reddy Putluru</title>
+  <title>Pressure Poisson Equation | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError : false
-      });
-    });
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -43,50 +43,43 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Pressure Poisson Equation</h1>
+    <p class="small">Category: CFD · Navier-Stokes · Pressure Solver · Mathematical Theory</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+
     <article class="article-body">
-      <p><strong>The Pressure Poisson Equation (PPE)</strong> is a mathematical tool used in CFD to enforce the incompressibility constraint ($\nabla \cdot \mathbf{u} = 0$) in pressure-based solvers.</p>
+      <p>The <strong>Pressure Poisson Equation (PPE)</strong> is the mathematical mechanism used in CFD to enforce the incompressibility constraint ($\nabla \cdot \mathbf{u} = 0$) in pressure-based solvers.</p>
 
-      <p>The derivation begins with the Navier-Stokes momentum equation for an incompressible fluid:</p>
-      <div class="equation-container">
-        $$\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} = -\frac{1}{\rho}\nabla p + \nu \nabla^2 \mathbf{u} + \mathbf{f}$$
+      <h2>Derivation</h2>
+      <p>Starting with the incompressible Navier-Stokes momentum equation:</p>
+      \[ \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} = -\frac{1}{\rho}\nabla p + \nu \nabla^2 \mathbf{u} + \mathbf{f} \]
+      
+      <p>Taking the divergence ($\nabla \cdot$) of the entire equation and applying $\nabla \cdot \mathbf{u} = 0$, the time-derivative and viscous terms vanish, leaving:</p>
+      
+      \[ \frac{1}{\rho}\nabla^2 p = \nabla \cdot [\mathbf{f} - (\mathbf{u} \cdot \nabla)\mathbf{u}] \]
+
+      <div class="box">
+        <strong>Numerical Implementation.</strong>
+        <p>In algorithms like SIMPLE or PISO, a <em>Pressure Correction</em> equation is solved instead of the full PPE. This correction equation is essentially a discretized Poisson problem where the source term is the divergence of the intermediate velocity field.</p>
       </div>
 
-      <p>Taking the divergence ($\nabla \cdot$) of the entire equation:</p>
-      <div class="equation-container">
-        $$\nabla \cdot \left( \frac{\partial \mathbf{u}}{\partial t} \right) + \nabla \cdot ((\mathbf{u} \cdot \nabla) \mathbf{u}) = \nabla \cdot \left( -\frac{1}{\rho}\nabla p \right) + \nabla \cdot (\nu \nabla^2 \mathbf{u}) + \nabla \cdot \mathbf{f}$$
-      </div>
+      <h2>Theoretical Interpretation</h2>
+      <p>The pressure field can be viewed through several mathematical lenses:</p>
+      
+      <h3>1. Lagrange Multiplier</h3>
+      <p>In variational terms, pressure is the Lagrange multiplier that constrains the velocity field to the manifold of divergence-free functions. In Stokes flow:</p>
+      \[ \inf_{\mathbf{u}} \sup_{p} \left( \frac{1}{2} \int_\Omega \mu |\nabla \mathbf{u}|^2 \, d\Omega - \int_\Omega \mathbf{f} \cdot \mathbf{u} \, d\Omega - \int_\Omega p (\nabla \cdot \mathbf{u}) \, d\Omega \right) \]
 
-      <p>Using incompressibility and constant viscosity:</p>
-      <ol>
-        <li>$\nabla \cdot \left(\frac{\partial \mathbf{u}}{\partial t}\right) = \frac{\partial}{\partial t}(\nabla \cdot \mathbf{u}) = 0$</li>
-        <li>$\nabla \cdot (\nu \nabla^2 \mathbf{u}) = \nu \nabla^2 (\nabla \cdot \mathbf{u}) = 0$</li>
-      </ol>
+      <h3>2. Geodesic Projection</h3>
+      <p>According to Arnold's geometric interpretation, the pressure gradient is the force required to project the advective velocity onto the space of volume-preserving transformations.</p>
 
-      <p>So the PPE is:</p>
-      <div class="equation-container">
-        $$\frac{1}{\rho}\nabla^2 p = \nabla \cdot [\mathbf{f} - (\mathbf{u} \cdot \nabla)\mathbf{u}]$$
-      </div>
-
-      <p>In many CFD codes, the convective term is also written as $\nabla \cdot (\mathbf{u}\mathbf{u})$ using the identity:
-        $\nabla \cdot (\mathbf{u}\mathbf{u}) = (\mathbf{u} \cdot \nabla)\mathbf{u} + \mathbf{u}(\nabla \cdot \mathbf{u})$.</p>
-
-      <hr>
-
-      <h3>Pressure as a Lagrange Multiplier</h3>
-      <p>The pressure field $p$ can be interpreted as a Lagrange multiplier that enforces the divergence-free constraint on velocity.</p>
-
-      <h4>1. Stokes Flow</h4>
-      <p>For creeping-flow conditions ($Re \ll 1$), inertial terms are negligible and the Stokes equations are recovered. In variational form, pressure appears as the multiplier associated with $\nabla \cdot \mathbf{u}=0$.</p>
-      <div class="equation-container">
-        $$\min_{\mathbf{u}} \left( \frac{1}{2} \int_\Omega \mu |\nabla \mathbf{u}|^2 \, d\Omega - \int_\Omega \mathbf{f} \cdot \mathbf{u} \, d\Omega \right)$$
-      </div>
-      <p>subject to $\nabla \cdot \mathbf{u} = 0$.</p>
-
-      <h4>2. Euler Equations</h4>
-      <p>In Arnold's interpretation, the Euler equations describe geodesic flow on the manifold of volume-preserving diffeomorphisms. The pressure gradient $\nabla p$ is the force that keeps trajectories on this incompressible manifold.</p>
-
-      <div class="callout block-color-gray_background">
-        <p>💡 <strong>Note:</strong> In numerical implementations like SIMPLE or PISO, one solves a pressure-correction equation, which is a discretized form of the PPE.</p>
+      <div class="warn">
+        <strong>Boundary Conditions for PPE.</strong>
+        <p>Calculating proper BCs for the Poisson equation is subtle. Often, a Neumann condition $\frac{\partial p}{\partial n}$ is derived by projecting the momentum equation onto the boundary normal.</p>
       </div>
     </article>
   </div>

@@ -44,6 +44,12 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Numerical Solution of Parabolic & Elliptic PDEs</h1>
     <p class="small">Category: Numerical Methods · Heat Equation · Laplace Equation · FDM/FEM</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
       <p>The numerical treatment of parabolic (e.g., Heat Equation) and elliptic (e.g., Laplace Equation) PDEs typically involves systematic spatial discretization using Finite Difference (FDM) or Finite Element (FEM) methods.</p>

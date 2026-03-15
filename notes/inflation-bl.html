@@ -44,6 +44,12 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Inflation Boundary Layer Meshing</h1>
     <p class="small">Category: CFD · Meshing · Boundary Layer · RANS</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
       <p>When setting up cases for <strong>Reynolds Averaged Navier-Stokes (RANS)</strong> analysis, capturing the boundary layer accurately is critical. This is typically achieved by incorporating a "prism layer" or "inflation layer" along wall surfaces to resolve the steep velocity gradients in the near-wall region.</p>

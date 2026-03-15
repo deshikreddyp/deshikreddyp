@@ -31,7 +31,21 @@
     <section class="section">
       <div class="kicker">Technical knowledge base</div>
       <h1>Notes</h1>
-      <p class="muted">Technical notes on computational fluid dynamics, numerical methods, finite element analysis, and scientific software — compiled across coursework and research.</p>
+      <p class="muted">Technical notes on computational fluid dynamics, numerical methods, finite element analysis, and scientific software — sorted by recent updates.</p>
+    </section>
+
+    <!-- Recently Updated -->
+    <section class="section">
+      <article class="card">
+        <h2 style="color: var(--accent);">Recently Updated</h2>
+        <ul class="list-clean">
+          <li><a href="notes/behind-cfd.html"><strong>Behind CFD</strong></a><br><span class="muted">SIMPLE and PISO algorithms, pressure-velocity coupling, matrix decomposition.</span></li>
+          <li><a href="notes/fluid-structure-interaction-ale.html"><strong>Fluid Structure Interaction — ALE</strong></a><br><span class="muted">ALE formulation, mesh motion, and monolithic/partitioned coupling strategies.</span></li>
+          <li><a href="notes/reference-values.html"><strong>Reference Values</strong></a><br><span class="muted">Common physical reference values used in non-dimensionalization and solver setups.</span></li>
+          <li><a href="notes/pressure.html"><strong>Pressure</strong></a><br><span class="muted">Definitions of static, dynamic, and total pressure in CFD and thermodynamics.</span></li>
+          <li><a href="notes/velocity-potential.html"><strong>Velocity Potential</strong></a><br><span class="muted">Mathematical framework for irrotational and potential flow fields.</span></li>
+        </ul>
+      </article>
     </section>
 
     <!-- CFD & Computational Methods -->
@@ -39,17 +53,17 @@
       <article class="card">
         <h2>CFD &amp; Computational Methods</h2>
         <ul class="list-clean">
-          <li><a href="notes/behind-cfd.html"><strong>Behind CFD</strong></a><br><span class="muted">SIMPLE and PISO algorithms, pressure-velocity coupling, matrix decomposition of the momentum equation.</span></li>
-          <li><a href="notes/governing-equations.html"><strong>Governing Equations</strong></a><br><span class="muted">Navier-Stokes, continuity, energy, and species transport equations in their general forms.</span></li>
-          <li><a href="notes/variational-form-of-ns.html"><strong>Variational Form of NS</strong></a><br><span class="muted">Weak formulation of the Navier-Stokes equations and Galerkin discretization.</span></li>
+          <li><a href="notes/behind-cfd.html"><strong>Behind CFD</strong></a><br><span class="muted">SIMPLE and PISO algorithms, pressure-velocity coupling, matrix decomposition.</span></li>
           <li><a href="notes/pressure-poisson-equation-incompressibility-constr.html"><strong>Pressure Poisson Equation &amp; Incompressibility</strong></a><br><span class="muted">Derivation of the pressure Poisson equation from the incompressibility constraint.</span></li>
-          <li><a href="notes/flow-boundary-conditions.html"><strong>Flow Boundary Conditions</strong></a><br><span class="muted">Types of inflow, outflow, wall, and symmetry boundary conditions in CFD.</span></li>
+          <li><a href="notes/static-pressure.html"><strong>Static Pressure</strong></a><br><span class="muted">Role of static pressure in incompressible Navier-Stokes solvers.</span></li>
+          <li><a href="notes/volume-of-fluid-method-vof.html"><strong>Volume of Fluid Method (VoF)</strong></a><br><span class="muted">Phase fraction advection and interface reconstruction techniques.</span></li>
+          <li><a href="notes/reynolds-grashof-prandtl-eckert-nusselt-number.html"><strong>Dimensionless Numbers</strong></a><br><span class="muted">Reynolds, Grashof, Prandtl, Eckert, and Nusselt numbers — definitions and physical interpretation.</span></li>
           <li><a href="notes/boundary-layer-problem.html"><strong>Boundary Layer Problem</strong></a><br><span class="muted">Blasius solution, thickness definitions, and numerical treatment of boundary layers.</span></li>
           <li><a href="notes/what-is-boussinesq-approximation.html"><strong>Boussinesq Approximation</strong></a><br><span class="muted">Linearization of buoyancy-driven flows and when the approximation is valid.</span></li>
-          <li><a href="notes/reynolds-grashof-prandtl-eckert-nusselt-number.html"><strong>Dimensionless Numbers</strong></a><br><span class="muted">Reynolds, Grashof, Prandtl, Eckert, and Nusselt numbers — definitions and physical interpretation.</span></li>
+          <li><a href="notes/flow-boundary-conditions.html"><strong>Flow Boundary Conditions</strong></a><br><span class="muted">Types of inflow, outflow, wall, and symmetry boundary conditions in CFD.</span></li>
+          <li><a href="notes/governing-equations.html"><strong>Governing Equations</strong></a><br><span class="muted">Navier-Stokes, continuity, energy, and species transport equations in their general forms.</span></li>
           <li><a href="notes/front-tracking-method.html"><strong>Front Tracking Method</strong></a><br><span class="muted">Interface capturing using explicit marker particles for multiphase flows.</span></li>
           <li><a href="notes/level-set-method.html"><strong>Level Set Method</strong></a><br><span class="muted">Implicit interface representation, reinitialization, and signed distance functions.</span></li>
-          <li><a href="notes/volume-of-fluid-method-vof.html"><strong>Volume of Fluid Method (VoF)</strong></a><br><span class="muted">Phase fraction advection and interface reconstruction techniques.</span></li>
         </ul>
       </article>
     </section>
@@ -83,21 +97,20 @@
       </article>
     </section>
 
-
     <!-- Software & Tools -->
     <section class="section">
       <article class="card">
         <h2>Software &amp; Tools</h2>
         <ul class="list-clean">
-          <li><a href="notes/dealing-with-complex-geometries-in-cfd.html"><strong>Dealing with Complex Geometries in CFD</strong></a><br><span class="muted">STL files, GMSH, boundary marking, and mesh import workflows.</span></li>
-          <li><a href="notes/installing-gmsh-on-cluster.html"><strong>Installing GMSH on Cluster</strong></a><br><span class="muted">Step-by-step setup of GMSH on HPC systems without root access.</span></li>
-          <li><a href="notes/inflation-bl.html"><strong>Inflation Boundary Layer Meshing</strong></a><br><span class="muted">Generating inflation layers in GMSH for boundary layer resolution in CFD.</span></li>
-          <li><a href="notes/stl-to-brep-stl2brep-py.html"><strong>STL to BRep (stl2brep.py)</strong></a><br><span class="muted">Converting STL surface meshes to BRep (GMSH/OCC) for volume meshing.</span></li>
-          <li><a href="notes/markboundaries-py.html"><strong>mark_boundaries.py</strong></a><br><span class="muted">Tagging mesh boundaries programmatically for FEniCS and FEniCSx workflows.</span></li>
-          <li><a href="notes/ale-move.html"><strong>ALE Mesh Motion</strong></a><br><span class="muted">Moving mesh implementation and velocity field assignment for ALE simulations.</span></li>
-          <li><a href="notes/fenics-interpolation-across-non-matching-meshes.html"><strong>FEniCS Interpolation Across Non-Matching Meshes</strong></a><br><span class="muted">Transferring fields between meshes in FEniCS/FEniCSx using interpolation utilities.</span></li>
           <li><a href="notes/reference-values.html"><strong>Reference Values</strong></a><br><span class="muted">Common physical reference values used in non-dimensionalization and solver setups.</span></li>
           <li><a href="notes/latex-plug-in-for-inkscape.html"><strong>LaTeX Plug-in for Inkscape</strong></a><br><span class="muted">Rendering LaTeX equations inside Inkscape vector graphics for publication figures.</span></li>
+          <li><a href="notes/fenics-interpolation-across-non-matching-meshes.html"><strong>FEniCS Interpolation Across Non-Matching Meshes</strong></a><br><span class="muted">Transferring fields between meshes in FEniCS/FEniCSx using interpolation utilities.</span></li>
+          <li><a href="notes/ale-move.html"><strong>ALE Mesh Motion</strong></a><br><span class="muted">Moving mesh implementation and velocity field assignment for ALE simulations.</span></li>
+          <li><a href="notes/markboundaries-py.html"><strong>mark_boundaries.py</strong></a><br><span class="muted">Tagging mesh boundaries programmatically for FEniCS and FEniCSx workflows.</span></li>
+          <li><a href="notes/stl-to-brep-stl2brep-py.html"><strong>STL to BRep (stl2brep.py)</strong></a><br><span class="muted">Converting STL surface meshes to BRep (GMSH/OCC) for volume meshing.</span></li>
+          <li><a href="notes/inflation-bl.html"><strong>Inflation Boundary Layer Meshing</strong></a><br><span class="muted">Generating inflation layers in GMSH for boundary layer resolution in CFD.</span></li>
+          <li><a href="notes/installing-gmsh-on-cluster.html"><strong>Installing GMSH on Cluster</strong></a><br><span class="muted">Step-by-step setup of GMSH on HPC systems without root access.</span></li>
+          <li><a href="notes/dealing-with-complex-geometries-in-cfd.html"><strong>Dealing with Complex Geometries in CFD</strong></a><br><span class="muted">STL files, GMSH, boundary marking, and mesh import workflows.</span></li>
         </ul>
       </article>
     </section>

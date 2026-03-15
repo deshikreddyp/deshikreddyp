@@ -44,6 +44,12 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Installing GMSH on Cluster</h1>
     <p class="small">Category: HPC · GMSH · Cluster Installation · RCAC</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
       <p>Generating conformal meshes for complex geometries—such as those derived from PC MRI scans—can be extremely resource-intensive. A geometry with just 6,000 facets may require approximately 4 hours on a system with 32 GB of RAM. For high-resolution simulations, High-Performance Computing (HPC) clusters are essential.</p>

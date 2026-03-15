@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Velocity of Fluid | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,31 +43,40 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Velocity of Fluid</h1>
+    <p class="small">Category: Fluid Mechanics · Kinematics · Navier-Stokes · Vector Fields</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+
     <article class="article-body">
-      <p>In fluid mechanics, the <strong>Velocity Field</strong> is a vector field that describes the velocity of a fluid at a given point in space and time.</p>
+      <p>In fluid mechanics, the <strong>Velocity Field</strong> is a vector field that describes the motion of a fluid at a given point in space and time. It is the fundamental kinematic variable in the Navier-Stokes equations.</p>
 
-      <h3>Eulerian and Lagrangian Descriptions</h3>
-      <p>There are two primary ways to describe the motion of a fluid:</p>
-      <ul>
-        <li><strong>Eulerian Description:</strong> Focuses on specific locations in space through which the fluid flows. The velocity is expressed as $\mathbf{u}(\mathbf{x}, t)$, where $\mathbf{x}$ is a fixed coordinate.</li>
-        <li><strong>Lagrangian Description:</strong> Tracks the motion of individual fluid particles. The velocity of a specific particle $P$ is denoted as $\mathbf{u}_P(t)$.</li>
-      </ul>
-
-      <h3>Velocity Components</h3>
-      <p>The velocity vector $\mathbf{u}$ in Cartesian coordinates is typically represented by its components $(u, v, w)$ along the $(x, y, z)$ axes:</p>
-      <div class="equation-container">
-        $$\mathbf{u} = u\mathbf{i} + v\mathbf{j} + w\mathbf{k}$$
+      <h2>Descriptions of Motion</h2>
+      <p>There are two primary ways to mathematically characterize fluid motion:</p>
+      
+      <div class="box">
+        <strong>Eulerian vs. Lagrangian.</strong>
+        <ul>
+          <li><strong>Eulerian Description:</strong> Focuses on specific points in space. The velocity is $\mathbf{u}(\mathbf{x}, t)$, viewing the flow as it passes through a fixed control volume.</li>
+          <li><strong>Lagrangian Description:</strong> Tracks individual fluid particles. The velocity $\mathbf{u}_P(t)$ follows the material as it deforms and translates.</li>
+        </ul>
       </div>
 
-      <h3>Properties derived from Velocity</h3>
+      <h2>Properties Derived from Velocity</h2>
+      <p>The spatial derivatives of the velocity field reveal the local behavior of the fluid:</p>
+      
       <ul>
-        <li><strong>Vorticity ($\omega$):</strong> The curl of the velocity field, representing the local rotation of fluid elements: $\omega = \nabla \times \mathbf{u}$.</li>
-        <li><strong>Strain Rate Tensor ($S$):</strong> Describes the rate of deformation of the fluid: $S = \frac{1}{2}(\nabla \mathbf{u} + (\nabla \mathbf{u})^T)$.</li>
-        <li><strong>Divergence ($\nabla \cdot \mathbf{u}$):</strong> Represents the rate of expansion/compression of the fluid. For an incompressible fluid, $\nabla \cdot \mathbf{u} = 0$.</li>
+        <li><strong>Vorticity ($\omega$):</strong> The curl of the velocity, representing rotation: $\omega = \nabla \times \mathbf{u}$.</li>
+        <li><strong>Strain Rate ($S$):</strong> The symmetric part of the velocity gradient, representing deformation: $S = \frac{1}{2}(\nabla \mathbf{u} + (\nabla \mathbf{u})^T)$.</li>
+        <li><strong>Divergence ($\nabla \cdot \mathbf{u}$):</strong> Represents expansion. For incompressible fluids, $\nabla \cdot \mathbf{u} = 0$.</li>
       </ul>
 
-      <div class="callout block-color-gray_background">
-        <p>💡 <strong>Note:</strong> The velocity field is the primary variable solved for in the Navier-Stokes equations, alongside pressure.</p>
+      <div class="note">
+        <strong>Implementation Tip.</strong>
+        <p>In most CFD codes, the velocity field is stored at cell centers (Collocated grids) or on cell faces (Staggered grids). Staggered grids are often used to avoid the checkerboard pressure-velocity decoupling issue.</p>
       </div>
     </article>
   </div>

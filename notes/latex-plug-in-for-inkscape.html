@@ -44,6 +44,12 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">LaTeX Plug-in for Inkscape</h1>
     <p class="small">Category: Scientific Illustration · LaTeX · Vector Graphics · Inkscape</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
 
     <article class="article-body">
       <p>For scientific publications, it is often necessary to render LaTeX equations directly inside <strong>Inkscape</strong> vector graphics. This ensures that labels, axes, and annotations match the font and style of the main document exactly.</p>

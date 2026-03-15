@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Behind CFD | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,8 +43,57 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Behind CFD</h1>
+    <p class="small">Category: CFD · Numerical Algorithms · Pressure-Velocity Coupling · SIMPLE/PISO</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+
     <article class="article-body">
-      <figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">The mathematical complexity of convection heat transfer is traced to the non-linearity of the Navier-Stokes equations of motion and the coupling of flow and thermal fields.</div></figure><p><strong>Difficulties: </strong>Non-linearity in solving equations and pressure gradient.</p><p>The convective term in the momentum equation <span class="notion-text-equation-token"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>U</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">∇</mi><mo stretchy="false">)</mo><mi>U</mi></mrow><annotation encoding="application/x-tex">(U.\nabla)U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mord">.∇</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span></span></span> is non-linear.</p></div><p>The pressure gradient behaves like a source term for momentum Eqn. For a specified pressure field, there is no difficulty in solving momentum Eqn. The challenging task is to determine the pressure field.</p></div><p>The pressure field is indirectly linked with continuity Eqn. </p></div><p class=" note-highlight">When right/correct pressure field is plugged into the momentum Eqn, the resulting velocity field should satisfy the continuity Eqn.</p><p>We need to get any algorithms to solve this.,</p><ol type="1" class="numbered-list" start="1"><li>SIMPLE</li></ol><ol type="1" class="numbered-list" start="2"><li>PISO are the most commonly used ones.</li></ol><p><strong>SIMPLE:</strong></p><ol type="1" class="numbered-list" start="1"><li>Derive equation for pressure from the momentum and continuity equations.</li></ol><ol type="1" class="numbered-list" start="2"><li>Derive a corrector for the velocity field, so that it satisfies the continuity equation.</li></ol><h2>Deriving the equations</h2><h3>Matrix Decomposition</h3><p>The first stage is to express the momentum equations in the general matrix form: </p><p><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>U</mi><mo>=</mo><mo>−</mo><mi mathvariant="normal">∇</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">MU = -\nabla p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord">−</span><span class="mord">∇</span><span class="mord mathnormal">p</span></span></span></span></span></span> </p><p>M is the matrix of coefficients for a given set of system, by discretizing the terms in the equation. The coefficients all known.</p><p class=" note-highlight">M is derived from decomposing the momentum equation, using FEM, FDM or FVM methods</p><ol type="1" class="numbered-list" start="1"><li>Solve the momentum equation for the velocity field. This velocity field does not satisfy the continuity equation.</li></ol><figure class="equation"><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>M</mi><mi>U</mi><mo>=</mo><mo>−</mo><mi mathvariant="normal">∇</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">MU = -\nabla p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord">−</span><span class="mord">∇</span><span class="mord mathnormal">p</span></span></span></span></span></figure><ol type="1" class="numbered-list" start="2"><li>Solve the Poisson equation for the pressure field. </li></ol><figure class="equation"><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="normal">∇</mi><mi mathvariant="normal">.</mi><mo stretchy="false">(</mo><msup><mi>A</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi mathvariant="normal">∇</mi><mi>p</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">∇</mi><mi mathvariant="normal">.</mi><mo stretchy="false">(</mo><msup><mi>A</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>H</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\nabla .(A^{-1}\nabla p) = \nabla .(A^{-1}H)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1141em;vertical-align:-0.25em;"></span><span class="mord">∇.</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mord">∇</span><span class="mord mathnormal">p</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1141em;vertical-align:-0.25em;"></span><span class="mord">∇.</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mclose">)</span></span></span></span></span></figure><ol type="1" class="numbered-list" start="3"><li>Use the pressure field to correct the velocity field so that it satisfies the continuity equation.</li></ol><figure class="equation"><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>U</mi><mo>=</mo><msup><mi>A</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>H</mi><mo>−</mo><msup><mi>A</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi mathvariant="normal">∇</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">U = A^{-1}H-A^{-1}\nabla p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.9474em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0585em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mord">∇</span><span class="mord mathnormal">p</span></span></span></span></span></figure><ol type="1" class="numbered-list" start="4"><li>The velocity field now does not satisfy the momentum equations. </li></ol><ol type="1" class="numbered-list" start="5"><li>Repeat the process (iterations)</li></ol><p class=" note-highlight">The SIMPLE algorithm is  a ‘pressure based’ algorithm, as we solve a Poisson equation for pressure.</p>
+      <div class="box">
+        <strong>The Fundamental Challenge.</strong>
+        <p>The mathematical complexity of computational fluid dynamics (CFD) stems primarily from two sources:</p>
+        <ol>
+          <li><strong>Non-linearity:</strong> The convective term $(\mathbf{u} \cdot \nabla)\mathbf{u}$ in the momentum equation is non-linear.</li>
+          <li><strong>Pressure-Velocity Coupling:</strong> There is no explicit transport equation for pressure in the incompressible Navier-Stokes equations.</li>
+        </ol>
+      </div>
+
+      <h2>The Role of Pressure</h2>
+      <p>The pressure gradient acts as a source term in the momentum equation. While solving for velocity is straightforward if the pressure field is known, the actual challenge is finding a pressure field that simultaneously satisfies both momentum and continuity ($\nabla \cdot \mathbf{u} = 0$).</p>
+
+      <div class="note">
+        <strong>Implicit Link.</strong>
+        <p>When the <em>correct</em> pressure field is used in the momentum equation, the resulting velocity field automatically satisfies the continuity constraint.</p>
+      </div>
+
+      <h2>Algorithms: SIMPLE & PISO</h2>
+      <p>These are "pressure-based" algorithms that solve this coupling iteratively:</p>
+      
+      <h3>The SIMPLE Algorithm</h3>
+      <ol>
+        <li><strong>Predictor Step:</strong> Solve discretized momentum equations with an estimated pressure field to get an intermediate velocity field $\mathbf{u}^*$.</li>
+        <li><strong>Pressure Poisson:</strong> Derive and solve an equation for pressure (or pressure correction) based on the continuity equation.</li>
+        <li><strong>Corrector Step:</strong> Correct the velocity field using the new pressure field:
+          \[ \mathbf{u} = \mathbf{u}^* - A^{-1} \nabla p' \]
+        </li>
+        <li><strong>Iterate:</strong> Repeat until the residuals of both momentum and continuity are below the tolerance.</li>
+      </ol>
+
+      <h2>Mathematical Framework: Matrix Decomposition</h2>
+      <p>In discretized form (FVM or FEM), the momentum system is often expressed as:</p>
+      \[ \mathbf{M} \mathbf{U} = -\nabla p \]
+      <p>where $\mathbf{M}$ is the coefficient matrix. Solving this requires decomposing the matrix into diagonal ($\mathbf{A}$) and off-diagonal ($\mathbf{H}$) parts to facilitate the pressure-correction step:
+      \[ \mathbf{A} \mathbf{U} = \mathbf{H} - \nabla p \]
+      leading to the correction form:
+      \[ \mathbf{U} = \mathbf{A}^{-1}\mathbf{H} - \mathbf{A}^{-1}\nabla p \]</p>
+
+      <div class="warn">
+        <strong>Checkerboard Problem.</strong>
+        <p>On collocated grids, a simple central difference for the pressure gradient can lead to unphysical pressure oscillations. This is resolved using <strong>Rhie-Chow interpolation</strong>, which adds a fourth-order smoothing term to the face flux calculation.</p>
+      </div>
     </article>
   </div>
 </main>
