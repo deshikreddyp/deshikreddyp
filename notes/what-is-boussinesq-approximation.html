@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>What is Boussinesq Approximation? | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,31 +43,41 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">What is Boussinesq Approximation?</h1>
+    <p class="small">Category: Fluid Mechanics · Heat Transfer · Buoyancy · Approximations</p>
+
     <article class="article-body">
-      <p>The <strong>Boussinesq Approximation</strong> is a simplified model used for natural convection flows where density variations are small. The core assumption is that density changes are neglected except in the buoyancy term of the momentum equation.</p>
+      <p>The <strong>Boussinesq Approximation</strong> is a simplified model used for natural convection flows where density variations are small. The core idea is that density changes can be neglected everywhere except in the buoyancy term of the momentum equation.</p>
 
-      <h3>Core Assumptions</h3>
-      <ul>
-        <li>Density is treated as constant ($\rho_0$) in the continuity equation and the inertia terms.</li>
-        <li>Density is allowed to vary with temperature only in the gravity (buoyancy) term.</li>
-        <li>The relationship between density and temperature is assumed to be linear:</li>
-      </ul>
-
-      <div class="equation-container">
-        $$\rho \approx \rho_0 [1 - \beta (T - T_0)]$$
+      <div class="box">
+        <strong>Core Assumptions.</strong>
+        <ul>
+          <li>Density is treated as constant ($\rho_0$) in the continuity equation and the inertia terms.</li>
+          <li>Density varies linearly with temperature <strong>only</strong> in the gravity term:
+            \[ \rho \approx \rho_0 [1 - \beta (T - T_0)] \]
+          </li>
+          <li>$\beta$ is the thermal expansion coefficient.</li>
+        </ul>
       </div>
 
-      <p>where $\beta$ is the thermal expansion coefficient, $T_0$ is the reference temperature, and $\rho_0$ is the density at $T_0$.</p>
-
-      <h3>Modified Momentum Equation</h3>
-      <p>Substituting this into the Navier-Stokes momentum equation:</p>
-      <div class="equation-container">
-        $$\rho_0 \left( \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} \right) = -\nabla (p + \rho_0 g z) + \mu \nabla^2 \mathbf{u} - \rho_0 \beta (T - T_0) \mathbf{g}$$
-      </div>
-
-      <p>This approximation significantly simplifies the numerical solution as it avoids solving a fully compressible system of equations while still capturing the physics of buoyancy-driven flows.</p>
+      <h2>Modified Momentum Equation</h2>
+      <p>Substituting the linear density relation into the Navier-Stokes momentum equation yields:</p>
       
-      <p><em>Source: Latif Jiji "Convective Heat Transfer"</em></p>
+      \[ \rho_0 \left( \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} \right) = -\nabla (p + \rho_0 g z) + \mu \nabla^2 \mathbf{u} - \rho_0 \beta (T - T_0) \mathbf{g} \]
+
+      <div class="note">
+        <strong>Numerical Advantage.</strong>
+        <p>This approximation allows us to solve a system that is mathematically "incompressible" (divergence-free velocity) while still capturing the driving physics of buoyancy-driven flows. This is much more stable than solving the full compressible equations for low-speed natural convection.</p>
+      </div>
+
+      <div class="warn">
+        <strong>Validity.</strong>
+        <p>The approximation is valid when the temperature differences are small enough such that $\beta \Delta T \ll 1$. For gases, this typically holds if the temperature variation is less than 10% of the absolute temperature.</p>
+      </div>
+
+      <div class="note">
+        <strong>Source.</strong>
+        <p>Latif Jiji, <em>"Convective Heat Transfer"</em></p>
+      </div>
     </article>
   </div>
 </main>
@@ -67,20 +90,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Volume of fluid method (VoF) | Notes | Deshik Reddy Putluru</title>
+  <title>Volume of Fluid (VOF) Method | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -29,12 +42,48 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Volume of fluid method (VoF)</h1>
+    <h1 class="page-title">Volume of Fluid (VOF) Method</h1>
+    <p class="small">Category: CFD · Multiphase Flow · Interface Tracking · VOF</p>
+
     <article class="article-body">
-      <p><strong>Credits: </strong></p>
-      <p>Heat Transfer in Aerospace Applications<br/>ISBN 978-0-12-809760-1<br/><a href="http://dx.doi.org/10.1016/B978-0-12-809760-1.00005-3">http://dx.doi.org/10.1016/B978-0-12-809760-1.00005-3</a></p>
+      <p>The <strong>Volume of Fluid (VOF)</strong> method is a numerical technique for tracking and locating the free surface (or fluid-fluid interface) in multiphase flow simulations. It belongs to the class of <strong>Eulerian interface-capturing</strong> methods.</p>
+
+      <div class="box">
+        <strong>The Scalar Function ($\alpha$).</strong>
+        <p>A scalar field $\alpha$ (volume fraction) is defined in each cell:</p>
+        <ul>
+          <li>$\alpha = 1$: Cell is full of fluid 1.</li>
+          <li>$\alpha = 0$: Cell is full of fluid 2.</li>
+          <li>$0 < \alpha < 1$: Cell contains the interface.</li>
+        </ul>
+      </div>
+
+      <h2>Governing Equations</h2>
+      <p>The transport of the interface is governed by a passive advection equation:</p>
+      \[ \frac{\partial \alpha}{\partial t} + \nabla \cdot (\mathbf{u} \alpha) = 0 \]
       
-      <p>Source notes: <a href="https://share.goodnotes.com/s/9LDPhT7L0oFQY0u1Huehub">GoodNotes Link</a></p>
+      <p>In the VOF method, a single set of momentum equations is shared by the fluids. The physical properties (density and viscosity) are determined by the volume fraction:</p>
+      \[ \rho = \alpha \rho_1 + (1-\alpha) \rho_2 \]
+      \[ \mu = \alpha \mu_1 + (1-\alpha) \mu_2 \]
+
+      <div class="warn">
+        <strong>Numerical Diffusion.</strong>
+        <p>Standard advection schemes tend to smear the interface over several cells. To maintain a sharp interface, specialized schemes like <strong>MULES</strong> (Multidimensional Universal Limiter with Explicit Solution) or <strong>Geometric Reconstruction</strong> (PLIC) are required.</p>
+      </div>
+
+      <div class="note">
+        <strong>Surface Tension.</strong>
+        <p>Surface tension forces are typically modeled using the <strong>Continuum Surface Force (CSF)</strong> model, where the surface force is converted into a volumetric body force acting on cells in the interface region.</p>
+      </div>
+
+      <div class="note">
+        <strong>References.</strong>
+        <ul>
+          <li><em>Heat Transfer in Aerospace Applications</em>, ISBN 978-0-12-809760-1.</li>
+          <li><a href="http://dx.doi.org/10.1016/B978-0-12-809760-1.00005-3">DOI: 10.1016/B978-0-12-809760-1.00005-3</a></li>
+          <li><a href="https://share.goodnotes.com/s/9LDPhT7L0oFQY0u1Huehub">Source Notes (GoodNotes)</a></li>
+        </ul>
+      </div>
     </article>
   </div>
 </main>
@@ -47,20 +96,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

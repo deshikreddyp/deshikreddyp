@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Coleman Noll procedure | Notes | Deshik Reddy Putluru</title>
+  <title>Coleman-Noll Procedure | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -29,18 +42,25 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Coleman Noll procedure</h1>
+    <h1 class="page-title">Coleman-Noll Procedure</h1>
+    <p class="small">Category: Continuum Mechanics · Thermodynamics · Constitutive Theory</p>
+
     <article class="article-body">
-      <p>The Coleman-Noll procedure is a systematic method for deriving constitutive relations that are guaranteed to be consistent with the <strong>Second Law of Thermodynamics</strong> (Clausius-Duhem inequality).</p>
+      <p>The Coleman-Noll procedure is a systematic method for deriving constitutive relations that are guaranteed to be consistent with the <strong>Second Law of Thermodynamics</strong>, specifically the Clausius-Duhem inequality.</p>
 
-      <h3>Core Axioms</h3>
-      <p>The procedure relies on the assumption that the constitutive Equations must satisfy the entropy inequality for <em>all</em> possible thermodynamic processes.</p>
+      <h2>Core Axioms</h2>
+      <p>The procedure relies on the "Entropy Principle": constitutive equations must satisfy the entropy inequality for <em>all</em> possible thermodynamic processes compatible with the balance laws.</p>
 
-      <div class="callout block-color-yellow_background">
-        <div>🚧</div>
-        <div style="width:100%">
-          <strong>Work in Progress:</strong> I am currently drafting the steps for deriving the stress-strain relationship for a linearly elastic material using this procedure.
-        </div>
+      <div class="box">
+        <strong>The Clausius-Duhem Inequality.</strong>
+        <p>In its local form, the inequality states:
+        \[ -\rho(\dot{\psi} + \eta \dot{T}) + \mathbf{T} : \mathbf{D} - \frac{1}{T} \mathbf{q} \cdot \nabla T \ge 0 \]
+        where $\psi$ is Helmholtz free energy, $\eta$ is entropy, and $\mathbf{T}$ is the Cauchy stress tensor.</p>
+      </div>
+
+      <div class="note">
+        <strong>Constitutive Constraints.</strong>
+        <p>By treating the chosen state variables (e.g., deformation gradient, temperature) as arbitrary fields, the Coleman-Noll procedure allows us to "read off" the thermodynamic restrictions on the stress, entropy, and heat flux functions.</p>
       </div>
     </article>
   </div>
@@ -54,20 +74,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

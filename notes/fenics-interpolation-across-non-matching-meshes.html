@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FEniCS: Interpolation across non-matching meshes | Notes | Deshik Reddy Putluru</title>
+  <title>Interpolation Across Non-Matching Meshes | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError : false
-      });
-    });
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -42,51 +42,51 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">FEniCS: Interpolation across non-matching meshes</h1>
-    <article class="article-body">
-      <h3>Interpolation Across Non-Matching Meshes</h3>
-      <p>In multi-stage simulations or when switching from a coarse to a fine mesh, transferring solution fields is essential. This process, often called <strong>regridding</strong>, allows you to interpolate data from a source mesh to a target mesh that does not share the same topology.</p>
+    <h1 class="page-title">Interpolation Across Non-Matching Meshes</h1>
+    <p class="small">Category: FEniCS · Python · Interpolation · HPC</p>
 
-      <div class="callout block-color-blue_background">
-        <p>💡 <strong>Key Components:</strong></p>
+    <article class="article-body">
+      <p>In multi-stage simulations or when switching from a coarse to a fine mesh, transferring solution fields is essential. This process, often called <strong>regridding</strong>, allows for the interpolation of data from a source mesh to a target mesh that does not share the same topology.</p>
+
+      <div class="box">
+        <strong>Key Components.</strong>
         <ul>
-          <li><strong>LagrangeInterpolator:</strong> The core FEniCS tool for high-performance interpolation between different meshes.</li>
-          <li><strong>Extrapolation:</strong> Enabling <code>set_allow_extrapolation(True)</code> handles points near the boundaries that might fall slightly outside the source domain due to numerical tolerances.</li>
-          <li><strong>HDF5 Snapshots:</strong> Efficient storage and retrieval of time-series data for batch processing.</li>
+          <li><strong>LagrangeInterpolator:</strong> The optimized FEniCS tool for interpolation between arbitrary meshes.</li>
+          <li><strong>Extrapolation:</strong> Enabling <code>set_allow_extrapolation(True)</code> is often necessary to handle points near boundaries that might fall slightly outside the source domain due to numerical tolerances.</li>
+          <li><strong>HDF5 I/O:</strong> High-performance storage is critical for handling large time-series data during batch regridding.</li>
         </ul>
       </div>
 
-      <h4>Implementation Workflow</h4>
-      <pre class="code-wrap language-python"><code class="language-python">from dolfin import *
-import os
+      <h2>Implementation Workflow</h2>
+      <pre class="language-python"><code>from dolfin import *
 
-# 1. Load Meshes
-src_mesh = Mesh()
-hdf_src = HDF5File(MPI.comm_world, "source.h5", "r")
-hdf_src.read(src_mesh, "/mesh", False)
-
-tgt_mesh = Mesh()
-hdf_tgt = HDF5File(MPI.comm_world, "target.h5", "r")
-hdf_tgt.read(tgt_mesh, "/mesh", False)
+# 1. Load Source and Target
+src_mesh, tgt_mesh = Mesh(), Mesh()
+# ... Read meshes from HDF5 ...
 
 # 2. Define Function Spaces
 V_src = VectorFunctionSpace(src_mesh, "CG", 1)
 V_tgt = VectorFunctionSpace(tgt_mesh, "CG", 1)
 
-# 3. Buffers and Interpolation
+# 3. Transfer Data
 u_src = Function(V_src)
 u_src.set_allow_extrapolation(True)
 u_tgt = Function(V_tgt)
 
-# Batch processing snapshots
-snap_h5 = HDF5File(MPI.comm_world, "snapshots.h5", "r")
-for i in range(64):  # Example: 64 snapshots
-    snap_h5.read(u_src, f"/displacement/{i}")
+# Batch process snapshots
+for i in range(n_snaps):
+    # ... Load u_src data ...
     LagrangeInterpolator.interpolate(u_tgt, u_src)
-    # Save u_tgt to new file...</code></pre>
+    # ... Store u_tgt data ...</code></pre>
 
-      <div class="callout block-color-orange_background">
-        <p>⚠️ <strong>Precision:</strong> While interpolation preserves the mathematical form, mapping a high-order solution to a coarser mesh will result in loss of detail. Always verify energy or mass conservation after regridding.</p>
+      <div class="warn">
+        <strong>Resolution Loss.</strong>
+        <p>Interpolation preserves the mathematical form but mapping a high-order or high-resolution solution to a coarser mesh results in a loss of spectral detail. Always verify conservation laws (e.g., mass balance) after the transfer.</p>
+      </div>
+
+      <div class="note">
+        <strong>HPC Considerations.</strong>
+        <p>For large meshes, <code>LagrangeInterpolator</code> uses sophisticated point-search algorithms. In a parallel MPI environment, ensure the search trees are properly synchronized to avoid segmentation faults.</p>
       </div>
     </article>
   </div>

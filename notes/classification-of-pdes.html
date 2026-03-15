@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Classification of PDEs | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,25 +43,24 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Classification of PDEs</h1>
+    <p class="small">Category: Numerical Analysis · Mathematical Physics · PDE Theory</p>
+
     <article class="article-body">
       <p>To solve PDEs, you need to "get the feeling" of the equations. Beyond the standard classifications (linear vs. nonlinear, homogeneous vs. non-homogeneous), there is a much richer classification based on <strong>characteristics</strong>.</p>
       
-      <h3>Linearity and Homogeneity</h3>
+      <h2>Linearity and Homogeneity</h2>
       <p>Nonlinear PDEs are usually solved by linearizing them or using Newton-Raphson methods. In a computational sense, solving a nonlinear PDE often just means adding an outer iteration loop. Homogeneous and non-homogeneous equations are structurally similar, so we often focus on the more general non-homogeneous case.</p>
 
-      <h3>Physical Context</h3>
+      <h2>Physical Context</h2>
       <p>We typically distinguish between <strong>Boundary Value Problems (BVP)</strong> and <strong>Initial Value Problems (IVP)</strong> (time evolution). Many physical problems are a mix of both. The reason time is treated as a unique dimension in PDEs is its "one-way" nature; information propagates forward in time, which dictates the choice of numerical schemes (marching vs. steady-state solvers).</p>
 
-      <h3>Second-Order Linear PDEs</h3>
+      <h2>Second-Order Linear PDEs</h2>
       <p>Most governing equations in physics (Heat, Wave, Laplace) are second-order linear PDEs. They are classified into <strong>Elliptic</strong>, <strong>Parabolic</strong>, and <strong>Hyperbolic</strong> based on the sign of the discriminant of their coefficients.</p>
 
-      <div class="callout block-color-yellow_background">
-        <div>🚧</div>
-        <div style="width:100%">
-          <strong>Work in Progress:</strong> I am currently expanding this section with canonical forms and specific examples for each type.
-        </div>
+      <div class="note">
+        <strong>Theory of Characteristics.</strong>
+        <p>This classification determines how information propagates. Hyperbolic equations (wave) have finite propagation speeds, while Elliptic equations (Laplace) propagate information instantaneously across the whole domain.</p>
       </div>
-    </article>
     </article>
   </div>
 </main>
@@ -61,20 +73,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

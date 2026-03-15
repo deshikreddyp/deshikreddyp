@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reference Values | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError : false
-      });
-    });
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -43,27 +43,33 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Reference Values</h1>
-    <article class="article-body">
-      <h3>Normalization and Characteristic Quantities</h3>
-      <p>In simulation software like <strong>Abaqus</strong>, <strong>Ansys</strong>, and <strong>OpenFOAM</strong>, "Reference Values" are characteristic quantities used for normalization, reporting nondimensional coefficients (like $C_d$ or $C_l$), and post-processing.</p>
+    <p class="small">Category: CFD · Post-Processing · Nondimensionalization · Industry Solvers</p>
 
-      <div class="callout block-color-blue_background">
-        <p>💡 <strong>Nondimensionalization:</strong> Problems are frequently scaled to characteristic values to allow for comparison across different scales. Typical reference data include free-stream velocity ($U_\infty$), characteristic length ($L$), area ($A$), and density ($\rho$).</p>
+    <article class="article-body">
+      <p>In industry-standard solvers like <strong>Abaqus</strong>, <strong>Ansys Fluent</strong>, and <strong>OpenFOAM</strong>, "Reference Values" are characteristic quantities used for normalization, reporting nondimensional coefficients (like $C_d$ or $C_l$), and post-processing flux data.</p>
+
+      <div class="box">
+        <strong>Nondimensionalization.</strong>
+        <p>Physical problems are frequently scaled to characteristic values to allow for easier comparison across different Reynolds numbers or scales. Typical reference data include free-stream velocity ($U_\infty$), characteristic length ($L$), area ($A$), and density ($\rho$).</p>
       </div>
 
-      <h4>Industry Standard: Ansys Fluent</h4>
-      <p>In Fluent, reference values computed from a boundary zone or entered manually include:</p>
+      <h2>Industry Standard: Ansys Fluent</h2>
+      <p>In Fluent, the "Reference Values" task page allows you to specify quantities that populate equations for:</p>
       <ul>
-        <li><strong>Density and Velocity:</strong> Typically taken from the inlet or far-field.</li>
-        <li><strong>Area and Length:</strong> Used for computing force coefficients ($C_d = \frac{F_d}{\frac{1}{2}\rho U^2 A}$).</li>
-        <li><strong>Dynamic Viscosity:</strong> Used for Reynolds number calculation.</li>
+        <li><strong>Force Coefficients:</strong> $C_d = \frac{F_d}{\frac{1}{2}\rho U^2 A}$.</li>
+        <li><strong>Torque Coefficients:</strong> $C_m = \frac{M}{\frac{1}{2}\rho U^2 A L}$.</li>
+        <li><strong>Flow Rates:</strong> Normalizing mass flow relative to a reference density.</li>
       </ul>
 
-      <div class="callout block-color-orange_background">
-        <p>⚠️ <strong>2D Simulations:</strong> For 2D cases, the <strong>Depth</strong> (spanwise thickness) must be specified correctly to report accurate force magnitudes. Default depth is usually $1.0$.</p>
+      <div class="warn">
+        <strong>2D Simulations.</strong>
+        <p>For 2D simulations, the <strong>Depth</strong> (spanwise thickness) is a critical reference value. If the depth is left as the default $1.0$, force magnitudes ($N$) will be reported "per meter depth." Ensure this matches your physical problem to get correct force values.</p>
       </div>
 
-      <p>If using the <em>"Compute From"</em> option, Fluent only populates values derived from that boundary condition. Geometric values like <em>Reference Length</em> and <em>Area</em> almost always require manual entry.</p>
+      <div class="note">
+        <strong>Compute From...</strong>
+        <p>While the "Compute From [Inlet]" button is convenient, it only populates values derived from that boundary condition (e.g., velocity, density). Geometric values like <em>Reference Area</em> or <em>Length</em> must almost always be entered manually based on your model's project area.</p>
+      </div>
     </article>
   </div>
 </main>

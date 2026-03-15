@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inflation BL | Notes | Deshik Reddy Putluru</title>
+  <title>Inflation Boundary Layer Meshing | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError : false
-      });
-    });
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -42,51 +42,45 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Inflation BL</h1>
+    <h1 class="page-title">Inflation Boundary Layer Meshing</h1>
+    <p class="small">Category: CFD · Meshing · Boundary Layer · RANS</p>
+
     <article class="article-body">
-      <h3>Prism Layer Inflation</h3>
-      <p>When setting up cases for <strong>Reynolds Averaged Navier-Stokes (RANS)</strong> analysis, capturing the boundary layer accurately is critical. This is typically achieved by incorporating a "prism layer" or "inflation layer" along wall surfaces. The goal is to discretize the near-wall region—where velocity gradients are most significant—with a fine mesh resolution.</p>
+      <p>When setting up cases for <strong>Reynolds Averaged Navier-Stokes (RANS)</strong> analysis, capturing the boundary layer accurately is critical. This is typically achieved by incorporating a "prism layer" or "inflation layer" along wall surfaces to resolve the steep velocity gradients in the near-wall region.</p>
 
-      <h3>Defining the Mesh Resolution ($y^+$)</h3>
-      <p>The resolution of the first mesh cell is often dictated by the target <strong>$y^+$</strong> value. $y^+$ is a non-dimensional distance that describes the resolution of the boundary layer relative to the viscous sublayer.</p>
+      <h2>Defining Mesh Resolution ($y^+$)</h2>
+      <p>The resolution of the first mesh cell is dictated by the target <strong>$y^+$</strong> value—a non-dimensional distance that describes the resolution of the boundary layer relative to the viscous sublayer.</p>
       
-      <div class="callout block-color-blue_background">
-        <p>💡 <strong>Rule of Thumb:</strong> For high-fidelity RANS simulations using low-Reynolds wall treatments, it is generally recommended to target a **$y^+ \approx 1$**.</p>
+      <div class="box">
+        <strong>Rule of Thumb.</strong>
+        <p>For high-fidelity RANS simulations using low-Reynolds wall treatments, it is generally recommended to target a <strong>$y^+ \approx 1$</strong>.</p>
       </div>
 
-      <h4>Fundamental Equations</h4>
+      <h3>Fundamental Equations</h3>
       <p>The $y^+$ value is defined as:</p>
-      <div class="equation-container">
-        $$y^{+} = \frac{y \cdot u_{\tau}}{\nu}$$
-      </div>
-      <p>Where the friction velocity $u_{\tau}$ is derived from the wall shear stress $\tau_w$:</p>
-      <div class="equation-container">
-        $$u_{\tau} = \sqrt{\frac{\tau_w}{\rho}}$$
-      </div>
-      <p>The wall shear stress $\tau_w$ can be estimated using empirical relations for the skin friction coefficient $C_f$. For turbulent flow over a flat plate (1/7th power law):</p>
-      <div class="equation-container">
-        $$C_f = \frac{0.026}{Re_x^{1/7}}$$
-        $$\tau_w = \frac{1}{2}\rho U^2 C_f$$
-      </div>
+      \[ y^{+} = \frac{y \cdot u_{\tau}}{\nu} \]
+      <p>where the friction velocity $u_{\tau}$ is derived from the wall shear stress $\tau_w$:</p>
+      \[ u_{\tau} = \sqrt{\frac{\tau_w}{\rho}} \]
+      <p>The wall shear stress can be estimated using the skin friction coefficient $C_f$:</p>
+      \[ C_f = \frac{0.026}{Re_x^{1/7}}, \quad \tau_w = \frac{1}{2}\rho U^2 C_f \]
 
-      <h3>Growth and Sizing</h3>
-      <p>Once the first layer thickness ($y$) is determined, the rest of the inflation layer is defined by:</p>
+      <h2>Growth and Sizing</h2>
+      <p>Once the first layer thickness ($y$) is determined, the inflation zone is defined by:</p>
       <ul>
-        <li><strong>Number of Layers:</strong> Total count of prism layers.</li>
-        <li><strong>Growth Ratio:</strong> The factor by which each subsequent layer increases in thickness (e.g., 1.2).</li>
-        <li><strong>Total Thickness:</strong> The absolute height of the inflation zone.</li>
+        <li><strong>Number of Layers:</strong> Total count of prism layers (usually 5 to 15).</li>
+        <li><strong>Growth Ratio:</strong> The factor by which thickness increases (typically 1.1 to 1.3).</li>
+        <li><strong>Total Thickness:</strong> The absolute height of the inflation zone, often targeting $y_{total} \approx \delta$ (boundary layer thickness).</li>
       </ul>
 
-      <div class="callout block-color-gray_background">
-        <p>🔗 <strong>Online Calculators:</strong></p>
-        <p>Manually calculating these values can be tedious. Several excellent tools exist to automate the process:</p>
+      <div class="note">
+        <strong>Online Calculators.</strong>
         <ul>
           <li><a href="https://www.fluidmechanics101.com/pages/tools.html">Fluid Mechanics 101 Mesh Calculator</a></li>
           <li><a href="https://www.cadence.com/en_US/home/tools/system-analysis/fluid-dynamics/y-plus-calculator.html">Cadence Y+ Calculator</a></li>
         </ul>
       </div>
     </article>
-    </article>
+  </div>
 </main>
 
 <footer>

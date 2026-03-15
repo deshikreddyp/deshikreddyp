@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fluid Structure Interaction â€” ALE | Notes | Deshik Reddy Putluru</title>
+  <title>Fluid Structure Interaction — ALE | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -20,20 +33,20 @@
       <a class="active" href="../notes.html">Notes</a>
     </nav>
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
-      <span class="sun">â˜€ï¸�</span>
-      <span class="moon">ðŸŒ™</span>
+      <span class="sun">☀️</span>
+      <span class="moon">🌙</span>
     </button>
   </div>
 </header>
 
 <main class="note-content">
   <div class="container">
-    <div class="breadcrumb"><a href="../notes.html">â†� Notes</a></div>
-    <h1 class="page-title">Fluid Structure Interaction â    <article class="article-body">
-      
-    <p class="note-meta">Fluid mechanics Â· FSI Â· Mesh motion Â· ALE framework</p>
+    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
+    <h1 class="page-title">Fluid Structure Interaction — ALE</h1>
+    <p class="small">Technical Notes on FSI category · Mesh motion · ALE framework</p>
+    
+    <article class="article-body">
 
-    <!-- â”€â”€ Overview â”€â”€ -->
     <section class="note-section">
       <h2>Overview</h2>
       <p>
@@ -41,9 +54,8 @@
         governing equations are solved:
       </p>
       <ol>
-        <li><strong>Monolithic approach</strong> â€” fluid, solid, and mesh motion equations are assembled
+        <li><strong>Monolithic approach</strong> — fluid, solid, and mesh motion equations are assembled
             into a single system and solved simultaneously.</li>
-        <li><strong>Partitioned (non-monolithic) approach</strong> â€” the fluid and solid solvers are
         <li><strong>Partitioned (non-monolithic) approach</strong> — the fluid and solid solvers are
             run separately and coupled at the interface iteratively.</li>
       </ol>
@@ -64,109 +76,62 @@
         <li><strong>Strong (conformal meshes)</strong> — fluid and solid meshes share nodes at the
             interface; velocity and traction continuity are enforced exactly.</li>
         <li><strong>Weak / Nitsche method (non-conformal meshes)</strong> — interface conditions are
-            enforced weakly via a penalty-like variational term, allowing independent fluid and solid
-            mesh refinements.</li>
+            enforced weakly via a penalty-like variational term.</li>
       </ol>
 
-      <div class="callout block-color-gray_background">
-        <div>💡</div>
-        <div style="width:100%">
-          My own work uses the <strong>monolithic + body-fitted + fully coupled</strong> strategy
-          with <em>quasi-direct coupling</em>.
-        </div>
+      <div class="box">
+        <strong>Quasi-Direct Coupling.</strong>
+        <p>My own work uses the monolithic + body-fitted + fully coupled strategy with quasi-direct coupling for stability and performance.</p>
       </div>
     </section>
 
-    <!-- — Why ALE — -->
     <section class="note-section">
       <h2>Why ALE? Lagrangian vs. Eulerian</h2>
       <p>
         In classical fluid mechanics we work in an <strong>Eulerian</strong> frame: the computational
         domain is fixed in space and fluid flows through it. This is natural for fluids, which undergo
-        large deformations and flow, but it makes tracking solid deformation awkward — we do not care
-        which fluid particle is at a given point, only the field values there.
+        large deformations and flow, but it makes tracking solid deformation awkward.
       </p>
       <p>
         Solids, on the other hand, are naturally described in a <strong>Lagrangian</strong> frame: the
-        mesh moves with the material. Individual material points are tracked, and displacements are
-        physically meaningful. Using an Eulerian frame for solids would obscure the material identity
+        mesh moves with the material. Using an Eulerian frame for solids would obscure the material identity
         needed for constitutive modelling.
       </p>
       <p>
-        When a deformable solid interacts with a fluid, we need a formulation that accommodates both:
-        the <strong>Arbitrary Lagrangian-Eulerian (ALE)</strong> framework. In ALE, the computational
-        mesh can move independently of the material — it moves with the solid boundary (Lagrangian) but
-        deforms smoothly in the fluid interior (neither purely Eulerian nor purely Lagrangian). The
+        The <strong>Arbitrary Lagrangian-Eulerian (ALE)</strong> framework accommodates both: the computational
+        mesh moves with the solid boundary (Lagrangian) but deforms smoothly in the fluid interior. The
         governing equations gain an additional <em>mesh velocity</em> term that accounts for the moving
         reference frame.
       </p>
     </section>
 
-    <!-- — ALE Procedure — -->
     <section class="note-section">
       <h2>ALE Solution Procedure</h2>
       <p>At each time step, an ALE-FSI solver performs two coupled sub-problems:</p>
       <ol>
         <li>
-          <strong>Mesh motion problem</strong> — given the solid displacement field at the interface as
-          a boundary condition, extend a smooth mesh deformation into the fluid domain. This is typically
-          posed as a harmonic extension or a pseudo-elastic problem:
-          <div class="equation-container">
-            $$\nabla \cdot (\mu_m \nabla \mathbf{w}) = \mathbf{0} \quad \text{in} \quad \Omega_f$$
-          </div>
-          where $\mathbf{w}$ is the mesh displacement field and $\mu_m$ is a stiffening
-          parameter (often inverse-proportional to element size to protect small elements near the
-          interface).
+          <strong>Mesh motion problem.</strong> Given interface displacement, extend mesh deformation into the fluid domain:
+          \[ \nabla \cdot (\mu_m \nabla \mathbf{w}) = \mathbf{0} \quad \text{in} \quad \Omega_f \]
+          where $\mathbf{w}$ is the mesh displacement field and $\mu_m$ is a stiffening parameter.
         </li>
         <li>
-          <strong>Moving-domain problem</strong> — solve the fluid and solid equations on the updated
-          (deformed) mesh. The fluid momentum equation acquires an ALE convection term involving the
-          mesh velocity $\dot{\mathbf{w}}$:
-          <div class="equation-container">
-            $$\rho \left( \frac{\partial \mathbf{u}}{\partial t} \bigg|_\chi + (\mathbf{u} - \dot{\mathbf{w}}) \cdot \nabla \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u}$$
-          </div>
-          where the derivative $\partial/\partial t|_\chi$ is taken at a fixed <em>ALE reference point</em> $\chi$,
-          not a fixed material point or a fixed spatial point.
+          <strong>Moving-domain problem.</strong> The fluid momentum equation acquires an ALE convection term involving the mesh velocity $\dot{\mathbf{w}}$:
+          \[ \rho \left( \frac{\partial \mathbf{u}}{\partial t} \bigg|_\chi + (\mathbf{u} - \dot{\mathbf{w}}) \cdot \nabla \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u} \]
         </li>
       </ol>
 
-      <div class="callout block-color-blue_background">
-        <div> documental</div>
-        <div style="width:100%">
-          <strong>Key insight:</strong> In the solid domain, the mesh displacement equals the physical
-          material displacement — these coincide by definition. In the <em>fluid</em> domain, the mesh
-          motion carries no physical meaning for the fluid material; it is a purely computational device
-          that introduces a modified convection term into the Navier-Stokes equations.
-        </div>
+      <div class="warn">
+        <strong>Key Distinction.</strong>
+        <p>In the solid domain, mesh displacement equals material displacement. In the fluid domain, mesh motion has no physical meaning; it is a purely computational device to handle the moving boundary.</p>
       </div>
     </section>
 
-    <!-- — Coupling Strategies — -->
     <section class="note-section">
       <h2>Coupling Strategies</h2>
-      <p>
-        Once the three sub-problems (fluid, solid, mesh motion) are defined, they must be coupled. Common
-        strategies, roughly ordered from loosest to tightest coupling:
-      </p>
-
       <ol>
-        <li>
-          <strong>Block-iterative (Gauss-Seidel) method</strong> — fluid and solid are solved in
-          sequence, exchanging interface data, and the loop is iterated to convergence within each
-          time step. Robust but may converge slowly for strongly coupled problems (e.g. added-mass
-          instability for light structures).
-        </li>
-        <li>
-          <strong>Quasi-direct coupling</strong> — the Jacobian of the coupled system is approximated
-          using the individual sub-problem Jacobians. Faster convergence than block-iterative with
-          moderate implementation complexity. This is the approach used in my current solver.
-        </li>
-        <li>
-          <strong>Direct (monolithic) strategy</strong> — fluid, solid, and mesh motion DOFs are
-          assembled into a single system matrix and solved with a coupled preconditioner. Optimal
-          convergence but demands a unified discretization and a sophisticated solver/preconditioner
-          (e.g., nested block solvers with approximate Schur complements).
-        </li>
+        <li><strong>Block-iterative (Gauss-Seidel)</strong> — Fluid and solid are solved in sequence. Robust but prone to added-mass instabilities.</li>
+        <li><strong>Quasi-direct coupling</strong> — Approximates the coupled Jacobian. Faster convergence than iterative methods.</li>
+        <li><strong>Direct (monolithic)</strong> — Unified system matrix solved simultaneously. Optimal convergence but complex implementation.</li>
       </ol>
 
       <p>Key reference for the isogeometric ALE-FSI formulation:</p>
@@ -175,7 +140,6 @@
         <div class="ref-source">Bazilevs et al. · Computational Mechanics · link.springer.com</div>
       </a>
     </section>
-
     </article>
   </div>
 </main>
@@ -188,20 +152,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
+</body>
+</html>
+ipt>Prism.highlightAll();</script>
 </body>
 </html>

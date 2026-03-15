@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mark_boundaries.py | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError : false
-      });
-    });
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -43,19 +43,20 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">mark_boundaries.py</h1>
+    <p class="small">Category: Python · Meshing · Automation · FEniCS</p>
+
     <article class="article-body">
-      <h3>Automated Boundary Tagging</h3>
       <p>In complex CFD simulations, especially those involving patient-specific geometries, manually tagging boundaries (inlet, outlet, walls) is impractical. The <code>mark_boundaries.py</code> utility automates this by grouping facets based on the angle between their normals.</p>
 
-      <div class="callout block-color-blue_background">
-        <p>💡 <strong>Algorithm Overview:</strong> The script identifies "feature edges" where the angle between neighboring facets exceeds a specified threshold (e.g., 30°). It then uses a region-growing approach to assign unique tags to continuous surface patches.</p>
+      <div class="box">
+        <strong>Algorithm Overview.</strong>
+        <p>The script identifies "feature edges" where the angle between neighboring facets exceeds a specified threshold (e.g., $30^\circ$). It then uses a region-growing approach to assign unique physical tags to continuous surface patches.</p>
       </div>
 
-      <h4>1. Vector Math utilities</h4>
-      <pre class="code-wrap language-python"><code class="language-python">import os
-import sys
-from dolfin import *
-import numpy as np
+      <h2>Implementation Details</h2>
+
+      <h3>1. Vector Math utilities</h3>
+      <pre class="language-python"><code>import numpy as np
 
 def angle_between(v1, v2):
     """Compute the angle in radians between two vectors."""
@@ -64,55 +65,30 @@ def angle_between(v1, v2):
     angle = np.arccos(abs(np.clip(np.dot(v1, v2), -1.0, 1.0)))
     return angle</code></pre>
 
-      <h4>2. Region Growing Loop</h4>
-      <pre class="code-wrap language-python"><code class="language-python">def _mark_loop(bmesh, normals, threshold_angles, boundaries, queue, visited, marker):
-    queue_indices = np.where(queue.array())[0]
-    while len(queue_indices) > 0:
-        idx = queue_indices[0]
-        facet = Cell(bmesh, idx)
+      <h3>2. Region Growing Loop</h3>
+      <pre class="language-python"><code>def _mark_loop(bmesh, normals, threshold, boundaries, queue, visited, marker):
+    # Iterate through facets in the queue and grow the region
+    while not queue.is_empty():
+        facet = queue.pop()
         visited[facet] = True
-        queue[facet] = False
         boundaries[facet] = marker
-        N = normals[idx]
-        threshold_radians = np.pi*threshold_angles[facet]/180.        
+        
+        N = normals[facet.index()]
+        for neighbor in facet.neighbors():
+            if not visited[neighbor]:
+                n = normals[neighbor.index()]
+                if angle_between(N, n) < threshold:
+                    queue.append(neighbor)</code></pre>
 
-        for edge in edges(facet):
-            for neighbour in cells(edge):
-                if not visited[neighbour]:
-                    n = normals[neighbour.index()]
-                    if angle_between(N, n) < threshold_radians:
-                        queue[neighbour] = True
-        queue_indices = np.where(queue.array())[0]</code></pre>
-
-      <h4>3. Main Marking Function</h4>
-      <pre class="code-wrap language-python"><code class="language-python">def mark_boundaries(mesh, threshold_angle=30, I=0, min_facets=10):
-    """Mark boundaries automatically by feature edges."""
-    bmesh = BoundaryMesh(mesh, "exterior")
-    visited_facets = MeshFunction("bool", bmesh, bmesh.topology().dim())
-    visited_facets.set_all(False)
-    
-    boundaries = MeshFunction("size_t", bmesh, bmesh.topology().dim())
-    normals = np.zeros((bmesh.num_cells(), 3))
-    
-    # Store normals for performance
-    for facet in cells(bmesh):
-        N = Facet(mesh, bmesh.entity_map(2)[facet.index()]).normal()
-        normals[facet.index()] = [N.x(), N.y(), N.z()]
-
-    unvisited = np.where(visited_facets.array() == False)[0]
-    while len(unvisited) > 0:
-        I += 1
-        queue = MeshFunction("bool", bmesh, bmesh.topology().dim())
-        queue[unvisited[0]] = True
-        _mark_loop(bmesh, normals, threshold_angles, boundaries, queue, visited_facets, I)
-        unvisited = np.where(visited_facets.array() == False)[0]
-
-    return boundaries, I</code></pre>
-
-      <div class="callout block-color-orange_background">
-        <p>⚠️ <strong>Cleanup:</strong> The full script includes logic to merge small "orphan" facets (less than <code>min_facets</code>) into their nearest neighbors and renumber the tags consecutively.</p>
+      <div class="warn">
+        <strong>Normal Consistency.</strong>
+        <p>This method assumes all facets in the STL/BRep are consistently oriented. If normals are flipped, the <code>abs()</code> in <code>dot(v1, v2)</code> prevents unintended feature edges, but it's still best to fix orientation first.</p>
       </div>
-    </article>
+
+      <div class="note">
+        <strong>Cleanup Logic.</strong>
+        <p>The full script includes post-processing to merge small "orphan" patches (e.g., $< 10$ facets) into their largest neighbor to ensure clean boundary definitions.</p>
+      </div>
     </article>
   </div>
 </main>

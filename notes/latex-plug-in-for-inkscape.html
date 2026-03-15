@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Latex plug-in for inkscape | Notes | Deshik Reddy Putluru</title>
+  <title>LaTeX Plug-in for Inkscape | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -29,31 +42,39 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Latex plug-in for inkscape</h1>
-    <article class="article-body">
-      <h3>LaTeX Equations in Vector Graphics</h3>
-      <p>For scientific publications, it is often necessary to render LaTeX equations directly inside <strong>Inkscape</strong> to ensure that labels and annotations match the font and style of the main document.</p>
+    <h1 class="page-title">LaTeX Plug-in for Inkscape</h1>
+    <p class="small">Category: Scientific Illustration · LaTeX · Vector Graphics · Inkscape</p>
 
-      <div class="callout block-color-blue_background">
-        <p>💡 <strong>Recommended Extension: TexText</strong></p>
-        <p>While Inkscape has a built-in "LaTeX (pdflatex)" input, <strong>TexText</strong> is the industry standard. It allows for re-editing existing LaTeX objects and supports packages like <code>amsmath</code> and <code>physics</code>.</p>
+    <article class="article-body">
+      <p>For scientific publications, it is often necessary to render LaTeX equations directly inside <strong>Inkscape</strong> vector graphics. This ensures that labels, axes, and annotations match the font and style of the main document exactly.</p>
+
+      <div class="box">
+        <strong>Recommended Extension: TexText.</strong>
+        <p>While Inkscape has a built-in "LaTeX (pdflatex)" input, <strong>TexText</strong> is the industry standard. It allows for non-destructive editing (re-opening existing LaTeX objects) and supports complex preambles with packages like <code>amsmath</code>, <code>physics</code>, and <code>bm</code>.</p>
       </div>
 
-      <h4>Installation (Linux/HPC)</h4>
-      <p>If you are working on a cluster or managed workstation, ensure you have a working TeX distribution (<code>texlive</code>) and <code>python3-lxml</code>.</p>
-      <pre class="code-wrap language-bash"><code class="language-bash"># Install dependencies
-sudo apt-get install inkscape texlive pstoedit python3-lxml</code></pre>
+      <h2>Installation (Linux/Cluster)</h2>
+      <p>If you are working on a managed workstation, ensure you have a working TeX distribution and the <code>python-lxml</code> dependency:</p>
+      
+      <pre class="language-bash"><code># Essential dependencies
+sudo apt-get install inkscape texlive-full pstoedit python3-lxml</code></pre>
 
-      <h4>Usage Workflow</h4>
-      <ol type="1">
-        <li>Open Inkscape and go to <code>Extensions > Text > TexText</code>.</li>
-        <li>Enter your LaTeX code in the dialog box (e.g., <code>$ \nabla \cdot \mathbf{u} = 0 $</code>).</li>
-        <li>Specify the preamble (if you need custom packages).</li>
-        <li>Click <strong>Apply</strong> to render the vector object.</li>
+      <h2>Usage Workflow</h2>
+      <ol>
+        <li>Open Inkscape and go to <strong>Extensions > Text > TexText</strong>.</li>
+        <li>Enter your LaTeX code (e.g., <code>$ \nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} $</code>).</li>
+        <li>Configure the preamble if you need specific symbols or fonts.</li>
+        <li>Click <strong>Apply</strong>. The equation is added as a grouped vector path.</li>
       </ol>
 
-      <div class="callout block-color-orange_background">
-        <p>⚠️ <strong>Troubleshooting:</strong> If equations fail to render, check the <code>inkscape.log</code>. Common issues include missing <code>pstoedit</code> or <code>ghostscript</code> binaries in the system <code>PATH</code>.</p>
+      <div class="warn">
+        <strong>Rendering Failures.</strong>
+        <p>If equations fail to appear, check the <code>inkscape.log</code>. The most common cause is missing <code>pstoedit</code> or <code>ghostscript</code> in the system path, which are required for converting PDF/PS output back into SVG paths.</p>
+      </div>
+
+      <div class="note">
+        <strong>Pro Tip.</strong>
+        <p>To edit an existing TexText object, select it and launch the extension again. Your original LaTeX code will be pre-populated in the dialog box.</p>
       </div>
     </article>
   </div>

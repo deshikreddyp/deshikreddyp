@@ -20,7 +20,8 @@
   --code-bg: #f8fafc;
   --callout-bg: rgba(37, 99, 235, 0.05);
   --callout-border: rgba(37, 99, 235, 0.15);
-  --maxw: 860px;
+  --maxw: 980px; /* Increased to match reference */
+  --font-serif: Georgia, 'Times New Roman', serif;
 }
 
 [data-theme='dark'] {
@@ -39,6 +40,7 @@
   --code-bg: #0d1b2e;
   --callout-bg: rgba(96,165,250,0.07);
   --callout-border: rgba(96,165,250,0.22);
+  --link-color: #60a5fa;
 }
 
 * { box-sizing: border-box; }
@@ -46,7 +48,7 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-serif);
   background: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--text);
@@ -104,14 +106,20 @@ h1,h2,h3,h4 {
   margin-bottom: 1rem; 
   font-weight: 700;
 }
-h1 { font-size: 2.2rem; }
-h2 { 
-  font-size: 1.6rem; 
-  border-bottom: 2px solid var(--border); 
-  padding-bottom: 0.5rem;
-  margin-top: 3rem;
+h1 { 
+  font-size: 2.2rem; 
+  border-bottom: 3px solid var(--border); 
+  padding-bottom: 10px; 
+  margin-bottom: 18px; 
 }
-h3 { font-size: 1.3rem; margin-top: 2rem; }
+h2 { 
+  font-size: 1.5rem; 
+  border-left: 6px solid var(--muted); 
+  padding-left: 12px;
+  margin-top: 34px;
+  border-bottom: none; /* Removed bottom border as per reference */
+}
+h3 { font-size: 1.25rem; margin-top: 24px; }
 h4 { font-size: 1.1rem; color: var(--muted); }
 
 /* ── Article Content ── */
@@ -123,7 +131,8 @@ h4 { font-size: 1.1rem; color: var(--muted); }
 .article-body > *:first-child { margin-top: 0; }
 
 /* ── Paragraphs ── */
-p { margin: 1.25rem 0; color: var(--text); }
+p { margin: 1.2rem 0; color: var(--text); text-align: justify; }
+.small { font-size: 0.92rem; color: var(--muted); margin-bottom: 1.5rem; display: block; }
 
 /* ── Callouts ── */
 .callout {
@@ -140,7 +149,12 @@ p { margin: 1.25rem 0; color: var(--text); }
 .callout p { margin: 0; }
 .callout > div:first-child { font-size: 1.3rem; flex-shrink: 0; }
 
-/* background-color variants mapped to dark equivalents */
+/* background-color variants */
+.box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+.note { background: rgba(96, 165, 250, 0.1); border-left: 5px solid #60a5fa; padding: 12px 14px; margin: 16px 0; }
+.warn { background: rgba(249, 115, 22, 0.1); border-left: 5px solid #fb923c; padding: 12px 14px; margin: 16px 0; }
+.diary { background: rgba(34, 197, 94, 0.1); border-left: 5px solid #4ade80; padding: 12px 14px; margin: 16px 0; }
+
 .block-color-gray_background, .highlight-gray_background { background: rgba(148,163,184,0.08); border-color: rgba(148,163,184,0.2); }
 .block-color-blue_background, .highlight-blue_background { background: rgba(96,165,250,0.08); border-color: rgba(96,165,250,0.2); }
 .block-color-teal_background, .highlight-teal_background { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.2); }

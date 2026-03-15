@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>STL to brep (stl2brep.py) | Notes | Deshik Reddy Putluru</title>
+  <title>STL to BRep (stl2brep.py) | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError : false
-      });
-    });
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -42,69 +42,64 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">STL to brep (stl2brep.py)</h1>
+    <h1 class="page-title">STL to BRep (stl2brep.py)</h1>
+    <p class="small">Category: Meshing · Geometry Conversion · Python · GMSH/OCC</p>
+
     <article class="article-body">
       <p>In CFD mesh generation, raw STL files often lack the topological information required for advanced boolean operations or conformal meshing. Converting these surface triangulations into a <strong>BRep (Boundary Representation)</strong> allows GMSH's OpenCascade kernel to treat each facet as a geometric entity.</p>
 
-      <div class="callout block-color-blue_background">
-        <p>💡 <strong>Usage Note:</strong> This script iterates through every triangle in an STL file, creates geometrical points and lines, and then defines plane surfaces to construct a closed volume. This is essential for converting "dead" STL meshes into "live" CAD geometries.</p>
+      <div class="box">
+        <strong>Functional Overview.</strong>
+        <p>This script iterates through every triangle in an STL file, creates geometrical points and lines, and then defines plane surfaces to construct a closed volume. This is essential for converting "dead" STL meshes into "live" CAD geometries.</p>
       </div>
 
-      <pre class="code-wrap language-python"><code class="language-python"># This script takes an STL triangulation and creates a brep with a plane surface
-# for each triangle
-
-import gmsh
+      <pre class="language-python"><code>import gmsh
 import sys
 import numpy as np
 
-if len(sys.argv) < 2:
-    print('usage: {} file.stl'.format(sys.argv[0]))
-    exit(0)
-
+# Usage: python stl2brep.py model.stl
 gmsh.initialize()
-
-# load the STL mesh and retrieve the element, node and edge data
 gmsh.open(sys.argv[1])
+
+# Retrieve mesh data
 typ = 2 # 3-node triangles
 elementTags, elementNodes = gmsh.model.mesh.getElementsByType(typ)
 nodeTags, nodeCoord, _ = gmsh.model.mesh.getNodesByElementType(typ)
 edgeNodes = gmsh.model.mesh.getElementEdgeNodes(typ)
 
-# create a new model to store the BREP
-gmsh.model.add('my brep')
-
-# create a geometrical point for each mesh node
+# Create BRep model
+gmsh.model.add('Geometry')
 nodes = dict(zip(nodeTags, np.reshape(nodeCoord, (len(nodeTags), 3))))
-for n in nodes.items():
-    gmsh.model.occ.addPoint(n[1][0], n[1][1], n[1][2], tag=n[0])
+for n_tag, coord in nodes.items():
+    gmsh.model.occ.addPoint(coord[0], coord[1], coord[2], tag=n_tag)
 
-# create a geometrical plane surface for each (triangular) element
-allsurfaces = []
+# Construct surfaces
+element_edges = np.reshape(edgeNodes, (len(elementTags), 3, 2))
 allcurves = {}
-elements = dict(zip(elementTags, np.reshape(edgeNodes, (len(elementTags), 3, 2))))
-for e in elements.items():
+allsurfaces = []
+
+for edges in element_edges:
     curves = []
-    for edge in e[1]:
+    for edge in edges:
         ed = tuple(np.sort(edge))
         if ed not in allcurves:
-            t = gmsh.model.occ.addLine(edge[0], edge[1])
-            allcurves[ed] = t
-        else:
-            t = allcurves[ed]
-        curves.append(t)
+            tag = gmsh.model.occ.addLine(edge[0], edge[1])
+            allcurves[ed] = tag
+        curves.append(allcurves[ed])
     cl = gmsh.model.occ.addCurveLoop(curves)
     allsurfaces.append(gmsh.model.occ.addPlaneSurface([cl]))
 
-# create a volume bounded by all the surfaces
+# Finalize volume
 sl = gmsh.model.occ.addSurfaceLoop(allsurfaces)
 gmsh.model.occ.addVolume([sl])
-
 gmsh.model.occ.synchronize()
-gmsh.write("CORD.brep")
-
-gmsh.fltk.run()
+gmsh.write("output.brep")
 gmsh.finalize()</code></pre>
-    </article>
+
+      <div class="note">
+        <strong>Performance Constraint.</strong>
+        <p>Because each STL facet becomes a NURBS surface, this approach is extremely memory-intensive. For geometries with more than 10,000 facets, consider using a high-memory cluster or GMSH's <code>ClassifySurfaces</code> approach instead.</p>
+      </div>
     </article>
   </div>
 </main>

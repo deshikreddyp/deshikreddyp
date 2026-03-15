@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Quadrature Rule, Riemann &amp;amp; Lebesgue Integration | Notes | Deshik Reddy Putluru</title>
+  <title>Quadrature, Riemann & Lebesgue Integration | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,30 +43,32 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Quadrature, Riemann & Lebesgue Integration</h1>
+    <p class="small">Category: Numerical Integration · Measure Theory · Gaussian Quadrature</p>
+
     <article class="article-body">
-      <h3>Quadrature Rule</h3>
-      <p>When an analytical solution to an integral is unavailable due to complex geometry or equations, we use <strong>numerical quadrature</strong>. A quadrature rule approximates a definite integral as a weighted sum of function values at specific points (nodes).</p>
+      <h2>Quadrature Rule</h2>
+      <p>When an analytical solution to an integral is unavailable due to complex geometry or governing equations, we use <strong>numerical quadrature</strong>. A quadrature rule approximates a definite integral as a weighted sum of function values at specific points (nodes).</p>
 
-      <div class="equation-container">
-        $$\int_{-1}^{1} f(x) \, dx \approx \sum_{i=1}^{n} w_i f(x_i)$$
-      </div>
+      \[ \int_{-1}^{1} f(x) \, dx \approx \sum_{i=1}^{n} w_i f(x_i) \]
 
-      <p>This is the fundamental way computers solve integral equations in methods like Finite Elements.</p>
+      <p>This is the fundamental approach for solving weak forms in the Finite Element Method (FEM), where integrals over elements are evaluated at Gauss points.</p>
 
-      <h3>Integration Theory</h3>
+      <h2>Integration Theory</h2>
       <p>Beyond numerical approximation, it is important to distinguish between different theoretical frameworks of integration:</p>
       <ul>
-        <li><strong>Riemann Integration:</strong> The standard approach taught in calculus, based on summing the areas of vertical rectangles.</li>
-        <li><strong>Lebesgue Integration:</strong> A more powerful theory based on measure theory, which can integrate a broader class of functions (e.g., highly discontinuous functions).</li>
+        <li><strong>Riemann Integration:</strong> The standard approach taught in basic calculus, based on summing the areas of vertical rectangles.</li>
+        <li><strong>Lebesgue Integration:</strong> A more powerful theory based on measure theory, which can integrate a broader class of functions and handles limits more robustly.</li>
       </ul>
 
-      <div class="callout block-color-yellow_background">
-        <div>🚧</div>
-        <div style="width:100%">
-          <strong>Work in Progress:</strong> I am expanding this section with details on Gaussian Quadrature and Newton-Cotes formulas.
-        </div>
+      <div class="box">
+        <strong>Gaussian Quadrature.</strong>
+        <p>By choosing the points $x_i$ as the roots of Legendre polynomials, a rule with $n$ points can integrate a polynomial of degree up to $2n-1$ exactly.</p>
       </div>
-    </article>
+
+      <div class="note">
+        <strong>Functional Analysis.</strong>
+        <p>Lebesgue integration is essential for defining Hilbert spaces like $L^2(\Omega)$, which form the mathematical foundation for modern numerical analysis and PDE theory.</p>
+      </div>
     </article>
   </div>
 </main>
@@ -66,20 +81,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

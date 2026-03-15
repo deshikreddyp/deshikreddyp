@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Governing Equations | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,35 +43,38 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Governing Equations</h1>
+    <p class="small">Category: Fluid Mechanics · Navier-Stokes · Conservation Laws</p>
+
     <article class="article-body">
-      <h3>Material Derivative</h3>
-      <p>The material derivative (also known as the substantive or Lagrangian derivative) describes the time rate of change of a physical quantity for a fluid particle moving with the flow velocity $\mathbf{u}$.</p>
-      <div class="equation-container">
-        $$\frac{D\phi}{Dt} = \frac{\partial\phi}{\partial t} + (\mathbf{u} \cdot \nabla)\phi$$
+      <h2>Material Derivative</h2>
+      <p>The material derivative (substantive or Lagrangian derivative) describes the time rate of change of a physical quantity $\phi$ for a fluid particle moving with the flow velocity $\mathbf{u}$.</p>
+      
+      \[ \frac{D\phi}{Dt} = \frac{\partial\phi}{\partial t} + (\mathbf{u} \cdot \nabla)\phi \]
+
+      <h2>Reynolds Transport Theorem (RTT)</h2>
+      <p>RTT provides the link between the rate of change of a property for a fixed group of particles (Lagrangian) and the rate of change within a control volume (Eulerian).</p>
+      
+      \[ \frac{d}{dt}\int_{\Omega(t)} f \, d\Omega = \int_{\Omega(t)} \frac{\partial f}{\partial t} \, d\Omega + \int_{\Gamma(t)} f (\mathbf{u} \cdot \mathbf{n}) \, d\Gamma \]
+
+      <div class="box">
+        <strong>Gauss Divergence Theorem.</strong>
+        <p>This theorem is fundamental for converting volume integrals of divergences into surface fluxes:
+        \[ \int_{\Omega} \nabla \cdot \mathbf{F} \, d\Omega = \int_{\Gamma} \mathbf{F} \cdot \mathbf{n} \, d\Gamma \]</p>
       </div>
 
-      <h3>Reynolds Transport Theorem (RTT)</h3>
-      <p>RTT provides a link between the rate of change of a property in a control volume (Eulerian) and the rate of change for a fixed group of particles (Lagrangian).</p>
-      <div class="equation-container">
-        $$\frac{d}{dt}\int_{\Omega(t)} f d\Omega = \int_{\Omega(t)} \frac{\partial f}{\partial t} d\Omega + \int_{\Gamma(t)} f (\mathbf{u} \cdot \mathbf{n}) d\Gamma$$
-      </div>
+      <h2>Continuity Equation</h2>
+      <p>Representing the conservation of mass. For an <strong>incompressible fluid</strong>, density $\rho$ is constant, leading to the solenoidal condition:</p>
+      
+      \[ \nabla \cdot \mathbf{u} = 0 \]
 
-      <h3>Gauss Divergence Theorem</h3>
-      <p>Relates the volume integral of the divergence of a vector field to the surface integral of the field over the boundary.</p>
-      <div class="equation-container">
-        $$\int_{\Omega} \nabla \cdot \mathbf{F} d\Omega = \int_{\Gamma} \mathbf{F} \cdot \mathbf{n} d\Gamma$$
-      </div>
+      <h2>Momentum Equation</h2>
+      <p>Derived from Newton’s Second Law ($\mathbf{F}=m\mathbf{a}$). For an incompressible Newtonian fluid, the Navier-Stokes momentum equation is:</p>
+      
+      \[ \rho \left( \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u} + \mathbf{f} \]
 
-      <h3>Continuity Equation</h3>
-      <p>Representing the conservation of mass. For an incompressible fluid, the density is constant, leading to the zero-divergence condition:</p>
-      <div class="equation-container">
-        $$\nabla \cdot \mathbf{u} = 0$$
-      </div>
-
-      <h3>Momentum Equation</h3>
-      <p>Derived from Newton's Second Law ($\mathbf{F}=m\mathbf{a}$). For an incompressible Newtonian fluid, the Navier-Stokes momentum equation is:</p>
-      <div class="equation-container">
-        $$\rho \left( \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u} + \mathbf{f}$$
+      <div class="note">
+        <strong>Conservative vs. Non-Conservative Form.</strong>
+        <p>The choice of form depends on the numerical method. Finite Volume Methods typically solve the conservative form to ensure strict conservation of properties across cell faces.</p>
       </div>
     </article>
   </div>
@@ -72,20 +88,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Boundary Layer Problem | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,44 +43,46 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Boundary Layer Problem</h1>
+    <p class="small">Category: Fluid Mechanics · Heat Transfer · Boundary Layer · Similarity Solutions</p>
+
     <article class="article-body">
-      <div class="callout block-color-gray_background">
-        <p>💡 The complexity of convective heat transfer comes from nonlinearity in the Navier-Stokes equations and coupling between velocity and temperature fields. The boundary-layer idea (Prandtl, 1904) simplifies the equations by neglecting terms that are asymptotically small in thin-layer regions.</p>
+      <div class="box">
+        <strong>Historical Context.</strong>
+        <p>The complexity of convective heat transfer arises from the non-linearity of the Navier-Stokes equations and the coupling between velocity and temperature. The boundary-layer concept (Prandtl, 1904) simplifies these equations by neglecting terms that are asymptotically small in thin layers near solid boundaries.</p>
       </div>
 
+      <h2>General Solution Procedure</h2>
       <ol>
-        <li>Write down the full governing equations and boundary conditions.</li>
-        <li>Simplify the equations using physically justified assumptions.
-          <ol type="a">
-            <li>Physical reasoning and modeling assumptions.</li>
-            <li>Scale analysis (used to validate neglected terms).</li>
-          </ol>
-        </li>
-        <li>State sub-case assumptions explicitly (for example, high-$Pr$ and low-$Pr$ limits).</li>
+        <li><strong>Formulate:</strong> Write the full governing equations and boundary conditions.</li>
+        <li><strong>Simplify:</strong> Use physically justified assumptions (e.g., thin-layer approximation) and <strong>Scale Analysis</strong> to identify and neglect terms of $O(\delta)$.</li>
+        <li><strong>Categorize:</strong> Define limits for dimensionless numbers (e.g., high-Pr or low-Pr) to further simplify the transport behavior.</li>
       </ol>
 
-      <div class="callout block-color-gray_background">
-        <p>💡 For constant properties and forced convection, velocity can often be solved first and then used in the energy equation. In free convection, momentum and energy equations are coupled and should be solved together.</p>
+      <h2>The Momentum Stage</h2>
+      <p>This typically involves finding a <strong>Similarity Solution</strong> (like the Blasius solution for a flat plate):</p>
+      <ul>
+        <li>Non-dimensionalize coordinates and velocities.</li>
+        <li>Identify a similarity variable $\eta = y \sqrt{U_\infty / (\nu x)}$.</li>
+        <li>Reduce the governing PDEs into an ODE system (e.g., the Blasius equation: $2f''' + f f'' = 0$).</li>
+      </ul>
+
+      <h2>The Energy Stage</h2>
+      <p>Once the velocity profile $u(x,y)$ is known, it serves as the advective field for the temperature equation:</p>
+      <ul>
+        <li>Solve the reduced temperature equation (Pohlhausen solution).</li>
+        <li>Determine the <strong>Thermal Boundary Layer</strong> thickness $\delta_t$ relative to the momentum thickness $\delta$.</li>
+        <li>The ratio is often found to be $\delta / \delta_t \sim Pr^{1/3}$.</li>
+      </ul>
+
+      <div class="note">
+        <strong>Coupling.</strong>
+        <p>For forced convection with constant properties, the velocity field can be solved independently. In natural (free) convection, buoyancy couples the equations, requiring a simultaneous solution.</p>
       </div>
 
-      <ol start="4">
-        <li>Momentum equation stage (e.g., Blasius-type similarity solution).
-          <ol type="a">
-            <li>Non-dimensionalize governing equations and boundary conditions.</li>
-            <li>Select an appropriate similarity variable.</li>
-            <li>Derive and solve the reduced ODE system.</li>
-          </ol>
-        </li>
-        <li>Energy equation stage (e.g., Pohlhausen-type treatment).
-          <ol type="a">
-            <li>Non-dimensionalize governing equations and boundary conditions.</li>
-            <li>Use the velocity profile from the momentum solution.</li>
-            <li>Solve the reduced temperature equation.</li>
-          </ol>
-        </li>
-      </ol>
-
-      <p><a href="https://share.goodnotes.com/s/i5p5U2aXGUL6ubrRFeLXek">Source notes (GoodNotes)</a></p>
+      <div class="note">
+        <strong>Reference.</strong>
+        <p><a href="https://share.goodnotes.com/s/i5p5U2aXGUL6ubrRFeLXek">Source Notes (GoodNotes)</a></p>
+      </div>
     </article>
   </div>
 </main>
@@ -80,20 +95,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

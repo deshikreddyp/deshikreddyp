@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Thoughts on solving system of linear equations | Notes | Deshik Reddy Putluru</title>
+  <title>Thoughts on Solving Systems of Linear Equations | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -29,11 +42,13 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Thoughts on solving system of linear equations</h1>
-    <article class="article-body">
-      <p>Choosing the right solver for a system of linear equations $Ax=b$ is a critical decision in computational mechanics. This note summarizes the trade-offs between <strong>direct solvers</strong> and <strong>iterative solvers</strong>, specifically for Finite Element (FEM) discretizations like the Laplace operator.</p>
+    <h1 class="page-title">Thoughts on Solving Systems of Linear Equations</h1>
+    <p class="small">Category: Numerical Linear Algebra · HPC · Sparse Solvers · Preconditioning</p>
 
-      <h3>Direct Solvers</h3>
+    <article class="article-body">
+      <p>Choosing the right solver for a system of linear equations $Ax=b$ is a critical decision in computational science. This note summarizes the trade-offs between <strong>direct solvers</strong> and <strong>iterative solvers</strong>, specifically for high-performance Finite Element (FEM) discretizations.</p>
+
+      <h2>Direct Solvers</h2>
       <p>Examples: MUMPS, SuperLU_DIST, UMFPACK.</p>
       <ul>
         <li><strong>Complexity:</strong> $O(n^{3/2})$ in 2D and $O(n^2)$ in 3D.</li>
@@ -42,49 +57,52 @@
         <li><strong>Speed:</strong> Very fast for small to medium problems ($n < 10^5$).</li>
       </ul>
 
-      <h3>Iterative Solvers (Krylov Methods)</h3>
-      <p>Examples: Conjugate Gradient (CG), GMRES, BiCGSTAB (usually paired with Algebraic Multigrid - AMG).</p>
+      <h2>Iterative Solvers (Krylov Methods)</h2>
+      <p>Examples: Conjugate Gradient (CG), GMRES, BiCGSTAB.</p>
       <ul>
-        <li><strong>Complexity:</strong> Ideally $O(n)$ with good preconditioning.</li>
-        <li><strong>Trade-offs:</strong> Designing an effective preconditioner is often the hardest part. Connectivity/mesh quality significantly impacts convergence.</li>
-        <li><strong>Precision:</strong> The solution is an approximation; you stop when the residual is below a certain tolerance.</li>
+        <li><strong>Complexity:</strong> Ideally $O(n)$ with optimal preconditioning (e.g., Algebraic Multigrid - AMG).</li>
+        <li><strong>Trade-offs:</strong> Designing an effective preconditioner is often the bottleneck. Mesh quality and connectivity significantly impact convergence rates.</li>
+        <li><strong>Precision:</strong> The solution is an approximation; iteration stops when the residual norm falls below a specified tolerance.</li>
       </ul>
 
-      <div class="callout block-color-blue_background">
-        <div>💡</div>
-        <div style="width:100%">
-          For large-scale simulations ($n \geq 10^9$), <strong>scaling</strong> is everything. Direct solvers become impossible due to $O(n^2)$ memory and time growth. Iterative methods are the only path forward.
-        </div>
+      <div class="box">
+        <strong>Scaling in 3D problems.</strong>
+        <p>For large-scale simulations ($n \geq 10^7$ or 3D meshes with large bandwidth), <strong>scaling</strong> is the primary constraint. Direct solvers become impractical due to memory growth from fill-in. Preconditioned iterative methods are the only feasible path.</p>
       </div>
 
-      <h3>Common Solvers and Preconditioners</h3>
-      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-        <table class="simple-table" style="flex: 1; min-width: 300px;">
+      <h2>Common Strategies</h2>
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 1.5rem;">
+        <table style="flex: 1; min-width: 250px;">
           <thead>
-            <tr><th>Solver Name</th><th>Method</th></tr>
+            <tr><th>Krylov Solver</th><th>Properties</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>cg</code></td><td>Conjugate Gradient</td></tr>
-            <tr><td><code>gmres</code></td><td>Generalized Minimal Residual</td></tr>
-            <tr><td><code>bicgstab</code></td><td>BiCG Stabilized</td></tr>
-            <tr><td><code>minres</code></td><td>Minimal Residual</td></tr>
+            <tr><td><code>cg</code></td><td>SPD matrices only</td></tr>
+            <tr><td><code>gmres</code></td><td>General nonsymmetric</td></tr>
+            <tr><td><code>bicgstab</code></td><td>Nonsymmetric, cheaper than GMRES</td></tr>
+            <tr><td><code>minres</code></td><td>Symmetric indefinite</td></tr>
           </tbody>
         </table>
 
-        <table class="simple-table" style="flex: 1; min-width: 300px;">
+        <table style="flex: 1; min-width: 250px;">
           <thead>
-            <tr><th>Preconditioner</th><th>Method</th></tr>
+            <tr><th>Preconditioner</th><th>Technique</th></tr>
           </thead>
           <tbody>
+            <tr><td><code>gamg</code></td><td>Algebraic Multigrid</td></tr>
             <tr><td><code>ilu</code></td><td>Incomplete LU</td></tr>
-            <tr><td><code>icc</code></td><td>Incomplete Cholesky</td></tr>
-            <tr><td><code>petsc_amg</code></td><td>Algebraic Multigrid</td></tr>
-            <tr><td><code>sor</code></td><td>Successive Over-Relaxation</td></tr>
+            <tr><td><code>hypre</code></td><td>BoomerAMG (HPC)</td></tr>
+            <tr><td><code>sor</code></td><td>Stationary iteration</td></tr>
           </tbody>
         </table>
       </div>
+
+      <div class="note">
+        <strong>Implementation Note.</strong>
+        <p>Modern libraries like PETSc or Trilinos allow for runtime selection of these combinations, which is essential for benchmarking different physics (e.g., fluid vs. solid blocks).</p>
+      </div>
     </article>
-    </article>
+  </div>
 </main>
 
 <footer>
@@ -95,20 +113,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

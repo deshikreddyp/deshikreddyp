@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flow boundary conditions | Notes | Deshik Reddy Putluru</title>
+  <title>Flow Boundary Conditions | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -29,84 +42,54 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Flow boundary conditions</h1>
+    <h1 class="page-title">Flow Boundary Conditions</h1>
+    <p class="small">Category: CFD · Boundary Conditions · Inflow/Outflow · Arterial Flow</p>
+
     <article class="article-body">
-      <p>This page discusses the application of flow boundary conditions in specific computational domains, such as pipe flow where conditions must be prescribed at the inlet and outlet.</p>
+      <p>This page discusses the application of flow boundary conditions in computational domains like pipe flow or arterial geometry, where accurate prescription at inlets and outlets is critical for physical validity.</p>
 
-      <h3>Prescribing Velocity at the Inlet</h3>
-      <p>Usually, the inlet condition is known. A <strong>Dirichlet boundary condition</strong> is commonly employed, requiring both temporal and spatial data. A parabolic flow profile combined with time-varying waveforms is often specified, which proves effective in most contexts. The overall accuracy primarily depends on the boundary condition applied at the unknown (outlet) end.</p>
+      <h2>Inlet Conditions</h2>
+      <p>Usually, the inlet condition is known. A <strong>Dirichlet boundary condition</strong> is commonly employed, requiring both temporal and spatial data. A parabolic velocity profile combined with time-varying waveforms is a standard choice for laminar pipe flow.</p>
 
-      <h3>Prescribing Conditions at the Outlet</h3>
-      <p>At the outlet, one can prescribe either velocity or pressure. For rigid channels, velocity boundary conditions can be used since the volume flow rate remains constant. However, determining the specific flow profile at the outlet can be challenging as it technically lies outside the computational domain.</p>
+      <h2>Outlet Conditions</h2>
+      <p>At the outlet, one can prescribe either velocity or pressure. However, determining the specific flow profile at the outlet can be challenging as it technically lies "outside" the controlled computational domain.</p>
 
-      <h4>Popular Boundary Conditions</h4>
-      <p>Commonly used boundary conditions include:</p>
-      <ol class="numbered-list">
-        <li><strong>Constant pressure Dirichlet boundary condition</strong></li>
-        <li><strong>Constant traction boundary condition (Neumann type)</strong></li>
-      </ol>
-      <p>While frequently used in early CFD studies, these conditions often fail to maintain the flow profile shape.</p>
-
-      <p>Parametric studies by <em>Liu et al. (2015)</em> evaluated several boundary condition setups:</p>
-      <ul class="bulleted-list">
-        <li class="block-color-gray_background" style="list-style-type:disc"><strong>V-NS0 model:</strong> Fully developed velocity profile at the inlet; zero normal stress at the outlet.</li>
-        <li class="block-color-yellow_background" style="list-style-type:disc"><strong>P-V model:</strong> Time-dependent pressure at the inlet; adjusted velocity waveform at the outlet.</li>
-        <li class="block-color-pink_background" style="list-style-type:disc"><strong>V-P model:</strong> Fully developed velocity profile at the inlet; time-dependent pressure at the outlet.</li>
-        <li class="block-color-teal_background" style="list-style-type:disc"><strong>P-P model:</strong> Time-dependent pressure at both inlet and outlet.</li>
-        <li class="block-color-gray_background" style="list-style-type:disc"><strong>P-NS0 model:</strong> Time-dependent pressure at the inlet; zero normal stress at the outlet.</li>
-      </ul>
-
-      <div class="callout block-color-teal_background">
-        <div>💡</div>
-        <div style="width:100%">
-          <strong>Conclusions (In the context of arterial blood flow):</strong>
-          <ul class="bulleted-list">
-            <li style="list-style-type:disc">The <strong>V-P and V-NS0</strong> setups require an accurate spatial profile at the boundaries.</li>
-            <li style="list-style-type:disc">While <strong>V-P and V-NS0</strong> result in similar velocity fields, the pressure distributions differ significantly. Pressure values in these cases may be misleading.</li>
-            <li style="list-style-type:disc">When both velocity waveforms and pressure waveforms are imposed, the <strong>velocity waveform</strong> exerts a stronger influence on the phasic shape of the pressure distribution.</li>
-            <li style="list-style-type:disc">Imposing a <strong>velocity waveform at the inlet</strong> is generally more stable and robust than using pressure conditions.</li>
-            <li style="list-style-type:disc">Hydrodynamic features are more sensitive to the outlet pressure boundary condition in the <strong>P-P model</strong> compared to the <strong>V-P model</strong>. Accurate patient-specific outlet pressure data is therefore critical for P-P simulations.</li>
-          </ul>
-        </div>
+      <div class="box">
+        <strong>Popular Model Setups (Liu et al. 2015).</strong>
+        <ul>
+          <li><strong>V-NS0:</strong> Inlet velocity profile; zero normal stress at outlet.</li>
+          <li><strong>V-P:</strong> Inlet velocity profile; time-dependent pressure at outlet.</li>
+          <li><strong>P-P:</strong> Time-dependent pressure at both inlet and outlet.</li>
+        </ul>
       </div>
 
-      <h3>Special Boundary Conditions</h3>
-      <p>While V-P or V-NS0 setups are often preferred, they come with challenges. This leads to the concept of more advanced <strong>outflow boundary conditions</strong>.</p>
-
-      <p><strong>Motivation:</strong> At the outlet, simple traction-zero conditions may produce unrealistic results if the domain continues beyond the boundary. The stress tensor includes both viscous and pressure contributions:</p>
-
-      <div class="equation-container">
-        $$\sigma = \mu \left( \nabla \mathbf{u} + \left( \nabla \mathbf{u} \right)^T \right) - p \mathbf{I}_d$$
+      <div class="note">
+        <strong>Key Conclusions.</strong>
+        <ul>
+          <li><strong>Inlet Robustness:</strong> Imposing a velocity waveform at the inlet is generally more stable than using pressure conditions.</li>
+          <li><strong>Phasic Influence:</strong> The velocity waveform exerts a stronger influence on the phasic shape of the pressure distribution than the pressure BC itself.</li>
+          <li><strong>Sensitivity:</strong> P-P models are highly sensitive to the accuracy of outlet pressure data, making V-P setups preferred for patient-specific simulations.</li>
+        </ul>
       </div>
 
-      <p>The boundary condition based on the balance of normal forces is:</p>
-      <div class="equation-container">
-        $$\mu \left( \nabla \mathbf{u} + \left( \nabla \mathbf{u} \right)^T \right) \cdot \mathbf{n} - p \mathbf{n} = - P_{\text{ext}} \mathbf{n}$$
+      <h2>Advanced Outflow Management</h2>
+      <p>Regular traction-zero conditions may produce Realistic results if flow reversal (backflow) occurs at the boundary. The traction vector $\mathbf{t}$ on the boundary is defined by the stress tensor:</p>
+      
+      \[ \mathbf{t} = \mu \left( \nabla \mathbf{u} + (\nabla \mathbf{u})^T \right) \cdot \mathbf{n} - p \mathbf{n} \]
+
+      <div class="warn">
+        <strong>Backflow Stabilization.</strong>
+        <p>For truncated domains like arterial bifurcations, a velocity-dependent traction condition is often used to prevent numerical divergence during flow reversal:
+        \[ \mathbf{t} = \beta \rho (\mathbf{v} \otimes \mathbf{v}) \cdot \mathbf{n} \]</p>
       </div>
 
-      <p>For domains where the fluid continues beyond the boundary (free outlet conditions), a simplified form is often used:</p>
-      <div class="equation-container">
-        $$\mu \nabla \mathbf{u} \cdot \mathbf{n} - p \mathbf{n} = - P_{\text{ext}} \mathbf{n}$$
+      <div class="note">
+        <strong>References.</strong>
+        <ul>
+          <li>Liu, B., et al. (2015). <em>Influence of model boundary conditions on blood flow patterns...</em> BioMed Eng OnLine.</li>
+          <li>Esmaily Moghadam, M., et al. (2011). <em>A comparison of outlet boundary treatments...</em> Comput Mech.</li>
+        </ul>
       </div>
-
-      <h3>More Sophisticated Approaches</h3>
-      <ol class="numbered-list">
-        <li>
-          <strong>Backflow Stabilization:</strong> For truncated domains like arterial flows, a velocity-dependent traction condition prevents divergence during flow reversal:
-          <div class="equation-container">
-            $$\mathbf{t} = \beta \rho (\mathbf{v} \otimes \mathbf{v}) \cdot \mathbf{n}$$
-          </div>
-        </li>
-        <li><strong>Flow Resistance &amp; Impedance BCs</strong></li>
-        <li><strong>Windkessel Models</strong></li>
-      </ol>
-
-      <hr>
-      <p><strong>References:</strong></p>
-      <ul class="bulleted-list">
-        <li>Liu, B., et al. (2015). <em>Influence of model boundary conditions on blood flow patterns...</em> BioMed Eng OnLine. <a href="https://doi.org/10.1186/1475-925X-14-S1-S6">DOI Link</a></li>
-        <li>Esmaily Moghadam, M., et al. (2011). <em>A comparison of outlet boundary treatments...</em> Comput Mech. <a href="https://doi.org/10.1007/s00466-011-0599-0">DOI Link</a></li>
-      </ul>
     </article>
   </div>
 </main>
@@ -119,20 +102,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

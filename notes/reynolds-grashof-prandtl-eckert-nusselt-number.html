@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reynolds, Grashof, Prandtl, Eckert, Nusselt Numbers | Notes | Deshik Reddy Putluru</title>
+  <title>Dimensionless Numbers in Heat Transfer | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -29,38 +42,50 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Reynolds, Grashof, Prandtl, Eckert, Nusselt Numbers</h1>
+    <h1 class="page-title">Dimensionless Numbers in Heat Transfer</h1>
+    <p class="small">Category: Fluid Mechanics · Heat Transfer · Dimensionless Numbers · Scaling</p>
+
     <article class="article-body">
-      <p>Dimensionless numbers are key parameters that govern fluid flow and heat transfer. They arise naturally during non-dimensionalization of the governing equations and provide a way to compare the relative importance of different physical effects.</p>
+      <p>Dimensionless numbers are key parameters that govern fluid flow and heat transfer. They arise naturally during the non-dimensionalization of governing equations and provide a way to compare the relative importance of competing physical effects.</p>
 
-      <h3>Reynolds Number ($Re$)</h3>
-      <p>The ratio of inertial forces to viscous forces. It characterizes the flow regime (laminar vs. turbulent).</p>
-      <div class="equation-container">
-        $$Re = \frac{\rho u L}{\mu} = \frac{u L}{\nu}$$
+      <div class="box">
+        <strong>Reynolds Number ($Re$).</strong>
+        <p>The ratio of inertial forces to viscous forces. It characterizes the flow regime:</p>
+        \[ Re = \frac{\rho u L}{\mu} = \frac{u L}{\nu} \]
+        <p>Primary indicator for the transition from laminar to turbulent flow.</p>
       </div>
 
-      <h3>Grashof Number ($Gr$)</h3>
-      <p>Approximates the ratio of buoyancy to viscous forces acting on a fluid. It is the analog of the Reynolds number for natural convection.</p>
-      <div class="equation-container">
-        $$Gr = \frac{g \beta (T_s - T_\infty) L^3}{\nu^2}$$
+      <div class="box">
+        <strong>Nusselt Number ($Nu$).</strong>
+        <p>The ratio of convective to conductive heat transfer across a boundary:</p>
+        \[ Nu = \frac{h L}{k} \]
+        <p>Represents the enhancement of heat transfer due to fluid motion.</p>
       </div>
 
-      <h3>Prandtl Number ($Pr$)</h3>
-      <p>The ratio of momentum diffusivity (kinematic viscosity) to thermal diffusivity. It is a fluid property that characterizes the relative thickness of velocity and thermal boundary layers.</p>
-      <div class="equation-container">
-        $$Pr = \frac{\nu}{\alpha} = \frac{C_p \mu}{k}$$
+      <div class="box">
+        <strong>Prandtl Number ($Pr$).</strong>
+        <p>The ratio of momentum diffusivity to thermal diffusivity:</p>
+        \[ Pr = \frac{\nu}{\alpha} = \frac{\mu C_p}{k} \]
+        <p>A fluid property that determines the relative thickness of velocity and thermal boundary layers.</p>
       </div>
 
-      <h3>Eckert Number ($Ec$)</h3>
-      <p>Relates the flow's kinetic energy to the available thermal energy difference. It is used to characterize viscous dissipation effects in high-speed flows.</p>
-      <div class="equation-container">
-        $$Ec = \frac{u^2}{C_p \Delta T}$$
+      <div class="box">
+        <strong>Grashof Number ($Gr$).</strong>
+        <p>The ratio of buoyancy to viscous forces acting on a fluid:</p>
+        \[ Gr = \frac{g \beta (T_s - T_\infty) L^3}{\nu^2} \]
+        <p>The dimensionless parameter for natural convection, analogous to the Reynolds number for forced convection.</p>
       </div>
 
-      <h3>Nusselt Number ($Nu$)</h3>
-      <p>The ratio of convective to conductive heat transfer across a boundary. It provides a measure of heat-transfer enhancement due to flow.</p>
-      <div class="equation-container">
-        $$Nu = \frac{h L}{k}$$
+      <div class="box">
+        <strong>Eckert Number ($Ec$).</strong>
+        <p>Relates the flow's kinetic energy to the enthalpy difference:</p>
+        \[ Ec = \frac{u^2}{C_p \Delta T} \]
+        <p>Significant in high-speed flows where viscous dissipation (heating) cannot be neglected.</p>
+      </div>
+
+      <div class="note">
+        <strong>Rayleigh Number ($Ra$).</strong>
+        <p>Often used in natural convection, defined as $Ra = Gr \cdot Pr$. It determines the onset of convection in a fluid layer heated from below (Rayleigh-Bénard convection).</p>
       </div>
     </article>
   </div>
@@ -74,20 +99,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>

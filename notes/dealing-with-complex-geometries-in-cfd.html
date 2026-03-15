@@ -3,25 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dealing with complex geometries in CFD | Notes | Deshik Reddy Putluru</title>
+  <title>Dealing with Complex Geometries in CFD | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <!-- KaTeX auto-render script -->
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError : false
-      });
-    });
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -44,72 +42,58 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Dealing with complex geometries in CFD</h1>
+    <h1 class="page-title">Dealing with Complex Geometries in CFD</h1>
+    <p class="small">Category: CFD · Geometry · Meshing · STL/GMSH</p>
+
     <article class="article-body">
-      <h3>Marking Boundaries</h3>
-      <p>Biomedical geometries are typically constructed from UV or PC MRI scans. PC MRI scans are among the most advanced methods for capturing the three-dimensional details of an area of interest (AOI). Recent developments in 4D MRI techniques have proven to have higher resolution than computational meshing.</p>
+      <h2>Processing Medical Geometries</h2>
+      <p>Biomedical geometries are typically reconstructed from UV or PC MRI scans. PC MRI is particularly effective for capturing the fine three-dimensional details of an Area of Interest (AOI). Recent developments in 4D MRI have even surpassed standard computational meshing in resolution for certain applications.</p>
 
-      <p>PC MRI images are voxelated using available software and then connected through triangles to form a surface mesh. However, STL files resulting from this process cannot be segmented according to our requirements as they only provide information about triangles and their normals, without connectivity and topology information.</p>
+      <p>Voxel data from MRI is connected using triangular facets to form a surface mesh. However, raw <strong>STL files</strong> resulting from this process lack connectivity and topological information, making them difficult to segment for imposing separate boundary conditions.</p>
 
-      <p>To impose boundary conditions, we developed a code that generates face groups based on the angles between neighboring triangles. The algorithm iterates over all facets, checks the angles between them and their neighbors, and assigns them to the appropriate group. Note: The code supports the gmsh .msh V2.2 format.</p>
+      <h2>Conforming Meshes & Coupling</h2>
+      <p>In computational fluid dynamics, solving coupled physical phenomena requires a <strong>Monolithic approach</strong> (strongly coupled). This approach necessitates a conformal mesh—one where the nodes on both sides of the interface (e.g., fluid and solid subdomains) match exactly.</p>
 
-      <h3>Conforming Meshes</h3>
-      <p>In computational fluid dynamics (CFD), solving coupled problems often requires a <strong>Monolithic approach</strong> (strongly coupled). This approach involves the simultaneous solution of equations for both subdomains, ensuring high accuracy at the interface.</p>
-      
-      <p>The Monolithic approach requires mesh conformity—continuous elements where nodes on both sides of the interface match exactly. This is particularly critical for fluid-structure interaction (FSI) problems consisting of fluid and solid subdomains.</p>
-      
-      <div class="callout block-color-blue_background">
-        <p>💡 <strong>GMSH Workflow:</strong> For high-fidelity simulations, GMSH is favored for its flexibility. Since most MRI-derived sources are .STL files, the workflow involves:</p>
+      <div class="box">
+        <strong>GMSH Workflow.</strong>
+        <p>Since most MRI sources are raw STL, the high-fidelity workflow involves:</p>
         <ol>
-          <li>Convert .STL files into .STEP or .brep using CAD software or GMSH (OpenCascade).</li>
-          <li>Read .STEP files in GMSH and perform boolean operations.</li>
-          <li>Use boolean fragments or coherence operations to generate a conformal geometry.</li>
-          <li>Mesh the geometry and specify physical regions for each subdomain.</li>
+          <li>Convert STL to BRep/STEP (e.g., via <code>stl2brep.py</code>).</li>
+          <li>Perform boolean operations (BooleanFragments) in GMSH.</li>
+          <li>Specify physical groups for subdomains and boundaries.</li>
         </ol>
       </div>
 
-      <h4>Challenges in Conformal Meshing</h4>
-      <ul>
-        <li><strong>Format Limitations:</strong> Native STL files lack the topological data needed for conformal operations in GMSH. OpenCascade formats like .STEP or .brep are required.</li>
-        <li><strong>Normal Inversion:</strong> Reading .STEP files in GMSH can occasionally invert facet normals randomly. This is addressed in the <code>mark_boundaries.py</code> utility.</li>
-      </ul>
+      <h2>GMSH to FEniCS Workflow</h2>
+      <p>Modern FEniCS/FEniCSx workflows recommend using <code>meshio</code> for mesh conversion. Moving from GMSH $(.msh)$ to HDF5 $(.h5)$ is the most robust path for large-scale parallel simulations.</p>
 
-      <div class="callout block-color-gray_background">
-        <p>🔗 <strong>Related Resources:</strong></p>
+      <pre class="language-python"><code>import dolfin as df
+from mark_boundaries import *
+
+def convert_mesh(prefix):
+    # Standard legacy conversion logic
+    os.system(f"dolfin-convert {prefix}.msh {prefix}.xml")
+    mesh = df.Mesh(f"{prefix}.xml")
+    
+    # Load physical tags
+    domains = df.MeshFunction("size_t", mesh, f"{prefix}_physical_region.xml")
+    df.File("domains.pvd") << domains</code></pre>
+
+      <div class="warn">
+        <strong>Normal Inversion.</strong>
+        <p>Converting between formats can randomly flip facet normals. Always use a utility like <code>mark_boundaries.py</code> to verify and fix boundary orientation before running the solver.</p>
+      </div>
+
+      <div class="note">
+        <strong>Related Resources.</strong>
         <ul>
           <li><a href="installing-gmsh-on-cluster.html">Installing GMSH on cluster</a></li>
-          <li><a href="stl-to-brep-stl2brep-py.html">STL to brep (stl2brep.py)</a></li>
+          <li><a href="stl-to-brep-stl2brep-py.html">STL to BRep (stl2brep.py)</a></li>
           <li><a href="markboundaries-py.html">mark_boundaries.py</a></li>
         </ul>
       </div>
-
-      <h3>GMSH → FEniCS Workflow</h3>
-      <p>While <code>dolfin-convert</code> supports meshes from GMSH V2.2, for recent GMSH versions, <code>meshio</code> is the recommended package. Converting to <code>.h5</code> (HDF5) format is generally best for FEniCS/FEniCSx workflows.</p>
-
-      <pre class="code-wrap language-python"><code class="language-python">import os
-import sys
-import dolfin as df
-from mark_boundaries import *
-
-def msh_to_h5():
-    """Convert given geo-file to a h5-mesh."""
-    msh_input_file = sys.argv[1]
-    h5_output_file = sys.argv[2]
-    # Convert msh-mesh to xml-mesh
-    os.system("dolfin-convert {0}.msh {0}.xml".format(msh_input_file))
-
-    # Read xml-mesh
-    mesh = df.Mesh("{}.xml".format(msh_input_file))
-
-    # Mark domains (volumetric subdomains)
-    domains = df.MeshFunction("size_t", mesh, "{}_physical_region.xml".format(msh_input_file))
-    df.File("domains.pvd") << domains</code></pre>
-
-      <div class="callout block-color-orange_background">
-        <p>⚠️ <strong>Common Errors:</strong></p>
-        <p><strong>KeyError during conversion:</strong> Usually caused by trying to convert a physical region of incorrect dimension. Ensure your physical tags match the mesh dimensionality.</p>
-      </div>
     </article>
+  </div>
 </main>
 
 <footer>

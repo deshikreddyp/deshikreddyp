@@ -3,10 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Some good resources on Newton Raphson Method | Notes | Deshik Reddy Putluru</title>
+  <title>Newton-Raphson Method Resources | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -29,30 +42,40 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Some good resources on Newton Raphson Method</h1>
-    <article class="article-body">
-      <p>The Newton-Raphson method is a powerful technique for solving nonlinear systems of equations $F(u) = 0$. Below are some curated resources for understanding its application in Finite Element Method (FEM) and nonlinear mechanics.</p>
+    <h1 class="page-title">Newton-Raphson Method Resources</h1>
+    <p class="small">Category: Numerical Methods · Nonlinear Solvers · Newton-Raphson · FEM</p>
 
-      <h3>Key Resources</h3>
+    <article class="article-body">
+      <p>The Newton-Raphson method is a powerful technique for finding the roots of nonlinear systems of equations $F(u) = 0$. In computational mechanics, it is the standard approach for solving nonlinear finite element problems.</p>
+
+      <h2>The Algorithm</h2>
+      <p>Given an initial guess $u_0$, the solution is updated iteratively:</p>
+      \[ u_{k+1} = u_k - [J(u_k)]^{-1} F(u_k) \]
+      <p>where $J(u_k) = \frac{\partial F}{\partial u}$ is the Jacobian matrix (or Tangent Stiffness Matrix in structural mechanics).</p>
+
+      <h2>Curated Resources</h2>
       <ul>
         <li>
           <strong><a href="https://en.wikiversity.org/wiki/Nonlinear_finite_elements/Newton_method_for_finite_elements">Nonlinear Finite Elements (Wikiversity)</a></strong>: 
-          A great overview of how the Newton method is applied to discretized mechanics problems.
+          A specialized overview focusing on discretized mechanics.
         </li>
         <li>
           <strong><a href="https://ethz.ch/content/dam/ethz/special-interest/baug/ibk/structural-mechanics-dam/education/femII/Lecture3.pdf">ETH Zurich - FEM II Lecture Notes</a></strong>: 
-          Detailed derivation of the tangent stiffness matrix and Newton-Raphson iterations.
+          Includes rigorous derivations of the tangent stiffness matrix and line-search globalization.
         </li>
       </ul>
 
-      <div class="callout block-color-yellow_background">
-        <div>🚧</div>
-        <div style="width:100%">
-          <strong>Work in Progress:</strong> I am currently drafting a step-by-step example of solving a 1D nonlinear spring problem using Newton-Raphson.
-        </div>
+      <div class="box">
+        <strong>Convergence.</strong>
+        <p>Newton-Raphson exhibits <strong>quadratic convergence</strong> near the root, meaning the number of correct digits roughly doubles each iteration. However, success depends heavily on a good initial guess.</p>
+      </div>
+
+      <div class="note">
+        <strong>Practical Tip.</strong>
+        <p>For highly nonlinear problems (like buckling or complex contact), standard Newton often fails. Incremental <strong>Arc-Length methods</strong> or <strong>Continuation methods</strong> are used to traverse the equilibrium path.</p>
       </div>
     </article>
-    </article>
+  </div>
 </main>
 
 <footer>

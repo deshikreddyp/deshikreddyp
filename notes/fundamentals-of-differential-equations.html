@@ -5,8 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fundamentals of Differential Equations | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -30,11 +43,13 @@
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Fundamentals of Differential Equations</h1>
+    <p class="small">Category: Calculus · Differential Equations · Engineering Mathematics</p>
+
     <article class="article-body">
-      <h3>ODE: Ordinary Differential Equations</h3>
+      <h2>ODE: Ordinary Differential Equations</h2>
       <p>A differential equation whose unknown function depends on only <strong>one</strong> independent variable.</p>
 
-      <h3>PDE: Partial Differential Equations</h3>
+      <h2>PDE: Partial Differential Equations</h2>
       <p>A differential equation where the unknown function depends on <strong>two or more</strong> independent variables.</p>
       
       <ul>
@@ -43,40 +58,32 @@
         <li><strong>Homogeneous Boundary Condition:</strong> If $u = 0$ satisfies the condition at the boundary.</li>
       </ul>
 
-      <h3>Linear vs. Non-Linear DEs</h3>
+      <h2>Linear vs. Non-Linear DEs</h2>
       <p>In a linear equation, the dependent variable and its derivatives appear only to the first power and are not multiplied together. For example:</p>
       <ul>
         <li>$x$ is linear, while $x^2$ is not.</li>
         <li>Transcendental functions like $\sin(x)$ make an equation non-linear in $x$.</li>
       </ul>
 
-      <h4>Examples of Linear Equations</h4>
-      <div class="equation-container">
-        $$x'' + x = 0$$
-        $$x'' + 2x' + x = 0$$
-        $$x' + y' = 0$$
+      <h3>Examples of Linear Equations</h3>
+      \[ x'' + x = 0 \]
+      \[ x'' + 2x' + x = 0 \]
+      \[ x' + y' = 0 \]
+
+      <h3>Examples of Non-Linear Equations</h3>
+      \[ x' + 1/x = 0 \]
+      \[ x' + x^2 = 0 \]
+      \[ x'' + \sin(x) = 0 \]
+      \[ x x' = 0 \]
+
+      <div class="box">
+        <strong>Linearity with respect to variables.</strong>
+        <p>Note that an equation can be linear in one variable but non-linear in another. For example, $\sin(t)x' + \cos(t)x = e^t$ is linear in $x$ but the coefficients are non-linear transformations of the independent variable $t$.</p>
       </div>
 
-      <h4>Examples of Non-Linear Equations</h4>
-      <div class="equation-container">
-        $$x' + 1/x = 0$$
-        $$x' + x^2 = 0$$
-        $$x'' + \sin(x) = 0$$
-        $$x x' = 0$$
-      </div>
-
-      <div class="callout block-color-blue_background">
-        <div>💡</div>
-        <div style="width:100%">
-          Note that an equation can be linear in one variable but non-linear in another. For example, $\sin(t)x' + \cos(t)x = e^t$ is linear in $x$ but the coefficients are non-linear transformations of the independent variable $t$.
-        </div>
-      </div>
-
-      <div class="callout block-color-yellow_background">
-        <div>🚧</div>
-        <div style="width:100%">
-          <strong>Work in Progress:</strong> I am adding a section on Existence and Uniqueness theorems (Picard-Lindelöf).
-        </div>
+      <div class="note">
+        <strong>Theorems of Interest.</strong>
+        <p>Existence and Uniqueness theorems, such as the Picard-Lindelöf theorem, provide conditions under which a first-order ODE has a unique solution.</p>
       </div>
     </article>
   </div>
@@ -90,20 +97,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    });
-  </script>
 </body>
 </html>
