@@ -42,6 +42,7 @@
             font-size: 3rem;
             margin-bottom: 10px;
             background: linear-gradient(to right, #38bdf8, #818cf8);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -318,7 +319,127 @@
             { file: "notes/what-is-boussinesq-approximation.html", title: "What is Boussinesq Approximation?", category: "Physics · CFD · Fluid Mechanics · Buoyancy", tags: ["Physics", "CFD", "Fluid Mechanics", "Buoyancy"], created: "2026-03-14", modified: "2026-03-14" }
         ];
 
-        // I will finish populating this data in the next step
+        let currentSort = { column: 'modified', direction: 'desc' };
+        let activeTags = new Set();
+
+        const notesBody = document.getElementById('notes-body');
+        const searchInput = document.getElementById('note-search');
+        const tagsContainer = document.getElementById('tags-filter');
+        const noResults = document.getElementById('no-results');
+
+        function init() {
+            populateTags();
+            updateDisplay();
+            
+            searchInput.addEventListener('input', updateDisplay);
+            
+            document.querySelectorAll('th[data-sort]').forEach(th => {
+                th.addEventListener('click', () => {
+                    const column = th.dataset.sort;
+                    if (currentSort.column === column) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.column = column;
+                        currentSort.direction = 'desc';
+                    }
+                    
+                    document.querySelectorAll('th').forEach(el => el.classList.remove('sort-asc', 'sort-desc'));
+                    th.classList.add(`sort-${currentSort.direction}`);
+                    
+                    updateDisplay();
+                });
+            });
+        }
+
+        function populateTags() {
+            const tags = new Set();
+            notesData.forEach(note => note.tags.forEach(tag => tags.add(tag)));
+            
+            const sortedTags = Array.from(tags).sort();
+            sortedTags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'tag-pill';
+                span.textContent = tag;
+                span.onclick = () => toggleTag(tag, span);
+                tagsContainer.appendChild(span);
+            });
+        }
+
+        function toggleTag(tag, element) {
+            if (activeTags.has(tag)) {
+                activeTags.delete(tag);
+                element.classList.remove('active');
+            } else {
+                activeTags.add(tag);
+                element.classList.add('active');
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const query = searchInput.value.toLowerCase();
+            
+            let filtered = notesData.filter(note => {
+                const matchesSearch = note.title.toLowerCase().includes(query) || 
+                                     note.category.toLowerCase().includes(query) ||
+                                     note.tags.some(t => t.toLowerCase().includes(query));
+                
+                const matchesTags = activeTags.size === 0 || 
+                                   Array.from(activeTags).every(t => note.tags.includes(t));
+                
+                return matchesSearch && matchesTags;
+            });
+
+            // Sort
+            filtered.sort((a, b) => {
+                let valA = a[currentSort.column];
+                let valB = b[currentSort.column];
+                
+                if (currentSort.column === 'created' || currentSort.column === 'modified') {
+                    valA = new Date(valA);
+                    valB = new Date(valB);
+                } else {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+
+                if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderTable(filtered);
+        }
+
+        function renderTable(data) {
+            notesBody.innerHTML = '';
+            if (data.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            data.forEach(note => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <a href="${note.file}" class="note-link">${note.title}</a>
+                        <span class="cat-text">${note.category}</span>
+                    </td>
+                    <td><span class="cat-text">${note.category.split('·')[0].trim()}</span></td>
+                    <td>
+                        <div class="row-tags">
+                            ${note.tags.map(t => `<span class="row-tag">${t}</span>`).join('')}
+                        </div>
+                    </td>
+                    <td class="date-col">${note.created}</td>
+                    <td class="date-col">${note.modified}</td>
+                `;
+                notesBody.appendChild(tr);
+            });
+        }
+
+        init();
     </script>
 </body>
 </html>
