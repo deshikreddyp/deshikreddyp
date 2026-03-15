@@ -1,47 +1,321 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FSI Solver Notes and Preconditioner Study | Notes | Deshik Reddy Putluru</title>
-  <link rel="stylesheet" href="note-style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <script src="../theme.js"></script>
+<meta charset="UTF-8">
+<title>FSI Solver Notes and Preconditioner Study</title>
+<script>
+window.MathJax = {tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+body { font-family: Georgia, serif; line-height: 1.55; max-width: 980px; margin: 0 auto; padding: 28px 36px 60px; color: #1f2937; background: #ffffff; }
+h1,h2,h3 { color: #111827; line-height: 1.2; }
+h1 { font-size: 2rem; border-bottom: 3px solid #d1d5db; padding-bottom: 10px; margin-bottom: 18px; }
+h2 { margin-top: 34px; border-left: 6px solid #9ca3af; padding-left: 12px; font-size: 1.45rem; }
+h3 { margin-top: 24px; font-size: 1.15rem; }
+p { margin: 10px 0 12px; text-align: justify; }
+.box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+.note { background: #eff6ff; border-left: 5px solid #60a5fa; padding: 12px 14px; margin: 16px 0; }
+.warn { background: #fff7ed; border-left: 5px solid #fb923c; padding: 12px 14px; margin: 16px 0; }
+.diary { background: #f0fdf4; border-left: 5px solid #4ade80; padding: 12px 14px; margin: 16px 0; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0 18px; font-size: 0.97rem; }
+th, td { border: 1px solid #d1d5db; padding: 10px 12px; vertical-align: top; }
+th { background: #f3f4f6; text-align: left; }
+.small { font-size: 0.92rem; color: #4b5563; }
+</style>
 </head>
 <body>
-<header>
-  <div class="container nav">
-    <div class="brand">Deshik Reddy Putluru</div>
-    <nav class="navlinks">
-      <a href="../index.html">Home</a>
-      <a href="../projects.html">Projects</a>
-      <a href="../coursework.html">Coursework</a>
-      <a class="active" href="../notes.html">Notes</a>
-    </nav>
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
-      <span class="sun">☀️</span>
-      <span class="moon">🌙</span>
-    </button>
-  </div>
-</header>
+<h1>FSI Solver Notes and Preconditioner Study</h1>
+<p class="small">Prepared as technical notes + diary record for the solver study on pressure pinning, Krylov methods, and preconditioners in a stabilized FSI formulation.</p>
 
-<main class="note-content">
-  <div class="container">
-    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">FSI Solver Notes and Preconditioner Study</h1>
-    <article class="article-body">
-      <p>Prepared as technical notes + diary record for the solver study on pressure pinning, Krylov methods, and preconditioners in a stabilized FSI formulation.</p></div><h2>1. Problem statement</h2></div><p>I am solving a fluid-structure interaction (FSI) problem on a single global mesh. The fluid and solid live in different subdomains, but the unknowns are represented using global finite-element spaces. In particular, the velocity \(v\) and pressure \(p\) are defined over the entire computational domain. Physically, pressure is only relevant in the fluid, but mathematically it still exists as a global degree of freedom because of the way the mixed spaces are defined.</p></div><p>The solid displacement is not solved as a fully independent primary unknown inside the monolithic fluid-solid block. Instead, it is expressed in terms of velocity through time integration. This means that, at the level of the fluid-solid solve, the main unknowns are the mixed pair \((v,p)\), with displacement recovered from velocity. A separate mesh-motion solve updates the ALE deformation.</p></div><p><strong>Core modeling choice.</strong></p></div><p>The same global mixed finite-element pair is used across fluid and solid regions. This is convenient for a monolithic implementation and interface continuity, but it also means that some variables exist in places where they are not physically active.</p></div><h2>2. Numerical formulation and global spaces</h2></div><h3>2.1 Unknowns</h3><p>The coupled fluid-solid solve uses a global mixed function \(w = (v,p)\). In the fluid, both \(v\) and \(p\) participate in the governing equations. In the solid, velocity participates through the momentum and constitutive response, while pressure is present in the discrete space but does not enter the physical solid equations in the same way.</p><h3>2.2 Displacement represented through velocity</h3><p>The solid displacement is advanced using the velocity field. At the discrete level one may think of<br/>\[<br/>u^{n+1} \approx u^n + \Delta t\, v^{n+1},<br/>\]<br/>or a closely related predictor-corrector variant. This couples the solid kinematics strongly to the velocity solve and makes the velocity block carry much of the solid physics.</p><h3>2.3 Stabilization</h3><p>The fluid equations are stabilized using a variational multiscale (VMS) formulation. This is important because it allows equal-order interpolation for velocity and pressure without requiring a classical Taylor–Hood pair. In a classical incompressible mixed system, the pressure-pressure block is exactly zero. With VMS stabilization, that block is no longer literally zero; instead, stabilization introduces additional pressure terms.</p><p><strong>Interpretation.</strong></p><p>The system is not a textbook Stokes saddle-point matrix with a strict zero pressure block. However, it is still a stabilized mixed system in which pressure acts primarily as a constraint-related variable rather than as a plain elliptic field.</p><h2>3. Structure of the global stiffness / Jacobian matrix</h2><p>At each Newton step, the nonlinear problem is linearized into<br/>\[<br/>J \, \delta x = -R,<br/>\]<br/>where \(J\) is the Jacobian, \(R\) is the residual, and \(\delta x\) is the update to the current iterate.</p><p>With the stabilized \((v,p)\) formulation, a simplified block structure is<br/>\[<br/>J =<br/>\begin{bmatrix}<br/>A &amp; G^T \\<br/>G &amp; -C_p<br/>\end{bmatrix},<br/>\]<br/>where:</p><ul class="bulleted-list"><li style="list-style-type:disc">\(A\) contains the fluid momentum terms, solid response expressed in terms of velocity, ALE terms, and fluid-solid couplings,</li><li style="list-style-type:disc">\(G\) and \(G^T\) contain pressure-velocity coupling,</li><li style="list-style-type:disc">\(C_p\) is the stabilization contribution in the pressure block.</li></ul><p>This matrix is large, sparse, nonsymmetric, and mixed. It is easier than a literal zero-block saddle-point system in some respects, but it still remains much harder than a standard diffusion matrix.</p><p><strong>Practical takeaway.</strong></p><p>The matrix does not look like a simple Poisson operator. It contains velocity-like elliptic behavior, pressure coupling, stabilization, solid stiffness effects, and geometry-dependent ALE terms. That is why generic black-box solvers may behave very differently.</p><h2>4. Why MUMPS was not feasible</h2><p>A sparse direct solver such as MUMPS is attractive because it removes most questions about preconditioning robustness. However, for a large 3D monolithic FSI system, the memory required by sparse LU factorization can be enormous because the factors are much denser than the original matrix.</p><p>Let \(N\) denote the number of degrees of freedom. A Krylov method stores a handful of sparse vectors and uses the sparse matrix itself, so its memory requirement is roughly on the order of the sparse matrix plus Krylov basis vectors. A direct factorization, by contrast, must store fill-in in the \(L\) and \(U\) factors. For large 3D problems, this can scale far worse than the original sparse matrix.</p><h3>4.1 Back-of-the-envelope memory estimate</h3><p>Suppose the Jacobian has \(N\) unknowns and about \(m\) nonzeros per row. Then the sparse matrix storage is roughly proportional to<br/>\[<br/>\text{nnz}(J) \approx mN.<br/>\]<br/>If \(m \sim 50\) and \(N \sim 10^7\), then \(\text{nnz}(J) \sim 5\times 10^8\). Even storing just the sparse matrix entries and indices already costs many gigabytes.</p><p>The difficulty is that sparse LU factors can be several times to tens of times larger than the original matrix due to fill-in. A rough engineering estimate is therefore<br/>\[<br/>\text{memory(LU)} \gg \text{memory}(J),<br/>\]<br/>often easily entering the hundreds of GB or beyond for large 3D coupled problems. This makes direct factorization impractical on typical HPC allocations for very large FSI runs.</p><p><strong>Conclusion on MUMPS.</strong></p><p>MUMPS is not conceptually wrong. It is simply not affordable here because the available memory is insufficient for a robust sparse direct factorization of the full monolithic system.</p><h2>5. Why we move to GMRES</h2><p>Since direct factorization is too expensive, the next natural option is an iterative Krylov method. GMRES is a standard choice for large sparse nonsymmetric systems.</p><p>At a Newton step we solve<br/>\[<br/>A x = b.<br/>\]<br/>Starting from an initial guess \(x_0\), the residual is<br/>\[<br/>r_0 = b - A x_0.<br/>\]<br/>GMRES does not form \(A^{-1}\). Instead, it constructs a sequence of search spaces called Krylov spaces:<br/>\[<br/>\mathcal{K}_m(A,r_0)=\text{span}\{r_0, Ar_0, A^2r_0, \dots, A^{m-1}r_0\}.<br/>\]<br/>At iteration \(m\), GMRES looks for the approximate solution inside \(x_0 + \mathcal{K}_m\) that minimizes the residual norm.</p><h3>5.1 Simple example of GMRES</h3><p>Consider<br/>\[<br/>A=\begin{bmatrix}4 &amp; 1\\ 1 &amp; 3\end{bmatrix},<br/>\qquad<br/>b=\begin{bmatrix}1\\2\end{bmatrix},<br/>\qquad<br/>x_0=\begin{bmatrix}0\\0\end{bmatrix}.<br/>\]<br/>Then<br/>\[<br/>r_0 = b - A x_0 = \begin{bmatrix}1\\2\end{bmatrix}.<br/>\]<br/>The first Krylov space is just \(\mathcal{K}_1=\text{span}\{r_0\}\), so the first correction is restricted to the residual direction.</p><p>The second Krylov space is<br/>\[<br/>\mathcal{K}_2=\text{span}\{r_0, Ar_0\}.<br/>\]<br/>Since<br/>\[<br/>Ar_0 = \begin{bmatrix}4 &amp; 1\\1 &amp; 3\end{bmatrix}<br/>\begin{bmatrix}1\\2\end{bmatrix}<br/>= \begin{bmatrix}6\\7\end{bmatrix},<br/>\]<br/>GMRES now has two directions available instead of one. As the space grows, the method becomes more flexible and can usually reduce the residual much faster than a one-direction correction method.</p><p><strong>Intuition.</strong></p><p>GMRES uses repeated matrix-vector products to learn the important directions of the operator. It searches for the best correction in the span generated by \(r_0, Ar_0, A^2r_0,\dots\).</p><h2>6. Why a preconditioner is needed</h2><p>GMRES alone may converge too slowly if the matrix is badly scaled, poorly conditioned, or contains difficult mixed couplings. A preconditioner \(P^{-1}\) is introduced so that we solve a transformed problem such as<br/>\[<br/>P^{-1} A x = P^{-1} b.<br/>\]<br/>The goal is for \(P\) to be cheap to apply, but still similar enough to \(A\) that \(P^{-1}A\) is much easier for GMRES.</p><h3>6.1 Simple preconditioning example</h3><p>Consider<br/>\[<br/>A=\begin{bmatrix}1000 &amp; 1\\1 &amp; 1\end{bmatrix}.<br/>\]<br/>The first variable is much stiffer than the second. A simple diagonal preconditioner is<br/>\[<br/>P=\begin{bmatrix}1000 &amp; 0\\0 &amp; 1\end{bmatrix}.<br/>\]<br/>This captures the dominant scaling. Even though it ignores the off-diagonal coupling, it can dramatically improve iterative convergence because it rescales the problem into a more balanced form.</p><h3>6.2 What it means to design a preconditioner</h3><p>Designing a preconditioner means deciding which features of the matrix must be approximated accurately, and which can be treated more crudely. In practice, one asks:</p><ol type="1" class="numbered-list" start="1"><li>What structure does my matrix have?</li></ol><ol type="1" class="numbered-list" start="2"><li>What part makes the system hard to solve?</li></ol><ol type="1" class="numbered-list" start="3"><li>Can I build a cheaper approximate inverse for that difficult part?</li></ol><h2>7. Application of preconditioning ideas to this FSI matrix</h2><p>For the stabilized FSI system<br/>\[<br/>J =<br/>\begin{bmatrix}<br/>A &amp; G^T \\<br/>G &amp; -C_p<br/>\end{bmatrix},<br/>\]<br/>the hard parts are:</p><ul class="bulleted-list"><li style="list-style-type:disc">the large velocity-like block \(A\), which contains both fluid and solid response,</li><li style="list-style-type:disc">the pressure-velocity coupling \(G\),</li><li style="list-style-type:disc">the stabilization term \(C_p\),</li><li style="list-style-type:disc">the fact that the whole matrix is mixed and not purely elliptic.</li></ul><p>A black-box monolithic preconditioner tries to approximate the action of the entire matrix at once. A physics-aware preconditioner instead exploits this block structure. For example, one may treat the velocity-like block and the pressure block differently.</p><h2>8. What AMG is</h2><p>AMG stands for algebraic multigrid. It is a multilevel method constructed from the matrix itself, rather than from an explicit hierarchy of successively coarser meshes.</p><p>The central multigrid idea is that local smoothers remove oscillatory error effectively, while smooth low-frequency error is better handled on coarser levels. AMG builds those coarse levels algebraically.</p><h3>8.1 How AMG coarsening works</h3><p>AMG interprets the sparse matrix as a graph:</p><ul class="bulleted-list"><li style="list-style-type:disc">each DOF is a node,</li><li style="list-style-type:disc">each nonzero coupling is an edge,</li><li style="list-style-type:disc">stronger matrix couplings correspond to stronger graph connections.</li></ul><p>It then:</p><ol type="1" class="numbered-list" start="1"><li>identifies strongly connected unknowns,</li></ol><ol type="1" class="numbered-list" start="2"><li>groups or selects representative coarse unknowns,</li></ol><ol type="1" class="numbered-list" start="3"><li>builds interpolation/prolongation operators,</li></ol><ol type="1" class="numbered-list" start="4"><li>forms a coarse operator using a Galerkin construction.</li></ol><p>If \(P\) is the prolongation operator from coarse to fine level, the coarse matrix is<br/>\[<br/>A_c = P^T A P.<br/>\]</p><h3>8.2 AMG is not PCA or SVD</h3><table class="simple-table"><thead class="simple-table-header"><div><tr><th class="simple-table-header-color simple-table-header">AMG</th><th class="simple-table-header-color simple-table-header">PCA / SVD</th></tr></thead><tbody><div><tr><td>Built from the sparse matrix graph</td><td>Built from solution or data snapshots</td></tr><div><tr><td>Used to accelerate linear solves</td><td>Used to reduce model or data dimension</td></tr><div><tr><td>Produces multilevel coarse operators</td><td>Produces a low-dimensional global basis</td></tr><div><tr><td>Targets error components hard for iterative solvers</td><td>Targets dominant variance or energy in the dataset</td></tr></tbody></table><p><strong>Visual intuition.</strong></p><p>AMG says: “let me solve the same equation on several algebraically constructed levels.” PCA says: “let me replace the state by a small number of dominant global modes learned from data.”</p><h2>9. Designing a field-split preconditioner for this problem</h2><p>Since the unknowns are naturally grouped into velocity-like and pressure-like variables, a natural block split is<br/>\[<br/>x = \begin{bmatrix} v \\ p \end{bmatrix}.<br/>\]<br/>The Jacobian is then<br/>\[<br/>J =<br/>\begin{bmatrix}<br/>A &amp; G^T \\<br/>G &amp; -C_p<br/>\end{bmatrix}.<br/>\]</p><p>A Schur-complement-based field-split preconditioner uses the block factorization logic of this matrix. The exact Schur complement is<br/>\[<br/>S = -C_p - G A^{-1} G^T.<br/>\]<br/>Since forming \(A^{-1}\) explicitly is too expensive, we instead build a cheap approximation \(\tilde{S}\).</p><h3>9.1 Toy form of the field-split preconditioner</h3><p>A simple block-diagonal version is<br/>\[<br/>P^{-1}_{\text{diag}}<br/>=<br/>\begin{bmatrix}<br/>\tilde{A}^{-1} &amp; 0 \\<br/>0 &amp; \tilde{S}^{-1}<br/>\end{bmatrix}.<br/>\]<br/>A more informative upper triangular version is<br/>\[<br/>P^{-1}_{\text{tri}}<br/>\approx<br/>\begin{bmatrix}<br/>\tilde{A}^{-1} &amp; -\tilde{A}^{-1}G^T\tilde{S}^{-1} \\<br/>0 &amp; \tilde{S}^{-1}<br/>\end{bmatrix}.<br/>\]</p><ul class="bulleted-list"><li style="list-style-type:disc">\(\tilde{A}^{-1}\) is an approximate inverse for the velocity-like block, often using AMG,</li><li style="list-style-type:disc">\(\tilde{S}^{-1}\) is an approximate inverse for the stabilized Schur complement in pressure space.</li></ul><h3>9.2 Why this is attractive in principle</h3><p>This design treats pressure differently from velocity, which is often more natural than asking a single black-box AMG hierarchy to understand the entire mixed matrix. The cost, however, is additional setup complexity and more inner solves.</p><h2>10. Which preconditioner is best for this problem?</h2><p>From a purely mathematical design standpoint, the field-split Schur strategy is the cleanest because it aligns with the block structure of the mixed FSI system. However, numerical performance is an empirical question. The best preconditioner in practice is the one that yields the right answer robustly at the lowest wall-clock cost.</p><p>For this formulation, the numerical evidence shows that a global GAMG preconditioner is already robust enough to handle the unpinned pressure variables in the solid domain. Although field-splitting and pressure pinning can make the algebra look cleaner and reduce iteration counts, the real-time cost is much higher.</p><h2>11. Diary note: solver study and findings</h2><p><strong>Objective.</strong> I performed a numerical performance assessment comparing different linear solver strategies for the monolithic FSI simulation. The main question was whether explicitly pinning the pressure in the solid domain improves stability or accuracy enough to justify the extra computational cost.</p><p><strong>Configurations tested.</strong></p><ul class="bulleted-list"><li style="list-style-type:disc"><strong>Config A:</strong> global GMRES + GAMG, no pressure pinning in the solid.</li><li style="list-style-type:disc"><strong>Config B:</strong> GMRES + FieldSplit (Schur-type) with pressure pinning in the solid.</li><li style="list-style-type:disc">Additional comparisons included GMRES + hypre and tests with/without pinning pressure.</li></ul><p><strong>Finding 1: Physical consistency.</strong> Over the overlapping time steps, the computed physics was essentially identical. Flow rates, net concentration, and drug volume influx at the needle port matched. The unpinned runs showed only microscopic numerical noise near boundaries, around \(10^{-11}\), which is functionally zero.</p><p><strong>Finding 2: Pressure pinning.</strong> Pinning the pressure in the solid did not materially change the solution. This indicates that, for the stabilized formulation used here, the ghost pressure variables in the solid are not corrupting the physically relevant FSI response.</p><p><strong>Finding 3: Convergence behavior.</strong> The FieldSplit + pinning setup required fewer linear iterations per Newton step, roughly a 15% reduction, which suggests that the algebraic system is slightly cleaner when the unused pressure directions are explicitly constrained.</p><p><strong>Finding 4: Wall-clock efficiency.</strong> Despite the lower iteration count, the FieldSplit setup was significantly slower overall. The extra cost of building and applying the field-splitting and pinning logic led to a roughly 3x–4x increase in wall-clock time per step. The GAMG configuration completed steps in about 20–30 seconds, while FieldSplit required about 90–110 seconds.</p><p><strong>Finding 5: Preconditioner agreement.</strong> Over the first 20 steps, GAMG, hypre, and FieldSplit produced nearly identical trajectories. Residual differences were tiny, on the order of \(10^{-5}\) in absolute terms, and no meaningful difference was seen in the macroscopic physics over that window.</p><p><strong>Current ranking.</strong> In practice, the observed speed ordering is<br/>\[<br/>\text{GAMG} &gt; \text{hypre} &gt; \text{FieldSplit}.<br/>\]</p><p><strong>Conclusion.</strong> The unpinned global GAMG strategy is the best practical choice for scaling this simulation to long time horizons. FieldSplit remains valuable as a verification tool and as a clean physics-aware solver design, but it is not the most efficient production configuration for the present formulation.</p><h2>12. Final personal summary</h2><p>The key lesson from this study is that mathematical cleanliness and computational efficiency are not always aligned. A field-split Schur formulation with pressure pinning is appealing from the point of view of matrix structure, but the numerical experiments show that the simpler global AMG strategy already captures the same physical solution at much lower cost.</p><p>Therefore, for the present stabilized monolithic FSI formulation:</p><ul class="bulleted-list"><li style="list-style-type:disc">pressure pinning in the solid is not necessary,</li><li style="list-style-type:disc">MUMPS is not feasible due to memory limits,</li><li style="list-style-type:disc">GMRES is the correct iterative framework,</li><li style="list-style-type:disc">preconditioning is essential,</li><li style="list-style-type:disc">and global GAMG is the best current production choice.</li></ul>
-    </article>
-</main>
+<h2>1. Problem statement</h2>
+<p>I am solving a fluid-structure interaction (FSI) problem on a single global mesh. The fluid and solid live in different subdomains, but the unknowns are represented using global finite-element spaces. In particular, the velocity \(v\) and pressure \(p\) are defined over the entire computational domain. Physically, pressure is only relevant in the fluid, but mathematically it still exists as a global degree of freedom because of the way the mixed spaces are defined.</p>
+<p>The solid displacement is not solved as a fully independent primary unknown inside the monolithic fluid-solid block. Instead, it is expressed in terms of velocity through time integration. This means that, at the level of the fluid-solid solve, the main unknowns are the mixed pair \((v,p)\), with displacement recovered from velocity. A separate mesh-motion solve updates the ALE deformation.</p>
 
-<footer>
-  <div class="container small">
-    Deshik Reddy Putluru · <a href="../notes.html">All Notes</a>
-  </div>
-</footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script>Prism.highlightAll();</script>
+<div class="box">
+<strong>Core modeling choice.</strong>
+<p>The same global mixed finite-element pair is used across fluid and solid regions. This is convenient for a monolithic implementation and interface continuity, but it also means that some variables exist in places where they are not physically active.</p>
+</div>
+
+<h2>2. Numerical formulation and global spaces</h2>
+<h3>2.1 Unknowns</h3>
+<p>The coupled fluid-solid solve uses a global mixed function \(w = (v,p)\). In the fluid, both \(v\) and \(p\) participate in the governing equations. In the solid, velocity participates through the momentum and constitutive response, while pressure is present in the discrete space but does not enter the physical solid equations in the same way.</p>
+
+<h3>2.2 Displacement represented through velocity</h3>
+<p>The solid displacement is advanced using the velocity field. At the discrete level one may think of
+\[
+u^{n+1} \approx u^n + \Delta t\, v^{n+1},
+\]
+or a closely related predictor-corrector variant. This couples the solid kinematics strongly to the velocity solve and makes the velocity block carry much of the solid physics.</p>
+
+<h3>2.3 Stabilization</h3>
+<p>The fluid equations are stabilized using a variational multiscale (VMS) formulation. This is important because it allows equal-order interpolation for velocity and pressure without requiring a classical Taylor–Hood pair. In a classical incompressible mixed system, the pressure-pressure block is exactly zero. With VMS stabilization, that block is no longer literally zero; instead, stabilization introduces additional pressure terms.</p>
+
+<div class="note">
+<strong>Interpretation.</strong>
+<p>The system is not a textbook Stokes saddle-point matrix with a strict zero pressure block. However, it is still a stabilized mixed system in which pressure acts primarily as a constraint-related variable rather than as a plain elliptic field.</p>
+</div>
+
+<h2>3. Structure of the global stiffness / Jacobian matrix</h2>
+<p>At each Newton step, the nonlinear problem is linearized into
+\[
+J \, \delta x = -R,
+\]
+where \(J\) is the Jacobian, \(R\) is the residual, and \(\delta x\) is the update to the current iterate.</p>
+<p>With the stabilized \((v,p)\) formulation, a simplified block structure is
+\[
+J =
+\begin{bmatrix}
+A & G^T \\
+G & -C_p
+\end{bmatrix},
+\]
+where:</p>
+<ul>
+<li>\(A\) contains the fluid momentum terms, solid response expressed in terms of velocity, ALE terms, and fluid-solid couplings,</li>
+<li>\(G\) and \(G^T\) contain pressure-velocity coupling,</li>
+<li>\(C_p\) is the stabilization contribution in the pressure block.</li>
+</ul>
+<p>This matrix is large, sparse, nonsymmetric, and mixed. It is easier than a literal zero-block saddle-point system in some respects, but it still remains much harder than a standard diffusion matrix.</p>
+
+<div class="box">
+<strong>Practical takeaway.</strong>
+<p>The matrix does not look like a simple Poisson operator. It contains velocity-like elliptic behavior, pressure coupling, stabilization, solid stiffness effects, and geometry-dependent ALE terms. That is why generic black-box solvers may behave very differently.</p>
+</div>
+
+<h2>4. Why MUMPS was not feasible</h2>
+<p>A sparse direct solver such as MUMPS is attractive because it removes most questions about preconditioning robustness. However, for a large 3D monolithic FSI system, the memory required by sparse LU factorization can be enormous because the factors are much denser than the original matrix.</p>
+<p>Let \(N\) denote the number of degrees of freedom. A Krylov method stores a handful of sparse vectors and uses the sparse matrix itself, so its memory requirement is roughly on the order of the sparse matrix plus Krylov basis vectors. A direct factorization, by contrast, must store fill-in in the \(L\) and \(U\) factors. For large 3D problems, this can scale far worse than the original sparse matrix.</p>
+
+<h3>4.1 Back-of-the-envelope memory estimate</h3>
+<p>Suppose the Jacobian has \(N\) unknowns and about \(m\) nonzeros per row. Then the sparse matrix storage is roughly proportional to
+\[
+\text{nnz}(J) \approx mN.
+\]
+If \(m \sim 50\) and \(N \sim 10^7\), then \(\text{nnz}(J) \sim 5\times 10^8\). Even storing just the sparse matrix entries and indices already costs many gigabytes.</p>
+<p>The difficulty is that sparse LU factors can be several times to tens of times larger than the original matrix due to fill-in. A rough engineering estimate is therefore
+\[
+\text{memory(LU)} \gg \text{memory}(J),
+\]
+often easily entering the hundreds of GB or beyond for large 3D coupled problems. This makes direct factorization impractical on typical HPC allocations for very large FSI runs.</p>
+
+<div class="warn">
+<strong>Conclusion on MUMPS.</strong>
+<p>MUMPS is not conceptually wrong. It is simply not affordable here because the available memory is insufficient for a robust sparse direct factorization of the full monolithic system.</p>
+</div>
+
+<h2>5. Why we move to GMRES</h2>
+<p>Since direct factorization is too expensive, the next natural option is an iterative Krylov method. GMRES is a standard choice for large sparse nonsymmetric systems.</p>
+<p>At a Newton step we solve
+\[
+A x = b.
+\]
+Starting from an initial guess \(x_0\), the residual is
+\[
+r_0 = b - A x_0.
+\]
+GMRES does not form \(A^{-1}\). Instead, it constructs a sequence of search spaces called Krylov spaces:
+\[
+\mathcal{K}_m(A,r_0)=\text{span}\{r_0, Ar_0, A^2r_0, \dots, A^{m-1}r_0\}.
+\]
+At iteration \(m\), GMRES looks for the approximate solution inside \(x_0 + \mathcal{K}_m\) that minimizes the residual norm.</p>
+
+<h3>5.1 Simple example of GMRES</h3>
+<p>Consider
+\[
+A=\begin{bmatrix}4 & 1\\ 1 & 3\end{bmatrix},
+\qquad
+b=\begin{bmatrix}1\\2\end{bmatrix},
+\qquad
+x_0=\begin{bmatrix}0\\0\end{bmatrix}.
+\]
+Then
+\[
+r_0 = b - A x_0 = \begin{bmatrix}1\\2\end{bmatrix}.
+\]
+The first Krylov space is just \(\mathcal{K}_1=\text{span}\{r_0\}\), so the first correction is restricted to the residual direction.</p>
+<p>The second Krylov space is
+\[
+\mathcal{K}_2=\text{span}\{r_0, Ar_0\}.
+\]
+Since
+\[
+Ar_0 = \begin{bmatrix}4 & 1\\1 & 3\end{bmatrix}
+       \begin{bmatrix}1\\2\end{bmatrix}
+     = \begin{bmatrix}6\\7\end{bmatrix},
+\]
+GMRES now has two directions available instead of one. As the space grows, the method becomes more flexible and can usually reduce the residual much faster than a one-direction correction method.</p>
+
+<div class="box">
+<strong>Intuition.</strong>
+<p>GMRES uses repeated matrix-vector products to learn the important directions of the operator. It searches for the best correction in the span generated by \(r_0, Ar_0, A^2r_0,\dots\).</p>
+</div>
+
+<h2>6. Why a preconditioner is needed</h2>
+<p>GMRES alone may converge too slowly if the matrix is badly scaled, poorly conditioned, or contains difficult mixed couplings. A preconditioner \(P^{-1}\) is introduced so that we solve a transformed problem such as
+\[
+P^{-1} A x = P^{-1} b.
+\]
+The goal is for \(P\) to be cheap to apply, but still similar enough to \(A\) that \(P^{-1}A\) is much easier for GMRES.</p>
+
+<h3>6.1 Simple preconditioning example</h3>
+<p>Consider
+\[
+A=\begin{bmatrix}1000 & 1\\1 & 1\end{bmatrix}.
+\]
+The first variable is much stiffer than the second. A simple diagonal preconditioner is
+\[
+P=\begin{bmatrix}1000 & 0\\0 & 1\end{bmatrix}.
+\]
+This captures the dominant scaling. Even though it ignores the off-diagonal coupling, it can dramatically improve iterative convergence because it rescales the problem into a more balanced form.</p>
+
+<h3>6.2 What it means to design a preconditioner</h3>
+<p>Designing a preconditioner means deciding which features of the matrix must be approximated accurately, and which can be treated more crudely. In practice, one asks:</p>
+<ol>
+<li>What structure does my matrix have?</li>
+<li>What part makes the system hard to solve?</li>
+<li>Can I build a cheaper approximate inverse for that difficult part?</li>
+</ol>
+
+<h2>7. Application of preconditioning ideas to this FSI matrix</h2>
+<p>For the stabilized FSI system
+\[
+J =
+\begin{bmatrix}
+A & G^T \\
+G & -C_p
+\end{bmatrix},
+\]
+the hard parts are:</p>
+<ul>
+<li>the large velocity-like block \(A\), which contains both fluid and solid response,</li>
+<li>the pressure-velocity coupling \(G\),</li>
+<li>the stabilization term \(C_p\),</li>
+<li>the fact that the whole matrix is mixed and not purely elliptic.</li>
+</ul>
+<p>A black-box monolithic preconditioner tries to approximate the action of the entire matrix at once. A physics-aware preconditioner instead exploits this block structure. For example, one may treat the velocity-like block and the pressure block differently.</p>
+
+<h2>8. What AMG is</h2>
+<p>AMG stands for algebraic multigrid. It is a multilevel method constructed from the matrix itself, rather than from an explicit hierarchy of successively coarser meshes.</p>
+<p>The central multigrid idea is that local smoothers remove oscillatory error effectively, while smooth low-frequency error is better handled on coarser levels. AMG builds those coarse levels algebraically.</p>
+
+<h3>8.1 How AMG coarsening works</h3>
+<p>AMG interprets the sparse matrix as a graph:</p>
+<ul>
+<li>each DOF is a node,</li>
+<li>each nonzero coupling is an edge,</li>
+<li>stronger matrix couplings correspond to stronger graph connections.</li>
+</ul>
+<p>It then:</p>
+<ol>
+<li>identifies strongly connected unknowns,</li>
+<li>groups or selects representative coarse unknowns,</li>
+<li>builds interpolation/prolongation operators,</li>
+<li>forms a coarse operator using a Galerkin construction.</li>
+</ol>
+<p>If \(P\) is the prolongation operator from coarse to fine level, the coarse matrix is
+\[
+A_c = P^T A P.
+\]
+</p>
+
+<h3>8.2 AMG is not PCA or SVD</h3>
+<table>
+<tr><th>AMG</th><th>PCA / SVD</th></tr>
+<tr><td>Built from the sparse matrix graph</td><td>Built from solution or data snapshots</td></tr>
+<tr><td>Used to accelerate linear solves</td><td>Used to reduce model or data dimension</td></tr>
+<tr><td>Produces multilevel coarse operators</td><td>Produces a low-dimensional global basis</td></tr>
+<tr><td>Targets error components hard for iterative solvers</td><td>Targets dominant variance or energy in the dataset</td></tr>
+</table>
+
+<div class="box">
+<strong>Visual intuition.</strong>
+<p>AMG says: “let me solve the same equation on several algebraically constructed levels.” PCA says: “let me replace the state by a small number of dominant global modes learned from data.”</p>
+</div>
+
+<h2>9. Designing a field-split preconditioner for this problem</h2>
+<p>Since the unknowns are naturally grouped into velocity-like and pressure-like variables, a natural block split is
+\[
+x = \begin{bmatrix} v \\ p \end{bmatrix}.
+\]
+The Jacobian is then
+\[
+J =
+\begin{bmatrix}
+A & G^T \\
+G & -C_p
+\end{bmatrix}.
+\]
+</p>
+<p>A Schur-complement-based field-split preconditioner uses the block factorization logic of this matrix. The exact Schur complement is
+\[
+S = -C_p - G A^{-1} G^T.
+\]
+Since forming \(A^{-1}\) explicitly is too expensive, we instead build a cheap approximation \(\tilde{S}\).</p>
+
+<h3>9.1 Toy form of the field-split preconditioner</h3>
+<p>A simple block-diagonal version is
+\[
+P^{-1}_{\text{diag}}
+=
+\begin{bmatrix}
+\tilde{A}^{-1} & 0 \\
+0 & \tilde{S}^{-1}
+\end{bmatrix}.
+\]
+A more informative upper triangular version is
+\[
+P^{-1}_{\text{tri}}
+\approx
+\begin{bmatrix}
+\tilde{A}^{-1} & -\tilde{A}^{-1}G^T\tilde{S}^{-1} \\
+0 & \tilde{S}^{-1}
+\end{bmatrix}.
+\]
+</p>
+<ul>
+<li>\(\tilde{A}^{-1}\) is an approximate inverse for the velocity-like block, often using AMG,</li>
+<li>\(\tilde{S}^{-1}\) is an approximate inverse for the stabilized Schur complement in pressure space.</li>
+</ul>
+
+<h3>9.2 Why this is attractive in principle</h3>
+<p>This design treats pressure differently from velocity, which is often more natural than asking a single black-box AMG hierarchy to understand the entire mixed matrix. The cost, however, is additional setup complexity and more inner solves.</p>
+
+<h2>10. Which preconditioner is best for this problem?</h2>
+<p>From a purely mathematical design standpoint, the field-split Schur strategy is the cleanest because it aligns with the block structure of the mixed FSI system. However, numerical performance is an empirical question. The best preconditioner in practice is the one that yields the right answer robustly at the lowest wall-clock cost.</p>
+<p>For this formulation, the numerical evidence shows that a global GAMG preconditioner is already robust enough to handle the unpinned pressure variables in the solid domain. Although field-splitting and pressure pinning can make the algebra look cleaner and reduce iteration counts, the real-time cost is much higher.</p>
+
+<h2>11. Diary note: solver study and findings</h2>
+<div class="diary">
+<p><strong>Objective.</strong> I performed a numerical performance assessment comparing different linear solver strategies for the monolithic FSI simulation. The main question was whether explicitly pinning the pressure in the solid domain improves stability or accuracy enough to justify the extra computational cost.</p>
+<p><strong>Configurations tested.</strong></p>
+<ul>
+<li><strong>Config A:</strong> global GMRES + GAMG, no pressure pinning in the solid.</li>
+<li><strong>Config B:</strong> GMRES + FieldSplit (Schur-type) with pressure pinning in the solid.</li>
+<li>Additional comparisons included GMRES + hypre and tests with/without pinning pressure.</li>
+</ul>
+<p><strong>Finding 1: Physical consistency.</strong> Over the overlapping time steps, the computed physics was essentially identical. Flow rates, net concentration, and drug volume influx at the needle port matched. The unpinned runs showed only microscopic numerical noise near boundaries, around \(10^{-11}\), which is functionally zero.</p>
+<p><strong>Finding 2: Pressure pinning.</strong> Pinning the pressure in the solid did not materially change the solution. This indicates that, for the stabilized formulation used here, the ghost pressure variables in the solid are not corrupting the physically relevant FSI response.</p>
+<p><strong>Finding 3: Convergence behavior.</strong> The FieldSplit + pinning setup required fewer linear iterations per Newton step, roughly a 15% reduction, which suggests that the algebraic system is slightly cleaner when the unused pressure directions are explicitly constrained.</p>
+<p><strong>Finding 4: Wall-clock efficiency.</strong> Despite the lower iteration count, the FieldSplit setup was significantly slower overall. The extra cost of building and applying the field-splitting and pinning logic led to a roughly 3x–4x increase in wall-clock time per step. The GAMG configuration completed steps in about 20–30 seconds, while FieldSplit required about 90–110 seconds.</p>
+<p><strong>Finding 5: Preconditioner agreement.</strong> Over the first 20 steps, GAMG, hypre, and FieldSplit produced nearly identical trajectories. Residual differences were tiny, on the order of \(10^{-5}\) in absolute terms, and no meaningful difference was seen in the macroscopic physics over that window.</p>
+<p><strong>Current ranking.</strong> In practice, the observed speed ordering is
+\[
+\text{GAMG} > \text{hypre} > \text{FieldSplit}.
+\]
+</p>
+<p><strong>Conclusion.</strong> The unpinned global GAMG strategy is the best practical choice for scaling this simulation to long time horizons. FieldSplit remains valuable as a verification tool and as a clean physics-aware solver design, but it is not the most efficient production configuration for the present formulation.</p>
+</div>
+
+<h2>12. Final personal summary</h2>
+<p>The key lesson from this study is that mathematical cleanliness and computational efficiency are not always aligned. A field-split Schur formulation with pressure pinning is appealing from the point of view of matrix structure, but the numerical experiments show that the simpler global AMG strategy already captures the same physical solution at much lower cost.</p>
+<p>Therefore, for the present stabilized monolithic FSI formulation:</p>
+<ul>
+<li>pressure pinning in the solid is not necessary,</li>
+<li>MUMPS is not feasible due to memory limits,</li>
+<li>GMRES is the correct iterative framework,</li>
+<li>preconditioning is essential,</li>
+<li>and global GAMG is the best current production choice.</li>
+</ul>
 </body>
 </html>
