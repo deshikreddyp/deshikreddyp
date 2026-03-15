@@ -31,8 +31,45 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Boundary Layer Problem</h1>
     <article class="article-body">
-      <figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex"><div style="font-size:1.5em"><span class="icon">💡</span><div style="width:100%"><p>The mathematical complexity of convection heat transfer is traced to the non-linearity of the Navier-Stokes equations of motion and the coupling of flow and thermal fields. The boundary layer concept, first introduced by Prandtl in 1904, provides major simplifications. This concept is based on the notion that under special conditions certain terms in the governing equations are much smaller than others and therefore can be neglected without significantly affecting the accuracy of the solution.</p></div></div></figure></div><ol type="1" class="numbered-list" start="1"><li>Write down all the governing equations.</li></ol></div><ol type="1" class="numbered-list" start="2"><li>Simplify all the equations.<ol type="a" class="numbered-list" start="1"><li>Intuitive arguments (Guess works and hypothesis)</li></ol></div><ol type="a" class="numbered-list" start="2"><li>Scale Analysis (Mostly used for verification purposes)</li></ol></div></li></ol></div><ol type="1" class="numbered-list" start="3"><li>Write down all the governing Eqns and boundary conditions of problem statement. Also mention the conditions that were assumed in case of ‘sub-cases’ such as high ‘Pr’ flow and low ‘Pr’ flow.</li></ol></div><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex"><div style="font-size:1.5em"><span class="icon">💡</span><div style="width:100%">Thermal interaction is fully characterized once fluid temperature distribution is determined. However, temperature distribution depends on velocity distribution. For the special case of constant properties, velocity distribution is independent of temperature. Since this assumption will be made throughout, in each case the solution to the velocity distribution will be determined first and used to obtain the corresponding temperature solution. The exceptions are problems involving free convection where velocity and temperature must be solved simultaneously.</figure><ol type="1" class="numbered-list" start="4"><li>Blasius Solution / Similarity Eqn or Momentum Equation<ol type="a" class="numbered-list" start="1"><li>Non-dimentionalize the governing eqns and boundary conditions</li></ol><ol type="a" class="numbered-list" start="2"><li>Decide the similarity variable</li></ol><ol type="a" class="numbered-list" start="3"><li>Get the final simplified governing equation and Solve!!</li></ol></li></ol><p><code>Here you get to know the velocity field in the fluid domain, So now on putting the velocity in Energy equation, we get the temperature field.</code> </p><ol type="1" class="numbered-list" start="5"><li>Pohlhausen’s Solution / Similarity Equation or Energy Equation<ol type="a" class="numbered-list" start="1"><li>Non-dimentionalize the governing eqns and boundary conditions</li></ol><ol type="a" class="numbered-list" start="2"><li>Decide the similarity variable</li></ol><ol type="a" class="numbered-list" start="3"><li>Get the final simplified governing equation and Solve!!</li></ol></li></ol><div><figure><div class="source"><a href="https://share.goodnotes.com/s/i5p5U2aXGUL6ubrRFeLXek">https://share.goodnotes.com/s/i5p5U2aXGUL6ubrRFeLXek</a></figure>
+      <div class="callout block-color-gray_background">
+        <p>💡 The complexity of convective heat transfer comes from nonlinearity in the Navier-Stokes equations and coupling between velocity and temperature fields. The boundary-layer idea (Prandtl, 1904) simplifies the equations by neglecting terms that are asymptotically small in thin-layer regions.</p>
+      </div>
+
+      <ol>
+        <li>Write down the full governing equations and boundary conditions.</li>
+        <li>Simplify the equations using physically justified assumptions.
+          <ol type="a">
+            <li>Physical reasoning and modeling assumptions.</li>
+            <li>Scale analysis (used to validate neglected terms).</li>
+          </ol>
+        </li>
+        <li>State sub-case assumptions explicitly (for example, high-$Pr$ and low-$Pr$ limits).</li>
+      </ol>
+
+      <div class="callout block-color-gray_background">
+        <p>💡 For constant properties and forced convection, velocity can often be solved first and then used in the energy equation. In free convection, momentum and energy equations are coupled and should be solved together.</p>
+      </div>
+
+      <ol start="4">
+        <li>Momentum equation stage (e.g., Blasius-type similarity solution).
+          <ol type="a">
+            <li>Non-dimensionalize governing equations and boundary conditions.</li>
+            <li>Select an appropriate similarity variable.</li>
+            <li>Derive and solve the reduced ODE system.</li>
+          </ol>
+        </li>
+        <li>Energy equation stage (e.g., Pohlhausen-type treatment).
+          <ol type="a">
+            <li>Non-dimensionalize governing equations and boundary conditions.</li>
+            <li>Use the velocity profile from the momentum solution.</li>
+            <li>Solve the reduced temperature equation.</li>
+          </ol>
+        </li>
+      </ol>
+
+      <p><a href="https://share.goodnotes.com/s/i5p5U2aXGUL6ubrRFeLXek">Source notes (GoodNotes)</a></p>
     </article>
+  </div>
 </main>
 
 <footer>

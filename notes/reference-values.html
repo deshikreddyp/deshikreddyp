@@ -31,7 +31,20 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Reference Values</h1>
     <article class="article-body">
-      <header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/solid_blue.png" style="object-position:center 40%"/></header><p>You might have often come up with a tab named “reference values” in software packages like Abaqus, Ansys. What are these values?</p></div><p>Usually problems are often non-dimentionalized for easier solving. For this, the system need some data like free-stream velocity, characteristic length, Pressure, Area, Density, Enthalpy, Temperature, Velocity, Specific Heats. </p><p><strong>Ansys: </strong></p><p>The reference values can be entered manually or computed based on physical quantity values at a specified boundary zone. Area, Density, Enthalpy, Length, Pressure, Temperature, Velocity, dynamic Viscosity, and Ratio Of Specific Heats are the reference quantities to be set.</p><p>Depth is an additional quantity that can be defined for 2D situations. This value will be used to report fluxes and forces, as well as variables computed using the Surface Integrals and Volume Integrals dialogue boxes (e.g. Area, Flow Rate, Mass Flow Rate, Volume, etc.). Before reporting any of the variables listed above, double-check that the value and units of Depth correspond to the depth dimension of your application.</p><p><code>In the Set Units dialogue box, the units for Depth are set separately from the units for Length.</code><br/>Select the zone in the Compute From drop-down list if you wish to compute reference values from the conditions defined for a certain boundary zone. However, depending on the boundary condition, only a subset of the reference values may be set. The reference length and area, for example, will not be established by computing the reference values from a border condition; you must specify these manually.</p><p>To manually set the values, enter the value for each under the Reference Values heading.</p>
+      <p>You often see a tab named <em>Reference Values</em> in software packages such as Abaqus and Ansys. These are characteristic quantities used for normalization, coefficient reporting, and post-processing.</p>
+
+      <p>Problems are frequently <strong>non-dimensionalized</strong> for analysis and comparison. Typical reference data include free-stream velocity, characteristic length, area, density, pressure, temperature, viscosity, and specific heats.</p>
+
+      <h3>Ansys</h3>
+      <p>In Ansys Fluent, reference values can be entered manually or computed from a selected boundary zone. Common reference quantities are area, density, enthalpy, length, pressure, temperature, velocity, dynamic viscosity, and ratio of specific heats.</p>
+
+      <p>For 2D simulations, <strong>Depth</strong> is an additional quantity used when reporting forces and flux-related outputs (e.g., flow rate, mass flow rate, and integrated quantities).</p>
+
+      <p><code>In the Set Units dialog box, depth units are specified separately from length units.</code></p>
+
+      <p>If you use <em>Compute From</em>, only quantities implied by that boundary condition are populated. Reference length and area are often set manually.</p>
+
+      <p>To set values manually, provide each field under the <em>Reference Values</em> panel.</p>
     </article>
   </div>
 </main>
