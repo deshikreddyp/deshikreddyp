@@ -31,7 +31,28 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Numerical Solution of Parbolic and Elliptic Differential Equations</h1>
     <article class="article-body">
-      <p><code>Source: </code><code><a href="https://www.jstor.org/stable/pdf/2098834.pdf">https://www.jstor.org/stable/pdf/2098834.pdf</a></code></p></div>
+      <p>This page discusses the numerical treatment of parabolic (e.g., Heat Equation) and elliptic (e.g., Laplace Equation) PDEs using Finite Difference and Finite Element methods.</p>
+
+      <h3>Key Concepts</h3>
+      <ul>
+        <li><strong>Parabolic PDEs:</strong> Characterize dissipative processes. Information travels infinitely fast but decays over time. Typical solver: Implicit/Explicit Time Marching.</li>
+        <li><strong>Elliptic PDEs:</strong> Characterize steady-state processes. Information propagates throughout the domain instantly. Typical solver: Sparse direct or iterative linear solvers (GMRES, Conjugate Gradient).</li>
+      </ul>
+
+      <div class="callout block-color-blue_background">
+        <div>💡</div>
+        <div style="width:100%">
+          Historical reference on numerical solutions: <a href="https://www.jstor.org/stable/pdf/2098834.pdf" target="_blank">A.R. Mitchell (1969)</a>.
+        </div>
+      </div>
+
+      <div class="callout block-color-yellow_background">
+        <div>🚧</div>
+        <div style="width:100%">
+          <strong>Work in Progress:</strong> I am currently adding sections on Crank-Nicolson schemes and stability analysis (Von Neumann).
+        </div>
+      </div>
+    </article>
     </article>
   </div>
 </main>
@@ -44,5 +65,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
 </body>
 </html>

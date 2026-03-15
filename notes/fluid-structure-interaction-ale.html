@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fluid Structure Interaction — ALE | Notes | Deshik Reddy Putluru</title>
+  <title>Fluid Structure Interaction â€” ALE | Notes | Deshik Reddy Putluru</title>
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -20,20 +20,20 @@
       <a class="active" href="../notes.html">Notes</a>
     </nav>
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
-      <span class="sun">☀️</span>
-      <span class="moon">🌙</span>
+      <span class="sun">â˜€ï¸�</span>
+      <span class="moon">ðŸŒ™</span>
     </button>
   </div>
 </header>
 
 <main class="note-content">
   <div class="container">
-    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Fluid Structure Interaction �    <article class="article-body">
+    <div class="breadcrumb"><a href="../notes.html">â†� Notes</a></div>
+    <h1 class="page-title">Fluid Structure Interaction â    <article class="article-body">
       
-    <p class="note-meta">Fluid mechanics · FSI · Mesh motion · ALE framework</p>
+    <p class="note-meta">Fluid mechanics Â· FSI Â· Mesh motion Â· ALE framework</p>
 
-    <!-- ── Overview ── -->
+    <!-- â”€â”€ Overview â”€â”€ -->
     <section class="note-section">
       <h2>Overview</h2>
       <p>
@@ -41,8 +41,9 @@
         governing equations are solved:
       </p>
       <ol>
-        <li><strong>Monolithic approach</strong> — fluid, solid, and mesh motion equations are assembled
+        <li><strong>Monolithic approach</strong> â€” fluid, solid, and mesh motion equations are assembled
             into a single system and solved simultaneously.</li>
+        <li><strong>Partitioned (non-monolithic) approach</strong> â€” the fluid and solid solvers are
         <li><strong>Partitioned (non-monolithic) approach</strong> — the fluid and solid solvers are
             run separately and coupled at the interface iteratively.</li>
       </ol>
@@ -76,7 +77,7 @@
       </div>
     </section>
 
-    <!-- ── Why ALE ── -->
+    <!-- — Why ALE — -->
     <section class="note-section">
       <h2>Why ALE? Lagrangian vs. Eulerian</h2>
       <p>
@@ -101,7 +102,7 @@
       </p>
     </section>
 
-    <!-- ── ALE Procedure ── -->
+    <!-- — ALE Procedure — -->
     <section class="note-section">
       <h2>ALE Solution Procedure</h2>
       <p>At each time step, an ALE-FSI solver performs two coupled sub-problems:</p>
@@ -120,17 +121,17 @@
         <li>
           <strong>Moving-domain problem</strong> — solve the fluid and solid equations on the updated
           (deformed) mesh. The fluid momentum equation acquires an ALE convection term involving the
-          mesh velocity $\mathbf{\dot{w}}$:
+          mesh velocity $\dot{\mathbf{w}}$:
           <div class="equation-container">
-            $$\rho \left( \left. \frac{\partial \mathbf{u}}{\partial t} \right|_{\chi} + (\mathbf{u} - \mathbf{\dot{w}}) \cdot \nabla \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u}$$
+            $$\rho \left( \frac{\partial \mathbf{u}}{\partial t} \bigg|_\chi + (\mathbf{u} - \dot{\mathbf{w}}) \cdot \nabla \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u}$$
           </div>
-          where the derivative $\partial/\partial t|_{\chi}$ is taken at a fixed <em>ALE reference point</em> $\chi$,
+          where the derivative $\partial/\partial t|_\chi$ is taken at a fixed <em>ALE reference point</em> $\chi$,
           not a fixed material point or a fixed spatial point.
         </li>
       </ol>
 
       <div class="callout block-color-blue_background">
-        <div>📌</div>
+        <div> documental</div>
         <div style="width:100%">
           <strong>Key insight:</strong> In the solid domain, the mesh displacement equals the physical
           material displacement — these coincide by definition. In the <em>fluid</em> domain, the mesh
@@ -140,7 +141,7 @@
       </div>
     </section>
 
-    <!-- ── Coupling Strategies ── -->
+    <!-- — Coupling Strategies — -->
     <section class="note-section">
       <h2>Coupling Strategies</h2>
       <p>
@@ -202,9 +203,5 @@
       });
     });
   </script>
-</body>
-</html>
-ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script>Prism.highlightAll();</script>
 </body>
 </html>
