@@ -173,54 +173,63 @@
 </footer>
 
 <script>
+    const categories = [
+        "Computational Modeling (Numerical Methods)",
+        "FEniCS",
+        "Geometry & Mesh",
+        "Boundary Conditions",
+        "HPC",
+        "Linear Algebra/Solvers"
+    ];
+
     const notesData = [
-        { file: "notes/fsi-solver-notes-and-preconditioner-study.html", title: "FSI Solver Notes & Preconditioner Study", category: "Linear Algebra/Solvers", tags: ["FSI", "PETSc", "Algorithms", "Preconditioning"], created: "2026-03-14", modified: "2026-03-15" },
-        { file: "notes/the-generalized-minimal-residual-gmres-method.html", title: "The Generalized Minimal Residual (GMRES) Method", category: "Linear Algebra/Solvers", tags: ["Algorithms", "Math", "PETSc", "Krylov"], created: "2026-03-14", modified: "2026-03-15" },
-        { file: "notes/ale-move.html", title: "ALE Mesh Motion", category: "Geometry & Mesh", tags: ["CFD", "ALE", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/behind-cfd.html", title: "Behind CFD", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Algorithms", "Math", "Pressure-Velocity"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/boundary-layer-problem.html", title: "Boundary Layer Problem", category: "Computational Modeling (Numerical Methods)", tags: ["Physics", "Math", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/checkpoint-restart-in-legacy-fenics.html", title: "Checkpoint/Restart in Legacy FEniCS", category: "FEniCS", tags: ["Tools", "FEniCS", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/classification-of-pdes.html", title: "Classification of PDEs", category: "Computational Modeling (Numerical Methods)", tags: ["Math", "Algorithms", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/coleman-noll-procedure.html", title: "Coleman-Noll Procedure", category: "Computational Modeling (Numerical Methods)", tags: ["Physics", "Math", "Thermodynamics"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/dealing-with-complex-geometries-in-cfd.html", title: "Dealing with Complex Geometries", category: "Geometry & Mesh", tags: ["Meshing", "Tools", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/fenics-interpolation-across-non-matching-meshes.html", title: "FEniCS Interpolation", category: "FEniCS", tags: ["FEniCS", "Tools", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/flow-boundary-conditions.html", title: "Flow Boundary Conditions", category: "Boundary Conditions", tags: ["CFD", "Physics", "Fluid Mechanics", "Boundary Conditions"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/fluid-structure-interaction-ale.html", title: "Fluid Structure Interaction — ALE", category: "Computational Modeling (Numerical Methods)", tags: ["FSI", "Meshing", "CFD", "ALE"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/fpl-project.html", title: "FPL Project Record", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Project"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/front-tracking-method.html", title: "Front Tracking Method", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Algorithms", "Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/fundamentals-of-differential-equations.html", title: "Fundamentals of Differential Equations", category: "Computational Modeling (Numerical Methods)", tags: ["Math", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/getting-started.html", title: "Getting Started with CFD", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Introduction"], created: "2026-02-20", modified: "2026-02-20" },
-        { file: "notes/governing-equations.html", title: "Governing Equations", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Physics", "Math", "General Equations"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/inflation-bl.html", title: "Inflation Boundary Layer Meshing", category: "Geometry & Mesh", tags: ["Meshing", "CFD", "Physics", "GMSH"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/installing-gmsh-on-cluster.html", title: "Installing GMSH on Cluster", category: "HPC", tags: ["HPC", "Meshing", "Tools", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/lagrange-multipliers.html", title: "Lagrange Multipliers", category: "Linear Algebra/Solvers", tags: ["Math", "Algorithms", "FEniCS", "Optimization"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/latex-plug-in-for-inkscape.html", title: "LaTeX Plug-in for Inkscape", category: "Computational Modeling (Numerical Methods)", tags: ["Tools", "LaTeX", "Scientific Illustration"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/level-set-method.html", title: "Level Set Method", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Algorithms", "Level Set"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/markboundaries-py.html", title: "mark_boundaries.py", category: "FEniCS", tags: ["Tools", "Python", "Meshing", "FEniCS"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/numerical-solution-of-parabolic-and-elliptic-differ.html", title: "Numerical Solution of Parabolic & Elliptic PDEs", category: "Computational Modeling (Numerical Methods)", tags: ["Math", "Algorithms", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/o2-h2-reactant-fractions.html", title: "O2, H2 (Reactant fractions)", category: "Computational Modeling (Numerical Methods)", tags: ["Physics", "Chemistry", "CFD"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/petsc-fieldsplit-preconditioner-notes.html", title: "PETSc FieldSplit Preconditioner", category: "Linear Algebra/Solvers", tags: ["PETSc", "Algorithms", "FSI", "Linear Algebra"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/petsc-gamg-preconditioner-notes.html", title: "PETSc GAMG Preconditioner", category: "Linear Algebra/Solvers", tags: ["PETSc", "Algorithms", "HPC", "Multigrid"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/pressure-poisson-equation-incompressibility-constr.html", title: "Pressure Poisson Equation", category: "Linear Algebra/Solvers", tags: ["CFD", "Math", "Algorithms", "Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/pressure.html", title: "Pressure", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/quadrature-rule-riemann-lebesgue-integration.html", title: "Quadrature, Riemann & Lebesgue Integration", category: "Computational Modeling (Numerical Methods)", tags: ["Math", "Algorithms", "Integration"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/reference-values.html", title: "Reference Values", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Physics", "Tools", "Nondimensionalization"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/reynolds-grashof-prandtl-eckert-nusselt-number.html", title: "Dimensionless Numbers in Heat Transfer", category: "Computational Modeling (Numerical Methods)", tags: ["Physics", "CFD", "Fluid Mechanics", "Scaling"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/some-good-resources-on-newton-raphson-method.html", title: "Newton-Raphson Method Resources", category: "Computational Modeling (Numerical Methods)", tags: ["Algorithms", "Math", "Nonlinear Solvers"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/static-pressure.html", title: "Static Pressure", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/stl-to-brep-stl2brep-py.html", title: "STL to BRep (stl2brep.py)", category: "Geometry & Mesh", tags: ["Tools", "Python", "Meshing", "Geometry"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/temperature.html", title: "Temperature", category: "Computational Modeling (Numerical Methods)", tags: ["Physics", "Thermodynamics", "Heat Transfer"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/thoughts-on-solving-system-of-linear-equations.html", title: "Thoughts on Solving Systems of Linear Equations", category: "Linear Algebra/Solvers", tags: ["Algorithms", "Math", "PETSc", "Sparse Solvers"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/variational-form-of-ns.html", title: "Variational Form of NS", category: "FEniCS", tags: ["FEniCS", "CFD", "Math", "Variational"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/velocity-of-fluid.html", title: "Velocity of Fluid", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/velocity-potential.html", title: "Velocity Potential", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Math", "Potential Flow"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/volume-of-fluid-method-vof.html", title: "Volume of Fluid (VOF) Method", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Algorithms", "Multiphase", "VOF"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/volume-of-fluid.html", title: "Volume of Fluid", category: "Computational Modeling (Numerical Methods)", tags: ["CFD", "Algorithms", "Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
-        { file: "notes/what-is-boussinesq-approximation.html", title: "What is Boussinesq Approximation?", category: "Computational Modeling (Numerical Methods)", tags: ["Physics", "CFD", "Fluid Mechanics", "Buoyancy"], created: "2026-03-14", modified: "2026-03-14" }
+        { file: "notes/fsi-solver-notes-and-preconditioner-study.html", title: "FSI Solver Notes & Preconditioner Study", category: "Linear Algebra/Solvers", tags: ["FSI", "PETSc", "Preconditioning"], created: "2026-03-14", modified: "2026-03-15" },
+        { file: "notes/the-generalized-minimal-residual-gmres-method.html", title: "The Generalized Minimal Residual (GMRES) Method", category: "Linear Algebra/Solvers", tags: ["PETSc", "Krylov"], created: "2026-03-14", modified: "2026-03-15" },
+        { file: "notes/ale-move.html", title: "ALE Mesh Motion", category: "Geometry & Mesh", tags: ["ALE", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/behind-cfd.html", title: "Behind CFD", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/boundary-layer-problem.html", title: "Boundary Layer Problem", category: "Computational Modeling (Numerical Methods)", tags: ["Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/checkpoint-restart-in-legacy-fenics.html", title: "Checkpoint/Restart in Legacy FEniCS", category: "FEniCS", tags: ["FEniCS"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/classification-of-pdes.html", title: "Classification of PDEs", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/coleman-noll-procedure.html", title: "Coleman-Noll Procedure", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/dealing-with-complex-geometries-in-cfd.html", title: "Dealing with Complex Geometries", category: "Geometry & Mesh", tags: ["GMSH"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fenics-interpolation-across-non-matching-meshes.html", title: "FEniCS Interpolation", category: "FEniCS", tags: ["FEniCS"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/flow-boundary-conditions.html", title: "Flow Boundary Conditions", category: "Boundary Conditions", tags: ["Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fluid-structure-interaction-ale.html", title: "Fluid Structure Interaction — ALE", category: "Computational Modeling (Numerical Methods)", tags: ["FSI", "ALE"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fpl-project.html", title: "FPL Project Record", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/front-tracking-method.html", title: "Front Tracking Method", category: "Computational Modeling (Numerical Methods)", tags: ["Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fundamentals-of-differential-equations.html", title: "Fundamentals of Differential Equations", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/getting-started.html", title: "Getting Started with CFD", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-02-20", modified: "2026-02-20" },
+        { file: "notes/governing-equations.html", title: "Governing Equations", category: "Computational Modeling (Numerical Methods)", tags: ["Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/inflation-bl.html", title: "Inflation Boundary Layer Meshing", category: "Geometry & Mesh", tags: ["GMSH", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/installing-gmsh-on-cluster.html", title: "Installing GMSH on Cluster", category: "HPC", tags: ["GMSH", "HPC"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/lagrange-multipliers.html", title: "Lagrange Multipliers", category: "Linear Algebra/Solvers", tags: ["FEniCS"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/latex-plug-in-for-inkscape.html", title: "LaTeX Plug-in for Inkscape", category: "Computational Modeling (Numerical Methods)", tags: ["LaTeX"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/level-set-method.html", title: "Level Set Method", category: "Computational Modeling (Numerical Methods)", tags: ["Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/markboundaries-py.html", title: "mark_boundaries.py", category: "FEniCS", tags: ["FEniCS", "Python"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/numerical-solution-of-parabolic-and-elliptic-differ.html", title: "Numerical Solution of Parabolic & Elliptic PDEs", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/o2-h2-reactant-fractions.html", title: "O2, H2 (Reactant fractions)", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/petsc-fieldsplit-preconditioner-notes.html", title: "PETSc FieldSplit Preconditioner", category: "Linear Algebra/Solvers", tags: ["PETSc", "FSI", "Preconditioning"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/petsc-gamg-preconditioner-notes.html", title: "PETSc GAMG Preconditioner", category: "Linear Algebra/Solvers", tags: ["PETSc", "Multigrid"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/pressure-poisson-equation-incompressibility-constr.html", title: "Pressure Poisson Equation", category: "Linear Algebra/Solvers", tags: ["Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/pressure.html", title: "Pressure", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/quadrature-rule-riemann-lebesgue-integration.html", title: "Quadrature, Riemann & Lebesgue Integration", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/reference-values.html", title: "Reference Values", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/reynolds-grashof-prandtl-eckert-nusselt-number.html", title: "Dimensionless Numbers in Heat Transfer", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/some-good-resources-on-newton-raphson-method.html", title: "Newton-Raphson Method Resources", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/static-pressure.html", title: "Static Pressure", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/stl-to-brep-stl2brep-py.html", title: "STL to BRep (stl2brep.py)", category: "Geometry & Mesh", tags: ["GMSH", "Python"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/temperature.html", title: "Temperature", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/thoughts-on-solving-system-of-linear-equations.html", title: "Thoughts on Solving Systems of Linear Equations", category: "Linear Algebra/Solvers", tags: ["PETSc", "Krylov"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/variational-form-of-ns.html", title: "Variational Form of NS", category: "FEniCS", tags: ["FEniCS", "Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "velocity-of-fluid.html", title: "Velocity of Fluid", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/velocity-potential.html", title: "Velocity Potential", category: "Computational Modeling (Numerical Methods)", tags: [], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/volume-of-fluid-method-vof.html", title: "Volume of Fluid (VOF) Method", category: "Computational Modeling (Numerical Methods)", tags: ["Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/volume-of-fluid.html", title: "Volume of Fluid", category: "Computational Modeling (Numerical Methods)", tags: ["Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/what-is-boussinesq-approximation.html", title: "What is Boussinesq Approximation?", category: "Computational Modeling (Numerical Methods)", tags: ["Boussinesq"], created: "2026-03-14", modified: "2026-03-14" }
     ];
 
     let currentSort = { column: 'modified', direction: 'desc' };
-    let activeTags = new Set();
+    let activeCategories = new Set();
 
     const notesBody = document.getElementById('notes-body');
     const searchInput = document.getElementById('note-search');
@@ -228,7 +237,7 @@
     const noResults = document.getElementById('no-results');
 
     function init() {
-      populateTags();
+      populateFilters();
       updateDisplay();
       
       searchInput.addEventListener('input', updateDisplay);
@@ -251,26 +260,22 @@
       });
     }
 
-    function populateTags() {
-      const tags = new Set();
-      notesData.forEach(note => note.tags.forEach(tag => tags.add(tag)));
-      
-      const sortedTags = Array.from(tags).sort();
-      sortedTags.forEach(tag => {
+    function populateFilters() {
+      categories.forEach(cat => {
         const span = document.createElement('span');
         span.className = 'tag pill';
-        span.textContent = tag;
-        span.onclick = () => toggleTag(tag, span);
+        span.textContent = cat;
+        span.onclick = () => toggleCategory(cat, span);
         tagsFilter.appendChild(span);
       });
     }
 
-    function toggleTag(tag, element) {
-      if (activeTags.has(tag)) {
-        activeTags.delete(tag);
+    function toggleCategory(cat, element) {
+      if (activeCategories.has(cat)) {
+        activeCategories.delete(cat);
         element.classList.remove('active');
       } else {
-        activeTags.add(tag);
+        activeCategories.add(cat);
         element.classList.add('active');
       }
       updateDisplay();
@@ -284,10 +289,10 @@
                              note.category.toLowerCase().includes(query) ||
                              note.tags.some(t => t.toLowerCase().includes(query));
         
-        const matchesTags = activeTags.size === 0 || 
-                           Array.from(activeTags).every(t => note.tags.includes(t));
+        const matchesCategory = activeCategories.size === 0 || 
+                               activeCategories.has(note.category);
         
-        return matchesSearch && matchesTags;
+        return matchesSearch && matchesCategory;
       });
 
       // Sort
