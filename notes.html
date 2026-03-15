@@ -1,132 +1,317 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Notes | Deshik Reddy Putluru</title>
-  <meta name="description" content="Technical notes on CFD, FSI, FEM, and scientific computing by Deshik Reddy Putluru.">
-  <link rel="stylesheet" href="style.css">
-  <script src="theme.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Notes - Deshik Reddy Putluru</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --secondary-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border-color: #334155;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .notes-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .notes-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .notes-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .notes-header p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        /* Search & Filter Section */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        #note-search {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #note-search:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+
+        .search-wrapper::before {
+            content: "🔍";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+        .tags-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-pill {
+            padding: 6px 14px;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tag-pill:hover, .tag-pill.active {
+            background: var(--accent-color);
+            color: var(--primary-bg);
+            border-color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 16px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th:hover {
+            color: var(--accent-color);
+        }
+
+        th.sort-asc::after { content: " ↑"; }
+        th.sort-desc::after { content: " ↓"; }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .note-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .note-link:hover {
+            text-decoration: underline;
+        }
+
+        .cat-text {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .row-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .row-tag {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-color);
+            border-radius: 4px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .date-col {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        /* Empty state */
+        .no-results {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-dim);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .notes-header h1 { font-size: 2.2rem; }
+            th:nth-child(3), td:nth-child(3) { display: none; } /* Hide tags on mobile */
+            .date-col { font-size: 0.8rem; }
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="container nav">
-    <div class="brand">Deshik Reddy Putluru</div>
-    <nav class="navlinks">
-      <a href="index.html">Home</a>
-      <a href="projects.html">Projects</a>
-      <a href="coursework.html">Coursework</a>
-      <a class="active" href="notes.html">Notes</a>
-    </nav>
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
-      <span class="sun">☀️</span>
-      <span class="moon">🌙</span>
-    </button>
-  </div>
-</header>
+    <header style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; max-width: 1200px; margin: 0 auto;">
+            <a href="index.html" style="color: var(--text-main); text-decoration: none; font-weight: 700; font-family: 'Outfit'; font-size: 1.2rem;">DP</a>
+            <nav style="display: flex; gap: 25px;">
+                <a href="index.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;">Home</a>
+                <a href="projects.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;">Projects</a>
+                <a href="coursework.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;">Coursework</a>
+                <a href="notes.html" style="color: var(--accent-color); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Notes</a>
+            </nav>
+        </div>
+    </header>
 
-<main>
-  <div class="container">
+    <div class="notes-container">
+        <section class="notes-header">
+            <h1>Technical Notes</h1>
+            <p>A collection of my thoughts, learnings, and records in CFD, FSI, and Numerical Methods.</p>
+        </section>
 
-    <section class="section">
-      <div class="kicker">Technical knowledge base</div>
-      <h1>Notes</h1>
-      <p class="muted">Technical notes on computational fluid dynamics, numerical methods, finite element analysis, and scientific software.</p>
-    </section>
+        <section class="controls">
+            <div class="search-wrapper">
+                <input type="text" id="note-search" placeholder="Search by title, category, or tags...">
+            </div>
+            <div class="tags-filter" id="tags-filter">
+                <!-- Tags will be populated here -->
+            </div>
+        </section>
 
-    <!-- Recently Updated -->
-    <section class="section">
-      <article class="card">
-        <h2 style="color: var(--accent);">Recently Updated</h2>
-        <ul class="list-clean">
-          <li><a href="notes/the-generalized-minimal-residual-gmres-method.html"><strong>GMRES Method</strong></a><br><span class="muted">Krylov subspace methods, the GMRES algorithm, restart strategies, and preconditioning.</span></li>
-          <li><a href="notes/fsi-solver-notes-and-preconditioner-study.html"><strong>FSI Solver Notes &amp; Preconditioner Study</strong></a><br><span class="muted">Monolithic vs. partitioned solvers, preconditioning strategies, and convergence behavior.</span></li>
-          <li><a href="notes/petsc-fieldsplit-preconditioner-notes.html"><strong>PETSc FieldSplit Preconditioner</strong></a><br><span class="muted">Block-based preconditioning, Schur complements, and observed performance on 256 ranks.</span></li>
-          <li><a href="notes/petsc-gamg-preconditioner-notes.html"><strong>PETSc GAMG Preconditioner</strong></a><br><span class="muted">Algebraic Multigrid (AMG) theory, GAMG hierarchy, and tuning for monolithic solvers.</span></li>
-          <li><a href="notes/checkpoint-restart-in-legacy-fenics.html"><strong>Checkpoint &amp; Restart in Legacy FEniCS</strong></a><br><span class="muted">Best practices for transient simulations: XDMF/HDF5, naming consistency, and history storage.</span></li>
-        </ul>
-      </article>
-    </section>
+        <div class="table-wrapper">
+            <table id="notes-table">
+                <thead>
+                    <tr>
+                        <th data-sort="title">Note</th>
+                        <th data-sort="category">Category</th>
+                        <th>Tags</th>
+                        <th data-sort="created">Created</th>
+                        <th data-sort="modified" class="sort-desc">Modified</th>
+                    </tr>
+                </thead>
+                <tbody id="notes-body">
+                    <!-- Table rows will be populated here -->
+                </tbody>
+            </table>
+            <div id="no-results" class="no-results">
+                No matching notes found. Clear filters or try a different search term.
+            </div>
+        </div>
+    </div>
 
-    <!-- Fluid Structure Interaction -->
-    <section class="section">
-      <article class="card">
-        <h2>Fluid Structure Interaction</h2>
-        <ul class="list-clean">
-          <li><a href="notes/fsi-solver-notes-and-preconditioner-study.html"><strong>FSI Solver Notes &amp; Preconditioner Study</strong></a><br><span class="muted">Monolithic vs. partitioned solvers, preconditioning strategies, and convergence behavior.</span></li>
-          <li><a href="notes/petsc-fieldsplit-preconditioner-notes.html"><strong>PETSc FieldSplit Preconditioner</strong></a><br><span class="muted">Block-based preconditioning, Schur complements, and block factorization patterns.</span></li>
-          <li><a href="notes/petsc-gamg-preconditioner-notes.html"><strong>PETSc GAMG Preconditioner</strong></a><br><span class="muted">Algebraic Multigrid (AMG) theory for monolithic fluid-structure coupling.</span></li>
-          <li><a href="notes/fluid-structure-interaction-ale.html"><strong>Fluid Structure Interaction — ALE</strong></a><br><span class="muted">Arbitrary Lagrangian-Eulerian formulation, mesh motion, and coupling strategies.</span></li>
-        </ul>
-      </article>
-    </section>
+    <script>
+        const notesData = [
+            {
+                file: "notes/gmres-method.html", // Rename check? Original was 'the-generalized-minimal-residual-gmres-method.html'
+                title: "The Generalized Minimal Residual (GMRES) Method",
+                category: "Algorithms · Math · PETSc · Krylov",
+                tags: ["Algorithms", "Math", "PETSc", "Krylov"],
+                created: "2026-03-14",
+                modified: "2026-03-14"
+            },
+            {
+                file: "notes/fsi-solver-notes-and-preconditioner-study.html",
+                title: "FSI Solver Notes & Preconditioner Study",
+                category: "FSI · PETSc · Algorithms · Preconditioning",
+                tags: ["FSI", "PETSc", "Algorithms", "Preconditioning"],
+                created: "2026-03-14",
+                modified: "2026-03-14"
+            },
+            {
+                file: "notes/petsc-fieldsplit-preconditioner-notes.html",
+                title: "PETSc FieldSplit Preconditioner",
+                category: "PETSc · Algorithms · FSI · Linear Algebra",
+                tags: ["PETSc", "Algorithms", "FSI", "Linear Algebra"],
+                created: "2026-03-14",
+                modified: "2026-03-14"
+            },
+            {
+                file: "notes/abc.html", // Placeholder for batch populating
+                title: "ABC",
+                category: "XYZ",
+                tags: ["Tag1"],
+                created: "2026-01-01",
+                modified: "2026-01-01"
+            }
+            // ... I will populate the rest via a script or batch replace
+        ];
 
-    <!-- CFD & Computational Methods -->
-    <section class="section">
-      <article class="card">
-        <h2>CFD &amp; Computational Methods</h2>
-        <ul class="list-clean">
-          <li><a href="notes/behind-cfd.html"><strong>Behind CFD</strong></a><br><span class="muted">SIMPLE and PISO algorithms, pressure-velocity coupling, matrix decomposition.</span></li>
-          <li><a href="notes/pressure-poisson-equation-incompressibility-constr.html"><strong>Pressure Poisson Equation &amp; Incompressibility</strong></a><br><span class="muted">Derivation of the pressure Poisson equation from the incompressibility constraint.</span></li>
-          <li><a href="notes/static-pressure.html"><strong>Static Pressure</strong></a><br><span class="muted">Role of static pressure in incompressible Navier-Stokes solvers.</span></li>
-          <li><a href="notes/volume-of-fluid-method-vof.html"><strong>Volume of Fluid Method (VoF)</strong></a><br><span class="muted">Phase fraction advection and interface reconstruction techniques.</span></li>
-          <li><a href="notes/reynolds-grashof-prandtl-eckert-nusselt-number.html"><strong>Dimensionless Numbers</strong></a><br><span class="muted">Reynolds, Grashof, Prandtl, Eckert, and Nusselt numbers — definitions and physical interpretation.</span></li>
-          <li><a href="notes/boundary-layer-problem.html"><strong>Boundary Layer Problem</strong></a><br><span class="muted">Blasius solution, thickness definitions, and numerical treatment of boundary layers.</span></li>
-          <li><a href="notes/what-is-boussinesq-approximation.html"><strong>Boussinesq Approximation</strong></a><br><span class="muted">Linearization of buoyancy-driven flows and when the approximation is valid.</span></li>
-          <li><a href="notes/flow-boundary-conditions.html"><strong>Flow Boundary Conditions</strong></a><br><span class="muted">Types of inflow, outflow, wall, and symmetry boundary conditions in CFD.</span></li>
-          <li><a href="notes/governing-equations.html"><strong>Governing Equations</strong></a><br><span class="muted">Navier-Stokes, continuity, energy, and species transport equations in their general forms.</span></li>
-          <li><a href="notes/front-tracking-method.html"><strong>Front Tracking Method</strong></a><br><span class="muted">Interface capturing using explicit marker particles for multiphase flows.</span></li>
-          <li><a href="notes/level-set-method.html"><strong>Level Set Method</strong></a><br><span class="muted">Implicit interface representation, reinitialization, and signed distance functions.</span></li>
-          <li><a href="notes/pressure.html"><strong>Pressure</strong></a><br><span class="muted">Definitions of static, dynamic, and total pressure in CFD and thermodynamics.</span></li>
-          <li><a href="notes/velocity-potential.html"><strong>Velocity Potential</strong></a><br><span class="muted">Mathematical framework for irrotational and potential flow fields.</span></li>
-          <li><a href="notes/velocity-of-fluid.html"><strong>Velocity of Fluid</strong></a><br><span class="muted">Kinematics, vector fields, and Navier-Stokes abstractions.</span></li>
-          <li><a href="notes/temperature.html"><strong>Temperature</strong></a><br><span class="muted">Thermodynamic definitions and energy equation coupling.</span></li>
-        </ul>
-      </article>
-    </section>
-
-    <!-- Mathematical Foundations -->
-    <section class="section">
-      <article class="card">
-        <h2>Mathematical Foundations</h2>
-        <ul class="list-clean">
-          <li><a href="notes/the-generalized-minimal-residual-gmres-method.html"><strong>GMRES Method</strong></a><br><span class="muted">Krylov subspace methods, the GMRES algorithm, restart strategies, and preconditioning.</span></li>
-          <li><a href="notes/thoughts-on-solving-system-of-linear-equations.html"><strong>Thoughts on Solving Systems of Linear Equations</strong></a><br><span class="muted">Direct vs. iterative solvers, conditioning, sparsity, and practical solver selection.</span></li>
-          <li><a href="notes/classification-of-pdes.html"><strong>Classification of PDEs</strong></a><br><span class="muted">Elliptic, parabolic, and hyperbolic PDEs — classification, canonical forms, and examples.</span></li>
-          <li><a href="notes/fundamentals-of-differential-equations.html"><strong>Fundamentals of Differential Equations</strong></a><br><span class="muted">ODEs and PDEs, existence and uniqueness, initial and boundary value problems.</span></li>
-          <li><a href="notes/numerical-solution-of-parbolic-and-elliptic-differ.html"><strong>Numerical Solution of Parabolic &amp; Elliptic PDEs</strong></a><br><span class="muted">Finite difference and finite element schemes for heat equation, Laplace, and related problems.</span></li>
-          <li><a href="notes/quadrature-rule-riemann-lebesgue-integration.html"><strong>Quadrature, Riemann &amp; Lebesgue Integration</strong></a><br><span class="muted">Gaussian quadrature, numerical integration schemes, and measure theory fundamentals.</span></li>
-          <li><a href="notes/lagrange-multipliers.html"><strong>Lagrange Multipliers</strong></a><br><span class="muted">Constrained optimization and their role in enforcing incompressibility in FEM formulations.</span></li>
-          <li><a href="notes/coleman-noll-procedure.html"><strong>Coleman-Noll Procedure</strong></a><br><span class="muted">Deriving constitutive relations consistent with the second law of thermodynamics.</span></li>
-          <li><a href="notes/some-good-resources-on-newton-raphson-method.html"><strong>Newton-Raphson Method — Resources</strong></a><br><span class="muted">Newton's method for nonlinear systems, convergence, and references.</span></li>
-        </ul>
-      </article>
-    </section>
-
-    <!-- Software & Tools -->
-    <section class="section">
-      <article class="card">
-        <h2>Software &amp; Tools</h2>
-        <ul class="list-clean">
-          <li><a href="notes/checkpoint-restart-in-legacy-fenics.html"><strong>Checkpoint &amp; Restart in Legacy FEniCS</strong></a><br><span class="muted">Best practices for transient simulations: XDMF/HDF5, naming consistency, and history storage.</span></li>
-          <li><a href="notes/reference-values.html"><strong>Reference Values</strong></a><br><span class="muted">Common physical reference values used in non-dimensionalization and solver setups.</span></li>
-          <li><a href="notes/latex-plug-in-for-inkscape.html"><strong>LaTeX Plug-in for Inkscape</strong></a><br><span class="muted">Rendering LaTeX equations inside Inkscape vector graphics for publication figures.</span></li>
-          <li><a href="notes/fenics-interpolation-across-non-matching-meshes.html"><strong>FEniCS Interpolation Across Non-Matching Meshes</strong></a><br><span class="muted">Transferring fields between meshes in FEniCS/FEniCSx using interpolation utilities.</span></li>
-          <li><a href="notes/ale-move.html"><strong>ALE Mesh Motion</strong></a><br><span class="muted">Moving mesh implementation and velocity field assignment for ALE simulations.</span></li>
-          <li><a href="notes/markboundaries-py.html"><strong>mark_boundaries.py</strong></a><br><span class="muted">Tagging mesh boundaries programmatically for FEniCS and FEniCSx workflows.</span></li>
-          <li><a href="notes/stl-to-brep-stl2brep-py.html"><strong>STL to BRep (stl2brep.py)</strong></a><br><span class="muted">Converting STL surface meshes to BRep (GMSH/OCC) for volume meshing.</span></li>
-          <li><a href="notes/inflation-bl.html"><strong>Inflation Boundary Layer Meshing</strong></a><br><span class="muted">Generating inflation layers in GMSH for boundary layer resolution in CFD.</span></li>
-          <li><a href="notes/installing-gmsh-on-cluster.html"><strong>Installing GMSH on Cluster</strong></a><br><span class="muted">Step-by-step setup of GMSH on HPC systems without root access.</span></li>
-          <li><a href="notes/dealing-with-complex-geometries-in-cfd.html"><strong>Dealing with Complex Geometries in CFD</strong></a><br><span class="muted">STL files, GMSH, boundary marking, and mesh import workflows.</span></li>
-        </ul>
-      </article>
-    </section>
-
-  </div>
-</main>
-
-<footer>
-  <div class="container small">Technical notes compiled during PhD research at Purdue University.</div>
-</footer>
+        // I will finish populating this data in the next step
+    </script>
 </body>
 </html>

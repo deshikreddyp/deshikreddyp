@@ -24,9 +24,18 @@ th { background: #f3f4f6; text-align: left; }
 .small { font-size: 0.92rem; color: #4b5563; }
 </style>
 </head>
-<body>
-<h1>FSI Solver Notes and Preconditioner Study</h1>
-<p class="small">Prepared as technical notes + diary record for the solver study on pressure pinning, Krylov methods, and preconditioners in a stabilized FSI formulation.</p>
+<main class="note-content" data-tags="FSI, PETSc, Algorithms, Preconditioning">
+  <div class="container">
+    <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
+    <h1 class="page-title">FSI Solver Notes and Preconditioner Study</h1>
+    <p class="small">Category: FSI · PETSc · Algorithms · Preconditioning</p>
+    <p class="small">Last updated: <span id="last-updated">...</span></p>
+    <script>
+      const lastMod = new Date(document.lastModified);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('last-updated').textContent = lastMod.toLocaleDateString(undefined, options);
+    </script>
+    <article class="article-body">
 
 <h2>1. Problem statement</h2>
 <p>I am solving a fluid-structure interaction (FSI) problem on a single global mesh. The fluid and solid live in different subdomains, but the unknowns are represented using global finite-element spaces. In particular, the velocity \(v\) and pressure \(p\) are defined over the entire computational domain. Physically, pressure is only relevant in the fluid, but mathematically it still exists as a global degree of freedom because of the way the mixed spaces are defined.</p>
@@ -317,5 +326,14 @@ P^{-1}_{\text{tri}}
 <li>preconditioning is essential,</li>
 <li>and global GAMG is the best current production choice.</li>
 </ul>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <div class="container small">
+    Deshik Reddy Putluru · <a href="../notes.html">All Notes</a>
+  </div>
+</footer>
 </body>
 </html>
