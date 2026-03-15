@@ -26,7 +26,7 @@
 <div class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-<header><h1 class="page-title" dir="auto">mark_boundaries.py</h1></header><div class="page-body"><div style="display:contents" dir="auto"><h3 id="35b8f6e8-c723-4b2b-aa5a-538394de5582" class="">Generate facegroups</h3></div><div style="display:contents" dir="auto"><p id="5c7b8d9d-77b2-4e76-ae77-9fb0e0d47bbc" class="">Define a function that returns angle between facets v1, v2.</p></div><div style="display:contents" dir="auto"><pre id="9942c21a-2f9e-45d7-a6ca-7da5aa07f3a9" class="code code-wrap"><code class="language-python">import os
+<header><h1 class="page-title" dir="auto">mark_boundaries.py</h1></header><div class="page-body"><div style="display:contents" dir="auto"><h3 id="35b8f6e8-c723-4b2b-aa5a-538394de5582" class="">Generate facegroups</h3></div><div style="display:contents" dir="auto"><p id="5c7b8d9d-77b2-4e76-ae77-9fb0e0d47bbc" class="">Define a function that returns angle between facets v1, v2.</p></div><div style="display:contents" dir="auto"><pre id="9942c21a-2f9e-45d7-a6ca-7da5aa07f3a9" class="code code code-wrap language-python"><code class="language-python">import os
 import sys
 from dolfin import *
 import numpy as np
@@ -41,7 +41,7 @@ def angle_between(v1, v2):
         else:
             return 0.0
     return angle</code></pre></div><div style="display:contents" dir="auto"><p id="0479063e-4202-41ca-98de-3c79c298d981" class="">
-</p></div><div style="display:contents" dir="auto"><pre id="b22acb6e-c8ee-43a1-a4e4-d8e65444a077" class="code code-wrap"><code class="language-python">def _mark_loop(bmesh, normals, threshold_angles, boundaries, queue, visited, marker, threshold=30):
+</p></div><div style="display:contents" dir="auto"><pre id="b22acb6e-c8ee-43a1-a4e4-d8e65444a077" class="code code code-wrap language-python"><code class="language-python">def _mark_loop(bmesh, normals, threshold_angles, boundaries, queue, visited, marker, threshold=30):
     queue_indices = np.where(queue.array())[0]
 
     num_marked = 0
@@ -73,7 +73,7 @@ def angle_between(v1, v2):
                 queue[neighbour] = not visited[neighbour]
         queue_indices = np.where(queue.array())[0]
         num_marked += 1</code></pre></div><div style="display:contents" dir="auto"><p id="19c92ebc-b5b9-48d4-99ba-8b70d17f3190" class="">
-</p></div><div style="display:contents" dir="auto"><pre id="da26afaf-e049-4103-a02d-555e7ea74276" class="code code-wrap"><code class="language-python">def mark_boundaries(mesh, threshold_angle=30, I=0, min_facets=10):
+</p></div><div style="display:contents" dir="auto"><pre id="da26afaf-e049-4103-a02d-555e7ea74276" class="code code code-wrap language-python"><code class="language-python">def mark_boundaries(mesh, threshold_angle=30, I=0, min_facets=10):
     &quot;&quot;&quot;Mark boundaries automatically by feature edges in mesh. Will connect
     facets to the same boundary if angle between them is less than threshold_angle.
     Will also detect and mark disconnected parts of boundary.
@@ -157,5 +157,6 @@ def angle_between(v1, v2):
 <footer><div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div></footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script>Prism.highlightAll();</script>
 </body>
 </html>
