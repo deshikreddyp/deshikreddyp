@@ -31,7 +31,35 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Governing Equations</h1>
     <article class="article-body">
-      <h3><strong>Material Derivative</strong></h3></div><p>The material derivative of a quantity represents the change of quantity in its langragian description.</p><h3>Reynolds Transport Theorem</h3><h3>Gauss Divergence Theorem</h3><h3>Continuity Equation</h3><h3>Momentum Equation</h3>
+      <h3>Material Derivative</h3>
+      <p>The material derivative (also known as the substantive or Lagrangian derivative) describes the time rate of change of a physical quantity for a fluid particle moving with the flow velocity $\mathbf{u}$.</p>
+      <div class="equation-container">
+        $$\frac{D\phi}{Dt} = \frac{\partial\phi}{\partial t} + (\mathbf{u} \cdot \nabla)\phi$$
+      </div>
+
+      <h3>Reynolds Transport Theorem (RTT)</h3>
+      <p>RTT provides a link between the rate of change of a property in a control volume (Eulerian) and the rate of change for a fixed group of particles (Lagrangian).</p>
+      <div class="equation-container">
+        $$\frac{d}{dt}\int_{\Omega(t)} f d\Omega = \int_{\Omega(t)} \frac{\partial f}{\partial t} d\Omega + \int_{\Gamma(t)} f (\mathbf{u} \cdot \mathbf{n}) d\Gamma$$
+      </div>
+
+      <h3>Gauss Divergence Theorem</h3>
+      <p>Relates the volume integral of the divergence of a vector field to the surface integral of the field over the boundary.</p>
+      <div class="equation-container">
+        $$\int_{\Omega} \nabla \cdot \mathbf{F} d\Omega = \int_{\Gamma} \mathbf{F} \cdot \mathbf{n} d\Gamma$$
+      </div>
+
+      <h3>Continuity Equation</h3>
+      <p>Representing the conservation of mass. For an incompressible fluid, the density is constant, leading to the zero-divergence condition:</p>
+      <div class="equation-container">
+        $$\nabla \cdot \mathbf{u} = 0$$
+      </div>
+
+      <h3>Momentum Equation</h3>
+      <p>Derived from Newton's Second Law ($\mathbf{F}=m\mathbf{a}$). For an incompressible Newtonian fluid, the Navier-Stokes momentum equation is:</p>
+      <div class="equation-container">
+        $$\rho \left( \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u} + \mathbf{f}$$
+      </div>
     </article>
   </div>
 </main>

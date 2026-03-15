@@ -31,6 +31,33 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Velocity Potential</h1>
     <article class="article-body">
+      <p>In fluid dynamics, the <strong>Velocity Potential</strong> ($\phi$) is a scalar function used to describe irrotational flow. When a flow is irrotational, the velocity field $\mathbf{u}$ can be expressed as the gradient of this potential function.</p>
+
+      <h3>Mathematical Definition</h3>
+      <p>For an irrotational flow, the vorticity $\omega = \nabla \times \mathbf{u} = 0$. This condition allows us to define $\phi$ such that:</p>
+      <div class="equation-container">
+        $$\mathbf{u} = \nabla \phi$$
+      </div>
+      <p>In Cartesian coordinates $(x, y, z)$, the velocity components are:</p>
+      <div class="equation-container">
+        $$u = \frac{\partial \phi}{\partial x}, \quad v = \frac{\partial \phi}{\partial y}, \quad w = \frac{\partial \phi}{\partial z}$$
+      </div>
+
+      <h3>Laplace's Equation</h3>
+      <p>For an <strong>incompressible</strong> and <strong>irrotational</strong> flow, the continuity equation ($\nabla \cdot \mathbf{u} = 0$) leads to Laplace's equation for the velocity potential:</p>
+      <div class="equation-container">
+        $$\nabla \cdot (\nabla \phi) = \nabla^2 \phi = 0$$
+      </div>
+      <p>This is a fundamental result in potential flow theory, allowing complex flow fields to be solved using techniques from linear partial differential equations.</p>
+
+      <h3>Relation to Bernoulli's Equation</h3>
+      <p>For steady, irrotational, incompressible flow, the Bernoulli equation can be written in terms of the velocity potential:</p>
+      <div class="equation-container">
+        $$\frac{\partial \phi}{\partial t} + \frac{1}{2}|\nabla \phi|^2 + \frac{p}{\rho} + gz = f(t)$$
+      </div>
+
+      <div class="callout block-color-gray_background">
+        <p>💡 <strong>Note:</strong> While velocity potential is defined for irrotational flows in any number of dimensions, the <em>stream function</em> is typically only defined for 2D or axisymmetric flows.</p>
       </div>
     </article>
   </div>

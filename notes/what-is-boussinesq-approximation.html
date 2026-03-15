@@ -31,7 +31,30 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">What is Boussinesq Approximation?</h1>
     <article class="article-body">
-      <header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/solid_blue.png" style="object-position:center 40%"/></header><p>Fluid motion in free convection is driven by density change and gravity. Thus the assumption of constant constant density cannot be made in the analysis of free convection problems. Instead an alternate simplification called the Bossinesq approximation is made. The basic approach in this approximation is to treat the density as constant in the continuity equation and the inertia term of the momentum equation, but allow it to change with temperature in the gravity term.  </p></div><p>Source: Latif Jiji “Convective Heat Transfer”</p>
+      <p>The <strong>Boussinesq Approximation</strong> is a simplified model used for natural convection flows where density variations are small. The core assumption is that density changes are neglected except in the buoyancy term of the momentum equation.</p>
+
+      <h3>Core Assumptions</h3>
+      <ul>
+        <li>Density is treated as constant ($\rho_0$) in the continuity equation and the inertia terms.</li>
+        <li>Density is allowed to vary with temperature only in the gravity (buoyancy) term.</li>
+        <li>The relationship between density and temperature is assumed to be linear:</li>
+      </ul>
+
+      <div class="equation-container">
+        $$\rho \approx \rho_0 [1 - \beta (T - T_0)]$$
+      </div>
+
+      <p>where $\beta$ is the thermal expansion coefficient, $T_0$ is the reference temperature, and $\rho_0$ is the density at $T_0$.</p>
+
+      <h3>Modified Momentum Equation</h3>
+      <p>Substituting this into the Navier-Stokes momentum equation:</p>
+      <div class="equation-container">
+        $$\rho_0 \left( \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} \right) = -\nabla (p + \rho_0 g z) + \mu \nabla^2 \mathbf{u} - \rho_0 \beta (T - T_0) \mathbf{g}$$
+      </div>
+
+      <p>This approximation significantly simplifies the numerical solution as it avoids solving a fully compressible system of equations while still capturing the physics of buoyancy-driven flows.</p>
+      
+      <p><em>Source: Latif Jiji "Convective Heat Transfer"</em></p>
     </article>
   </div>
 </main>

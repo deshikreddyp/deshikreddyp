@@ -31,6 +31,30 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Velocity of Fluid</h1>
     <article class="article-body">
+      <p>In fluid mechanics, the <strong>Velocity Field</strong> is a vector field that describes the velocity of a fluid at a given point in space and time.</p>
+
+      <h3>Eulerian and Lagrangian Descriptions</h3>
+      <p>There are two primary ways to describe the motion of a fluid:</p>
+      <ul>
+        <li><strong>Eulerian Description:</strong> Focuses on specific locations in space through which the fluid flows. The velocity is expressed as $\mathbf{u}(\mathbf{x}, t)$, where $\mathbf{x}$ is a fixed coordinate.</li>
+        <li><strong>Lagrangian Description:</strong> Tracks the motion of individual fluid particles. The velocity of a specific particle $P$ is denoted as $\mathbf{u}_P(t)$.</li>
+      </ul>
+
+      <h3>Velocity Components</h3>
+      <p>The velocity vector $\mathbf{u}$ in Cartesian coordinates is typically represented by its components $(u, v, w)$ along the $(x, y, z)$ axes:</p>
+      <div class="equation-container">
+        $$\mathbf{u} = u\mathbf{i} + v\mathbf{j} + w\mathbf{k}$$
+      </div>
+
+      <h3>Properties derived from Velocity</h3>
+      <ul>
+        <li><strong>Vorticity ($\omega$):</strong> The curl of the velocity field, representing the local rotation of fluid elements: $\omega = \nabla \times \mathbf{u}$.</li>
+        <li><strong>Strain Rate Tensor ($S$):</strong> Describes the rate of deformation of the fluid: $S = \frac{1}{2}(\nabla \mathbf{u} + (\nabla \mathbf{u})^T)$.</li>
+        <li><strong>Divergence ($\nabla \cdot \mathbf{u}$):</strong> Represents the rate of expansion/compression of the fluid. For an incompressible fluid, $\nabla \cdot \mathbf{u} = 0$.</li>
+      </ul>
+
+      <div class="callout block-color-gray_background">
+        <p>💡 <strong>Note:</strong> The velocity field is the primary variable solved for in the Navier-Stokes equations, alongside pressure.</p>
       </div>
     </article>
   </div>

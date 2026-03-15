@@ -31,6 +31,25 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Static Pressure</h1>
     <article class="article-body">
+      <p><strong>Static Pressure</strong> is the actual thermodynamic pressure of a fluid. It is the pressure that would be measured by a sensor moving with the fluid flow.</p>
+
+      <h3>Physical Significance</h3>
+      <p>In a fluid at rest, the static pressure is the only pressure present and is isotropic (acts equally in all directions). In a moving fluid, static pressure represents the internal energy of the fluid per unit volume, excluding the kinetic energy of the bulk motion.</p>
+
+      <h3>Measurement</h3>
+      <p>Static pressure is typically measured using a static port or a probe that is parallel to the flow direction, ensuring that the measurement is not affected by the fluid's velocity (dynamic pressure).</p>
+
+      <h3>Relation to Total Pressure</h3>
+      <p>According to Bernoulli's equation, for an incompressible, frictionless flow, the sum of static pressure and dynamic pressure along a streamline is constant, and is called the <strong>Total Pressure</strong> ($p_t$):</p>
+      <div class="equation-container">
+        $$p_t = p + \frac{1}{2}\rho u^2$$
+      </div>
+
+      <h3>In CFD</h3>
+      <p>In most incompressible CFD solvers (like OpenFOAM's <code>simpleFoam</code> or <code>pisoFoam</code>), the pressure solved for is often the <em>kinematic pressure</em> ($p/\rho$), which has units of $m^2/s^2$.</p>
+
+      <div class="callout block-color-gray_background">
+        <p>💡 <strong>Note:</strong> Static pressure should not be confused with <em>stagnation pressure</em>, which is the pressure the fluid would attain if it were brought to rest isentropically.</p>
       </div>
     </article>
   </div>
