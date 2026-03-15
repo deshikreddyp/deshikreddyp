@@ -1,448 +1,346 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical Notes - Deshik Reddy Putluru</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-bg: #0f172a;
-            --secondary-bg: #1e293b;
-            --accent-color: #38bdf8;
-            --text-main: #f1f5f9;
-            --text-dim: #94a3b8;
-            --border-color: #334155;
-            --card-bg: rgba(30, 41, 59, 0.7);
-        }
-
-        body {
-            background-color: var(--primary-bg);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-
-        .notes-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .notes-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .notes-header h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #38bdf8, #818cf8);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .notes-header p {
-            color: var(--text-dim);
-            font-size: 1.1rem;
-        }
-
-        /* Search & Filter Section */
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 40px;
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-        }
-
-        .search-wrapper {
-            position: relative;
-        }
-
-        #note-search {
-            width: 100%;
-            padding: 14px 20px 14px 45px;
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-main);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        #note-search:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
-        }
-
-        .search-wrapper::before {
-            content: "🔍";
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-            opacity: 0.6;
-        }
-
-        .tags-filter {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag-pill {
-            padding: 6px 14px;
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tag-pill:hover, .tag-pill.active {
-            background: var(--accent-color);
-            color: var(--primary-bg);
-            border-color: var(--accent-color);
-            font-weight: 600;
-        }
-
-        /* Table Styles */
-        .table-wrapper {
-            overflow-x: auto;
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th {
-            background: rgba(15, 23, 42, 0.5);
-            padding: 16px 20px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            user-select: none;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th:hover {
-            color: var(--accent-color);
-        }
-
-        th.sort-asc::after { content: " ↑"; }
-        th.sort-desc::after { content: " ↓"; }
-
-        td {
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: rgba(56, 189, 248, 0.05);
-        }
-
-        .note-link {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.05rem;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .note-link:hover {
-            text-decoration: underline;
-        }
-
-        .cat-text {
-            font-size: 0.85rem;
-            color: var(--text-dim);
-        }
-
-        .row-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .row-tag {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-color);
-            border-radius: 4px;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-        }
-
-        .date-col {
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: var(--text-dim);
-            white-space: nowrap;
-        }
-
-        /* Empty state */
-        .no-results {
-            padding: 40px;
-            text-align: center;
-            color: var(--text-dim);
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .notes-header h1 { font-size: 2.2rem; }
-            th:nth-child(3), td:nth-child(3) { display: none; } /* Hide tags on mobile */
-            .date-col { font-size: 0.8rem; }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Technical Notes - Deshik Reddy Putluru</title>
+  <meta name="description" content="Technical notes on CFD, FSI, and Numerical Methods.">
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <style>
+    /* Minimalistic adjustments for the notes page */
+    .controls {
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .filter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .tag.pill {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    
+    .tag.pill:hover {
+      background: var(--accent);
+      color: var(--text-inverse);
+      border-color: transparent;
+    }
+    
+    .tag.active {
+      background: var(--brand-color);
+      color: var(--text-inverse);
+      border-color: transparent;
+    }
+    
+    /* Table Enhancements */
+    th.sortable {
+      cursor: pointer;
+      position: relative;
+    }
+    
+    th.sortable:hover {
+      color: var(--accent);
+    }
+    
+    th.sort-asc::after { content: " ↑"; font-size: 0.8rem; }
+    th.sort-desc::after { content: " ↓"; font-size: 0.8rem; }
+    
+    .note-row:hover td {
+      background: var(--panel-2);
+    }
+    
+    .date {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    
+    .category-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: block;
+      margin-top: 0.2rem;
+    }
+    
+    /* Row tags */
+    .row-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    
+    .row-tag {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    
+    .no-results {
+      padding: 3rem;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+    }
+  </style>
 </head>
 <body>
-    <header style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border-color);">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; max-width: 1200px; margin: 0 auto;">
-            <a href="index.html" style="color: var(--text-main); text-decoration: none; font-weight: 700; font-family: 'Outfit'; font-size: 1.2rem;">DP</a>
-            <nav style="display: flex; gap: 25px;">
-                <a href="index.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;">Home</a>
-                <a href="projects.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;">Projects</a>
-                <a href="coursework.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 500;">Coursework</a>
-                <a href="notes.html" style="color: var(--accent-color); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Notes</a>
-            </nav>
-        </div>
-    </header>
+<header>
+  <div class="container nav">
+    <div class="brand">Deshik Reddy Putluru</div>
+    <nav class="navlinks">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="coursework.html">Coursework</a>
+      <a class="active" href="notes.html">Notes</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+      <span class="sun">☀️</span>
+      <span class="moon">🌙</span>
+    </button>
+  </div>
+</header>
 
-    <div class="notes-container">
-        <section class="notes-header">
-            <h1>Technical Notes</h1>
-            <p>A collection of my thoughts, learnings, and records in CFD, FSI, and Numerical Methods.</p>
-        </section>
+<section class="hero">
+  <div class="container">
+    <div class="kicker">Knowledge Base</div>
+    <h1>Technical Notes</h1>
+    <p>A searchable collection of technical records in CFD, FSI, and Scientific Computing.</p>
+  </div>
+</section>
 
-        <section class="controls">
-            <div class="search-wrapper">
-                <input type="text" id="note-search" placeholder="Search by title, category, or tags...">
-            </div>
-            <div class="tags-filter" id="tags-filter">
-                <!-- Tags will be populated here -->
-            </div>
-        </section>
+<main>
+  <div class="container">
+    <section class="controls">
+      <input type="text" id="note-search" class="search-input" placeholder="Search by title, category, or tags...">
+      <div id="tags-filter" class="filter-tags">
+        <!-- Tags populated by JS -->
+      </div>
+    </section>
 
-        <div class="table-wrapper">
-            <table id="notes-table">
-                <thead>
-                    <tr>
-                        <th data-sort="title">Note</th>
-                        <th data-sort="category">Category</th>
-                        <th>Tags</th>
-                        <th data-sort="created">Created</th>
-                        <th data-sort="modified" class="sort-desc">Modified</th>
-                    </tr>
-                </thead>
-                <tbody id="notes-body">
-                    <!-- Table rows will be populated here -->
-                </tbody>
-            </table>
-            <div id="no-results" class="no-results">
-                No matching notes found. Clear filters or try a different search term.
-            </div>
-        </div>
+    <div class="table-wrap">
+      <table id="notes-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="title">Note</th>
+            <th class="sortable" data-sort="category">Category</th>
+            <th>Tags</th>
+            <th class="sortable" data-sort="created">Created</th>
+            <th class="sortable sort-desc" data-sort="modified">Modified</th>
+          </tr>
+        </thead>
+        <tbody id="notes-body">
+          <!-- Rows populated by JS -->
+        </tbody>
+      </table>
     </div>
+    
+    <div id="no-results" class="no-results" style="display: none;">
+      No matching notes found. Try adjusting your search or filters.
+    </div>
+  </div>
+</main>
 
-    <script>
-        const notesData = [
-            { file: "notes/fsi-solver-notes-and-preconditioner-study.html", title: "FSI Solver Notes & Preconditioner Study", category: "FSI · PETSc · Algorithms · Preconditioning", tags: ["FSI", "PETSc", "Algorithms", "Preconditioning"], created: "2026-03-14", modified: "2026-03-15" },
-            { file: "notes/the-generalized-minimal-residual-gmres-method.html", title: "The Generalized Minimal Residual (GMRES) Method", category: "Algorithms · Math · PETSc · Krylov", tags: ["Algorithms", "Math", "PETSc", "Krylov"], created: "2026-03-14", modified: "2026-03-15" },
-            { file: "notes/ale-move.html", title: "ALE Mesh Motion", category: "CFD · ALE · Meshing", tags: ["CFD", "ALE", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/behind-cfd.html", title: "Behind CFD", category: "CFD · Algorithms · Math · Pressure-Velocity", tags: ["CFD", "Algorithms", "Math", "Pressure-Velocity"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/boundary-layer-problem.html", title: "Boundary Layer Problem", category: "Physics · Math · Fluid Mechanics", tags: ["Physics", "Math", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/checkpoint-restart-in-legacy-fenics.html", title: "Checkpoint/Restart in Legacy FEniCS", category: "Tools · FEniCS · Workflow", tags: ["Tools", "FEniCS", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/classification-of-pdes.html", title: "Classification of PDEs", category: "Math · Algorithms · Fundamentals", tags: ["Math", "Algorithms", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/coleman-noll-procedure.html", title: "Coleman-Noll Procedure", category: "Physics · Math · Thermodynamics", tags: ["Physics", "Math", "Thermodynamics"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/dealing-with-complex-geometries-in-cfd.html", title: "Dealing with Complex Geometries", category: "Meshing · Tools · Workflow", tags: ["Meshing", "Tools", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/fenics-interpolation-across-non-matching-meshes.html", title: "FEniCS Interpolation", category: "FEniCS · Tools · Meshing", tags: ["FEniCS", "Tools", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/flow-boundary-conditions.html", title: "Flow Boundary Conditions", category: "CFD · Physics · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics", "Boundary Conditions"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/fluid-structure-interaction-ale.html", title: "Fluid Structure Interaction — ALE", category: "FSI · Meshing · CFD · ALE", tags: ["FSI", "Meshing", "CFD", "ALE"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/fpl-project.html", title: "FPL Project Record", category: "CFD · Project", tags: ["CFD", "Project"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/front-tracking-method.html", title: "Front Tracking Method", category: "CFD · Algorithms · Multiphase", tags: ["CFD", "Algorithms", "Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/fundamentals-of-differential-equations.html", title: "Fundamentals of Differential Equations", category: "Math · Fundamentals", tags: ["Math", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/getting-started.html", title: "Getting Started with CFD", category: "CFD · Introduction", tags: ["CFD", "Introduction"], created: "2026-02-20", modified: "2026-02-20" },
-            { file: "notes/governing-equations.html", title: "Governing Equations", category: "CFD · Physics · Math · Equations", tags: ["CFD", "Physics", "Math", "General Equations"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/inflation-bl.html", title: "Inflation Boundary Layer Meshing", category: "Meshing · CFD · Physics · GMSH", tags: ["Meshing", "CFD", "Physics", "GMSH"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/installing-gmsh-on-cluster.html", title: "Installing GMSH on Cluster", category: "HPC · Meshing · Tools · Workflow", tags: ["HPC", "Meshing", "Tools", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/lagrange-multipliers.html", title: "Lagrange Multipliers", category: "Math · Algorithms · FEniCS · Optimization", tags: ["Math", "Algorithms", "FEniCS", "Optimization"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/latex-plug-in-for-inkscape.html", title: "LaTeX Plug-in for Inkscape", category: "Tools · LaTeX · Scientific Illustration", tags: ["Tools", "LaTeX", "Scientific Illustration"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/level-set-method.html", title: "Level Set Method", category: "CFD · Algorithms · Level Set", tags: ["CFD", "Algorithms", "Level Set"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/markboundaries-py.html", title: "mark_boundaries.py", category: "Tools · Python · Meshing · FEniCS", tags: ["Tools", "Python", "Meshing", "FEniCS"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/numerical-solution-of-parbolic-and-elliptic-differ.html", title: "Numerical Solution of Parabolic & Elliptic PDEs", category: "Math · Algorithms · Fundamentals", tags: ["Math", "Algorithms", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/o2-h2-reactant-fractions.html", title: "O2, H2 (Reactant fractions)", category: "Physics · Chemistry · CFD", tags: ["Physics", "Chemistry", "CFD"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/petsc-fieldsplit-preconditioner-notes.html", title: "PETSc FieldSplit Preconditioner", category: "PETSc · Algorithms · FSI · Linear Algebra", tags: ["PETSc", "Algorithms", "FSI", "Linear Algebra"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/petsc-gamg-preconditioner-notes.html", title: "PETSc GAMG Preconditioner", category: "PETSc · Algorithms · HPC · Multigrid", tags: ["PETSc", "Algorithms", "HPC", "Multigrid"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/pressure-poisson-equation-incompressibility-constr.html", title: "Pressure Poisson Equation", category: "CFD · Math · Algorithms · Navier-Stokes", tags: ["CFD", "Math", "Algorithms", "Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/pressure.html", title: "Pressure", category: "CFD · Physics · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/quadrature-rule-riemann-lebesgue-integration.html", title: "Quadrature, Riemann & Lebesgue Integration", category: "Math · Algorithms · Integration", tags: ["Math", "Algorithms", "Integration"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/reference-values.html", title: "Reference Values", category: "CFD · Physics · Tools · Nondimensionalization", tags: ["CFD", "Physics", "Tools", "Nondimensionalization"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/reynolds-grashof-prandtl-eckert-nusselt-number.html", title: "Dimensionless Numbers in Heat Transfer", category: "Physics · CFD · Fluid Mechanics · Scaling", tags: ["Physics", "CFD", "Fluid Mechanics", "Scaling"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/some-good-resources-on-newton-raphson-method.html", title: "Newton-Raphson Method Resources", category: "Algorithms · Math · Nonlinear Solvers", tags: ["Algorithms", "Math", "Nonlinear Solvers"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/static-pressure.html", title: "Static Pressure", category: "CFD · Physics · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/stl-to-brep-stl2brep-py.html", title: "STL to BRep (stl2brep.py)", category: "Tools · Python · Meshing · Geometry", tags: ["Tools", "Python", "Meshing", "Geometry"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/temperature.html", title: "Temperature", category: "Physics · Thermodynamics · Heat Transfer", tags: ["Physics", "Thermodynamics", "Heat Transfer"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/thoughts-on-solving-system-of-linear-equations.html", title: "Thoughts on Solving Systems of Linear Equations", category: "Algorithms · Math · PETSc · Sparse Solvers", tags: ["Algorithms", "Math", "PETSc", "Sparse Solvers"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/variational-form-of-ns.html", title: "Variational Form of NS", category: "FEniCS · CFD · Math · Variational", tags: ["FEniCS", "CFD", "Math", "Variational"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/velocity-of-fluid.html", title: "Velocity of Fluid", category: "CFD · Physics · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/velocity-potential.html", title: "Velocity Potential", category: "CFD · Math · Potential Flow", tags: ["CFD", "Math", "Potential Flow"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/volume-of-fluid-method-vof.html", title: "Volume of Fluid (VOF) Method", category: "CFD · Algorithms · Multiphase · VOF", tags: ["CFD", "Algorithms", "Multiphase", "VOF"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/volume-of-fluid.html", title: "Volume of Fluid", category: "CFD · Algorithms · Multiphase", tags: ["CFD", "Algorithms", "Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
-            { file: "notes/what-is-boussinesq-approximation.html", title: "What is Boussinesq Approximation?", category: "Physics · CFD · Fluid Mechanics · Buoyancy", tags: ["Physics", "CFD", "Fluid Mechanics", "Buoyancy"], created: "2026-03-14", modified: "2026-03-14" }
-        ];
+<footer>
+  <div class="container small">Deshik Reddy Putluru · PhD Student at Purdue University</div>
+</footer>
 
-        let currentSort = { column: 'modified', direction: 'desc' };
-        let activeTags = new Set();
+<script>
+    const notesData = [
+        { file: "notes/fsi-solver-notes-and-preconditioner-study.html", title: "FSI Solver Notes & Preconditioner Study", category: "FSI · Algorithms", tags: ["FSI", "PETSc", "Algorithms", "Preconditioning"], created: "2026-03-14", modified: "2026-03-15" },
+        { file: "notes/the-generalized-minimal-residual-gmres-method.html", title: "The Generalized Minimal Residual (GMRES) Method", category: "Algorithms · Math", tags: ["Algorithms", "Math", "PETSc", "Krylov"], created: "2026-03-14", modified: "2026-03-15" },
+        { file: "notes/ale-move.html", title: "ALE Mesh Motion", category: "CFD · ALE", tags: ["CFD", "ALE", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/behind-cfd.html", title: "Behind CFD", category: "CFD · Algorithms", tags: ["CFD", "Algorithms", "Math", "Pressure-Velocity"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/boundary-layer-problem.html", title: "Boundary Layer Problem", category: "Physics · Fluid Mechanics", tags: ["Physics", "Math", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/checkpoint-restart-in-legacy-fenics.html", title: "Checkpoint/Restart in Legacy FEniCS", category: "Tools · Workflow", tags: ["Tools", "FEniCS", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/classification-of-pdes.html", title: "Classification of PDEs", category: "Math · Fundamentals", tags: ["Math", "Algorithms", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/coleman-noll-procedure.html", title: "Coleman-Noll Procedure", category: "Physics · Thermodynamics", tags: ["Physics", "Math", "Thermodynamics"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/dealing-with-complex-geometries-in-cfd.html", title: "Dealing with Complex Geometries", category: "Meshing · Tools", tags: ["Meshing", "Tools", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fenics-interpolation-across-non-matching-meshes.html", title: "FEniCS Interpolation", category: "FEniCS · Meshing", tags: ["FEniCS", "Tools", "Meshing"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/flow-boundary-conditions.html", title: "Flow Boundary Conditions", category: "CFD · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics", "Boundary Conditions"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fluid-structure-interaction-ale.html", title: "Fluid Structure Interaction — ALE", category: "FSI · ALE", tags: ["FSI", "Meshing", "CFD", "ALE"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fpl-project.html", title: "FPL Project Record", category: "CFD · Project", tags: ["CFD", "Project"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/front-tracking-method.html", title: "Front Tracking Method", category: "CFD · Multiphase", tags: ["CFD", "Algorithms", "Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/fundamentals-of-differential-equations.html", title: "Fundamentals of Differential Equations", category: "Math · Fundamentals", tags: ["Math", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/getting-started.html", title: "Getting Started with CFD", category: "CFD · Introduction", tags: ["CFD", "Introduction"], created: "2026-02-20", modified: "2026-02-20" },
+        { file: "notes/governing-equations.html", title: "Governing Equations", category: "CFD · Physics", tags: ["CFD", "Physics", "Math", "General Equations"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/inflation-bl.html", title: "Inflation Boundary Layer Meshing", category: "Meshing · GMSH", tags: ["Meshing", "CFD", "Physics", "GMSH"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/installing-gmsh-on-cluster.html", title: "Installing GMSH on Cluster", category: "HPC · Meshing", tags: ["HPC", "Meshing", "Tools", "Workflow"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/lagrange-multipliers.html", title: "Lagrange Multipliers", category: "Math · Optimization", tags: ["Math", "Algorithms", "FEniCS", "Optimization"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/latex-plug-in-for-inkscape.html", title: "LaTeX Plug-in for Inkscape", category: "Tools · Scientific Illustration", tags: ["Tools", "LaTeX", "Scientific Illustration"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/level-set-method.html", title: "Level Set Method", category: "CFD · Algorithms", tags: ["CFD", "Algorithms", "Level Set"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/markboundaries-py.html", title: "mark_boundaries.py", category: "Tools · FEniCS", tags: ["Tools", "Python", "Meshing", "FEniCS"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/numerical-solution-of-parabolic-and-elliptic-differ.html", title: "Numerical Solution of Parabolic & Elliptic PDEs", category: "Math · Fundamentals", tags: ["Math", "Algorithms", "Fundamentals"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/o2-h2-reactant-fractions.html", title: "O2, H2 (Reactant fractions)", category: "Physics · Chemistry", tags: ["Physics", "Chemistry", "CFD"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/petsc-fieldsplit-preconditioner-notes.html", title: "PETSc FieldSplit Preconditioner", category: "PETSc · Algorithms", tags: ["PETSc", "Algorithms", "FSI", "Linear Algebra"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/petsc-gamg-preconditioner-notes.html", title: "PETSc GAMG Preconditioner", category: "PETSc · HPC", tags: ["PETSc", "Algorithms", "HPC", "Multigrid"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/pressure-poisson-equation-incompressibility-constr.html", title: "Pressure Poisson Equation", category: "CFD · Navier-Stokes", tags: ["CFD", "Math", "Algorithms", "Navier-Stokes"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/pressure.html", title: "Pressure", category: "CFD · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/quadrature-rule-riemann-lebesgue-integration.html", title: "Quadrature, Riemann & Lebesgue Integration", category: "Math · Algorithms", tags: ["Math", "Algorithms", "Integration"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/reference-values.html", title: "Reference Values", category: "CFD · Tools", tags: ["CFD", "Physics", "Tools", "Nondimensionalization"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/reynolds-grashof-prandtl-eckert-nusselt-number.html", title: "Dimensionless Numbers in Heat Transfer", category: "Physics · Heat Transfer", tags: ["Physics", "CFD", "Fluid Mechanics", "Scaling"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/some-good-resources-on-newton-raphson-method.html", title: "Newton-Raphson Method Resources", category: "Algorithms · Math", tags: ["Algorithms", "Math", "Nonlinear Solvers"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/static-pressure.html", title: "Static Pressure", category: "CFD · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/stl-to-brep-stl2brep-py.html", title: "STL to BRep (stl2brep.py)", category: "Tools · Meshing", tags: ["Tools", "Python", "Meshing", "Geometry"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/temperature.html", title: "Temperature", category: "Physics · Thermodynamics", tags: ["Physics", "Thermodynamics", "Heat Transfer"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/thoughts-on-solving-system-of-linear-equations.html", title: "Thoughts on Solving Systems of Linear Equations", category: "Algorithms · Math", tags: ["Algorithms", "Math", "PETSc", "Sparse Solvers"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/variational-form-of-ns.html", title: "Variational Form of NS", category: "FEniCS · Math", tags: ["FEniCS", "CFD", "Math", "Variational"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/velocity-of-fluid.html", title: "Velocity of Fluid", category: "CFD · Fluid Mechanics", tags: ["CFD", "Physics", "Fluid Mechanics"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/velocity-potential.html", title: "Velocity Potential", category: "CFD · Potential Flow", tags: ["CFD", "Math", "Potential Flow"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/volume-of-fluid-method-vof.html", title: "Volume of Fluid (VOF) Method", category: "CFD · Multiphase", tags: ["CFD", "Algorithms", "Multiphase", "VOF"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/volume-of-fluid.html", title: "Volume of Fluid", category: "CFD · Multiphase", tags: ["CFD", "Algorithms", "Multiphase"], created: "2026-03-14", modified: "2026-03-14" },
+        { file: "notes/what-is-boussinesq-approximation.html", title: "What is Boussinesq Approximation?", category: "Physics · Buoyancy", tags: ["Physics", "CFD", "Fluid Mechanics", "Buoyancy"], created: "2026-03-14", modified: "2026-03-14" }
+    ];
 
-        const notesBody = document.getElementById('notes-body');
-        const searchInput = document.getElementById('note-search');
-        const tagsContainer = document.getElementById('tags-filter');
-        const noResults = document.getElementById('no-results');
+    let currentSort = { column: 'modified', direction: 'desc' };
+    let activeTags = new Set();
 
-        function init() {
-            populateTags();
-            updateDisplay();
-            
-            searchInput.addEventListener('input', updateDisplay);
-            
-            document.querySelectorAll('th[data-sort]').forEach(th => {
-                th.addEventListener('click', () => {
-                    const column = th.dataset.sort;
-                    if (currentSort.column === column) {
-                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-                    } else {
-                        currentSort.column = column;
-                        currentSort.direction = 'desc';
-                    }
-                    
-                    document.querySelectorAll('th').forEach(el => el.classList.remove('sort-asc', 'sort-desc'));
-                    th.classList.add(`sort-${currentSort.direction}`);
-                    
-                    updateDisplay();
-                });
-            });
+    const notesBody = document.getElementById('notes-body');
+    const searchInput = document.getElementById('note-search');
+    const tagsFilter = document.getElementById('tags-filter');
+    const noResults = document.getElementById('no-results');
+
+    function init() {
+      populateTags();
+      updateDisplay();
+      
+      searchInput.addEventListener('input', updateDisplay);
+      
+      document.querySelectorAll('th.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+          const column = th.dataset.sort;
+          if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+          } else {
+            currentSort.column = column;
+            currentSort.direction = 'desc';
+          }
+          
+          document.querySelectorAll('th').forEach(el => el.classList.remove('sort-asc', 'sort-desc'));
+          th.classList.add(`sort-${currentSort.direction}`);
+          
+          updateDisplay();
+        });
+      });
+    }
+
+    function populateTags() {
+      const tags = new Set();
+      notesData.forEach(note => note.tags.forEach(tag => tags.add(tag)));
+      
+      const sortedTags = Array.from(tags).sort();
+      sortedTags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'tag pill';
+        span.textContent = tag;
+        span.onclick = () => toggleTag(tag, span);
+        tagsFilter.appendChild(span);
+      });
+    }
+
+    function toggleTag(tag, element) {
+      if (activeTags.has(tag)) {
+        activeTags.delete(tag);
+        element.classList.remove('active');
+      } else {
+        activeTags.add(tag);
+        element.classList.add('active');
+      }
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const query = searchInput.value.toLowerCase();
+      
+      let filtered = notesData.filter(note => {
+        const matchesSearch = note.title.toLowerCase().includes(query) || 
+                             note.category.toLowerCase().includes(query) ||
+                             note.tags.some(t => t.toLowerCase().includes(query));
+        
+        const matchesTags = activeTags.size === 0 || 
+                           Array.from(activeTags).every(t => note.tags.includes(t));
+        
+        return matchesSearch && matchesTags;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        let valA = a[currentSort.column];
+        let valB = b[currentSort.column];
+        
+        if (['created', 'modified'].includes(currentSort.column)) {
+          valA = new Date(valA);
+          valB = new Date(valB);
+        } else {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
         }
 
-        function populateTags() {
-            const tags = new Set();
-            notesData.forEach(note => note.tags.forEach(tag => tags.add(tag)));
-            
-            const sortedTags = Array.from(tags).sort();
-            sortedTags.forEach(tag => {
-                const span = document.createElement('span');
-                span.className = 'tag-pill';
-                span.textContent = tag;
-                span.onclick = () => toggleTag(tag, span);
-                tagsContainer.appendChild(span);
-            });
-        }
+        if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+        if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
 
-        function toggleTag(tag, element) {
-            if (activeTags.has(tag)) {
-                activeTags.delete(tag);
-                element.classList.remove('active');
-            } else {
-                activeTags.add(tag);
-                element.classList.add('active');
-            }
-            updateDisplay();
-        }
+      renderTable(filtered);
+    }
 
-        function updateDisplay() {
-            const query = searchInput.value.toLowerCase();
-            
-            let filtered = notesData.filter(note => {
-                const matchesSearch = note.title.toLowerCase().includes(query) || 
-                                     note.category.toLowerCase().includes(query) ||
-                                     note.tags.some(t => t.toLowerCase().includes(query));
-                
-                const matchesTags = activeTags.size === 0 || 
-                                   Array.from(activeTags).every(t => note.tags.includes(t));
-                
-                return matchesSearch && matchesTags;
-            });
+    function renderTable(data) {
+      notesBody.innerHTML = '';
+      if (data.length === 0) {
+        noResults.style.display = 'block';
+        return;
+      }
+      
+      noResults.style.display = 'none';
+      data.forEach(note => {
+        const tr = document.createElement('tr');
+        tr.className = 'note-row';
+        tr.innerHTML = `
+          <td>
+            <a href="${note.file}" style="font-weight: 600;">${note.title}</a>
+            <span class="category-label">${note.category}</span>
+          </td>
+          <td>${note.category.split('·')[0].trim()}</td>
+          <td>
+            <div class="row-tags">
+              ${note.tags.map(t => `<span class="row-tag">${t}</span>`).join('')}
+            </div>
+          </td>
+          <td class="date">${note.created}</td>
+          <td class="date">${note.modified}</td>
+        `;
+        notesBody.appendChild(tr);
+      });
+    }
 
-            // Sort
-            filtered.sort((a, b) => {
-                let valA = a[currentSort.column];
-                let valB = b[currentSort.column];
-                
-                if (currentSort.column === 'created' || currentSort.column === 'modified') {
-                    valA = new Date(valA);
-                    valB = new Date(valB);
-                } else {
-                    valA = valA.toLowerCase();
-                    valB = valB.toLowerCase();
-                }
-
-                if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
-                if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
-                return 0;
-            });
-
-            renderTable(filtered);
-        }
-
-        function renderTable(data) {
-            notesBody.innerHTML = '';
-            if (data.length === 0) {
-                noResults.style.display = 'block';
-                return;
-            }
-            
-            noResults.style.display = 'none';
-            data.forEach(note => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <a href="${note.file}" class="note-link">${note.title}</a>
-                        <span class="cat-text">${note.category}</span>
-                    </td>
-                    <td><span class="cat-text">${note.category.split('·')[0].trim()}</span></td>
-                    <td>
-                        <div class="row-tags">
-                            ${note.tags.map(t => `<span class="row-tag">${t}</span>`).join('')}
-                        </div>
-                    </td>
-                    <td class="date-col">${note.created}</td>
-                    <td class="date-col">${note.modified}</td>
-                `;
-                notesBody.appendChild(tr);
-            });
-        }
-
-        init();
-    </script>
+    init();
+</script>
 </body>
 </html>
