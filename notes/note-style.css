@@ -3,7 +3,7 @@
 */
 
 /* Site tokens & layout */
-:root {
+:root, [data-theme='light'] {
   /* Light Theme (Default) */
   --bg: #ffffff;
   --bg-gradient: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
