@@ -31,7 +31,10 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Volume of fluid method (VoF)</h1>
     <article class="article-body">
-      <p><strong>Credits: </strong></p></div><p>Heat Transfer in Aerospace Applications<br/>ISBN 978-0-12-809760-1<br/><a href="http://dx.doi.org/10.1016/B978-0-12-809760-1.00005-3">http://dx.doi.org/10.1016/B978-0-12-809760-1.00005-3</a></p></div><figure><div class="source"><a href="https://share.goodnotes.com/s/9LDPhT7L0oFQY0u1Huehub">https://share.goodnotes.com/s/9LDPhT7L0oFQY0u1Huehub</a></figure>
+      <p><strong>Credits: </strong></p>
+      <p>Heat Transfer in Aerospace Applications<br/>ISBN 978-0-12-809760-1<br/><a href="http://dx.doi.org/10.1016/B978-0-12-809760-1.00005-3">http://dx.doi.org/10.1016/B978-0-12-809760-1.00005-3</a></p>
+      
+      <p>Source notes: <a href="https://share.goodnotes.com/s/9LDPhT7L0oFQY0u1Huehub">GoodNotes Link</a></p>
     </article>
   </div>
 </main>
@@ -44,5 +47,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
 </body>
 </html>
