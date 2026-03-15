@@ -273,73 +273,32 @@ footer { border-top: 1px solid var(--border); color: var(--muted); padding: 2rem
   font-style: italic;
 }
 
-/* ── Interactive Python (Pyodide) ── */
-.code-container {
-  position: relative;
-  margin: 1.5rem 0;
+
+/* ── Syntax Highlighting (Prism.js Dark Theme) ── */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #f8f8f2;
+  background: none;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  tab-size: 4;
+  hyphens: none;
 }
-.run-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: var(--accent);
-  color: #fff !important;
-  border: none;
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  z-index: 10;
-  opacity: 0.85;
-  transition: all 0.15s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.run-btn:hover {
-  opacity: 1;
-  transform: translateY(-1px);
-  background: #3b82f6;
-  text-decoration: none !important;
-}
-.run-btn:disabled {
-  background: var(--border);
-  color: var(--muted) !important;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-.python-output {
-  margin-top: -10px;
-  background: #060910;
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 10px 10px;
-  padding: 0.75rem 1rem;
-  font-family: "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 0.85rem;
-  color: #94a3b8;
-  white-space: pre-wrap;
-  display: none;
-}
-.python-output.active { display: block; }
-.output-header { 
-  font-size: 0.7rem; 
-  text-transform: uppercase; 
-  letter-spacing: 0.05em; 
-  color: var(--muted); 
-  margin-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  padding-bottom: 0.2rem;
-}
-.terminal-error { color: #f87171; }
-.pyodide-loader {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+.token.comment, .token.prolog, .token.doctype, .token.cdata { color: #8292a2; }
+.token.punctuation { color: #f8f8f2; }
+.token.namespace { opacity: .7; }
+.token.property, .token.tag, .token.constant, .token.symbol, .token.deleted { color: #ff79c6; }
+.token.boolean, .token.number { color: #bd93f9; }
+.token.selector, .token.attr-name, .token.string, .token.char, .token.builtin, .token.inserted { color: #50fa7b; }
+.token.operator, .token.entity, .token.url, .language-css .token.string, .style .token.string { color: #f8f8f2; }
+.token.atrule, .token.attr-value, .token.function, .token.class-name { color: #f1fa8c; }
+.token.keyword { color: #8be9fd; }
+.token.regex, .token.important, .token.variable { color: #ffb86c; }
+.token.important, .token.bold { font-weight: bold; }
+.token.italic { font-style: italic; }
+.token.entity { cursor: help; }
