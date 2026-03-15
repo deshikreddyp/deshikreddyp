@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -31,107 +44,50 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">FEniCS: Interpolation across non-matching meshes</h1>
     <article class="article-body">
-      <p>This code demonstrates how to interpolate solution fields (specifically displacement fields) from one mesh to another in FEniCS. This process is often called &quot;regridding&quot; and is useful when:</p></div><ul class="bulleted-list"><li style="list-style-type:disc">You need to transfer simulation results to a different discretization</li><li style="list-style-type:disc">You want to continue a simulation on a refined or modified mesh</li><li style="list-style-type:disc">You need to compare or combine results from different simulations</li></ul><h3>Key Components</h3><ol type="1" class="numbered-list" start="1"><li><strong>Mesh Loading</strong><ul class="bulleted-list"><li style="list-style-type:disc">Source mesh: The original mesh where displacement data exists</li><li style="list-style-type:disc">Target mesh: The new mesh where data will be interpolated to</li><li style="list-style-type:disc">Domain information is preserved during transfer</li></ul></li></ol><ol type="1" class="numbered-list" start="2"><li><strong>Function Spaces</strong><ul class="bulleted-list"><li style="list-style-type:disc">Vector function spaces are created on both meshes (CG1 elements)</li><li style="list-style-type:disc"><code>set_allow_extrapolation(True)</code> enables interpolation for points slightly outside the source domain</li></ul></li></ol><ol type="1" class="numbered-list" start="3"><li><strong>Interpolation Process</strong><ul class="bulleted-list"><li style="list-style-type:disc">For each time snapshot:<ol type="1" class="numbered-list" start="1"><li>Read displacement field from source mesh</li></ol><ol type="1" class="numbered-list" start="2"><li>Interpolate to target mesh using <code>LagrangeInterpolator</code></li></ol><ol type="1" class="numbered-list" start="3"><li>Write interpolated field to output files</li></ol></li></ul></li></ol><ol type="1" class="numbered-list" start="4"><li><strong>Output Generation</strong><ul class="bulleted-list"><li style="list-style-type:disc">HDF5 file containing all interpolated displacement fields</li><li style="list-style-type:disc">XDMF time series for easy visualization in ParaView</li></ul></li></ol><p>This interpolation technique preserves the mathematical properties of the original solution while transferring it to a new discretization, making it valuable for multi-stage simulations or post-processing workflows.</p><pre class="code code code-wrap language-python"><code class="language-python"># regrid_displacement_only_no_defs.py
-from dolfin import *
+      <h3>Interpolation Across Non-Matching Meshes</h3>
+      <p>In multi-stage simulations or when switching from a coarse to a fine mesh, transferring solution fields is essential. This process, often called <strong>regridding</strong>, allows you to interpolate data from a source mesh to a target mesh that does not share the same topology.</p>
+
+      <div class="callout block-color-blue_background">
+        <p>💡 <strong>Key Components:</strong></p>
+        <ul>
+          <li><strong>LagrangeInterpolator:</strong> The core FEniCS tool for high-performance interpolation between different meshes.</li>
+          <li><strong>Extrapolation:</strong> Enabling <code>set_allow_extrapolation(True)</code> handles points near the boundaries that might fall slightly outside the source domain due to numerical tolerances.</li>
+          <li><strong>HDF5 Snapshots:</strong> Efficient storage and retrieval of time-series data for batch processing.</li>
+        </ul>
+      </div>
+
+      <h4>Implementation Workflow</h4>
+      <pre class="code-wrap language-python"><code class="language-python">from dolfin import *
 import os
 
-# ────────────────────── MPI &amp; logging ──────────────────────
-COMM = MPI.comm_world
-RANK = COMM.Get_rank()
-from dolfin.cpp.log import set_log_active
-set_log_active(RANK == 0)
-
-# ────────────────────── EDIT THESE PATHS ───────────────────
-# Mesh that was used for the original snapshots (checkpoint mesh)
-SRC_MESH_H5   = &quot;/home/dputluru/fenics_run/navier-stokes/clinical_trials/clinical_wo_injection.h5&quot;
-
-# NEW mesh to regrid onto (must contain /mesh and /domains)
-NEW_MESH_H5   = &quot;/depot/hgomezdi/data/dputluru/clinical_trials/pre-process/meshes/aswanth.h5&quot;  # ← TODO
-
-# Single HDF5 with periodic displacement snapshots under /displacement/{i}
-SNAPSHOTS_H5  = &quot;/scratch/negishi/dputluru/clinical_trials/C4_phase2_new/final_snapshots3.h5&quot;
-
-# Periodic timing info
-PERIOD = 0.8
-NUM_SNAPSHOTS = 64
-DT_SNAP = PERIOD / float(NUM_SNAPSHOTS)
-
-# Outputs
-OUT_DIR       = &quot;/scratch/negishi/dputluru/regridded_to_newmesh_phase2&quot;
-os.makedirs(OUT_DIR, exist_ok=True)
-OUT_H5        = os.path.join(OUT_DIR, &quot;regridded_displacement.h5&quot;)
-OUT_XDMF_DISP = os.path.join(OUT_DIR, &quot;displacement_timeseries.xdmf&quot;)
-
-# ────────────────────── SOURCE (checkpoint) MESH ───────────
+# 1. Load Meshes
 src_mesh = Mesh()
-hdf_src = HDF5File(COMM, SRC_MESH_H5, &quot;r&quot;)
-hdf_src.read(src_mesh, &quot;/mesh&quot;, False)
-hdf_src.close()
+hdf_src = HDF5File(MPI.comm_world, "source.h5", "r")
+hdf_src.read(src_mesh, "/mesh", False)
 
-V_src = VectorFunctionSpace(src_mesh, &quot;CG&quot;, 1)  # displacement space on source mesh
-
-# ────────────────────── TARGET (new) MESH + DOMAINS ────────
 tgt_mesh = Mesh()
-hdf_tgt_in = HDF5File(COMM, NEW_MESH_H5, &quot;r&quot;)
-hdf_tgt_in.read(tgt_mesh, &quot;/mesh&quot;, False)
+hdf_tgt = HDF5File(MPI.comm_world, "target.h5", "r")
+hdf_tgt.read(tgt_mesh, "/mesh", False)
 
-nsd_tgt = tgt_mesh.topology().dim()
-tgt_dom = MeshFunction(&quot;size_t&quot;, tgt_mesh, nsd_tgt, 0)
-hdf_tgt_in.read(tgt_dom, &quot;/domains&quot;)  # require domains as requested
-hdf_tgt_in.close()
+# 2. Define Function Spaces
+V_src = VectorFunctionSpace(src_mesh, "CG", 1)
+V_tgt = VectorFunctionSpace(tgt_mesh, "CG", 1)
 
-V_tgt = VectorFunctionSpace(tgt_mesh, &quot;CG&quot;, 1)  # displacement space on target mesh
-
-# ────────────────────── OPEN INPUT/OUTPUT FILES ────────────
-snap_h5 = HDF5File(COMM, SNAPSHOTS_H5, &quot;r&quot;)
-
-h5_out = HDF5File(COMM, OUT_H5, &quot;w&quot;)
-h5_out.write(tgt_mesh, &quot;/mesh&quot;)
-h5_out.write(tgt_dom,  &quot;/domains&quot;)
-
-xmf_disp = XDMFFile(COMM, OUT_XDMF_DISP)
-xmf_disp.parameters[&quot;flush_output&quot;] = True
-xmf_disp.parameters[&quot;functions_share_mesh&quot;] = True
-xmf_disp.parameters[&quot;rewrite_function_mesh&quot;] = False
-xmf_disp.write(tgt_mesh)  # write mesh once
-
-# Buffers
-u_src = Function(V_src); u_src.rename(&quot;Displacement&quot;, &quot;Displacement&quot;)
+# 3. Buffers and Interpolation
+u_src = Function(V_src)
 u_src.set_allow_extrapolation(True)
-u_tgt = Function(V_tgt); u_tgt.rename(&quot;Displacement&quot;, &quot;Displacement&quot;)
+u_tgt = Function(V_tgt)
 
-
-if RANK == 0:
-    print(f&quot;[info] Regridding {NUM_SNAPSHOTS} displacement snapshots onto NEW mesh...&quot;)
-
-# ────────────────────── LOOP: read → interpolate → write ───
-t0 = 0.0
-for i in range(NUM_SNAPSHOTS):
-    t_snap = t0 + i * DT_SNAP
-    if RANK == 0:
-        print(f&quot;[{i+1}/{NUM_SNAPSHOTS}] t = {t_snap:.6f} s&quot;)
-
-    # read displacement on source mesh
-    snap_h5.read(u_src, f&quot;/displacement/{i}&quot;)
-
-    # interpolate to target mesh
+# Batch processing snapshots
+snap_h5 = HDF5File(MPI.comm_world, "snapshots.h5", "r")
+for i in range(64):  # Example: 64 snapshots
+    snap_h5.read(u_src, f"/displacement/{i}")
     LagrangeInterpolator.interpolate(u_tgt, u_src)
+    # Save u_tgt to new file...</code></pre>
 
-    # write to consolidated HDF5
-    h5_out.write(u_tgt, f&quot;/displacement/{i}&quot;)
-
-    # write to XDMF series for ParaView
-    xmf_disp.write(u_tgt, t_snap)
-
-# ────────────────────── CLOSE ──────────────────────────────
-snap_h5.close()
-xmf_disp.close()
-h5_out.close()
-
-if RANK == 0:
-    print(&quot;[done] Wrote:&quot;)
-    print(&quot;  •&quot;, OUT_H5,        &quot; (mesh, domains, displacement/{i})&quot;)
-    print(&quot;  •&quot;, OUT_XDMF_DISP, &quot; (ParaView time series)&quot;)</code></pre>
+      <div class="callout block-color-orange_background">
+        <p>⚠️ <strong>Precision:</strong> While interpolation preserves the mathematical form, mapping a high-order solution to a coarser mesh will result in loss of detail. Always verify energy or mass conservation after regridding.</p>
+      </div>
     </article>
   </div>
 </main>

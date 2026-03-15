@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -31,20 +44,26 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Reference Values</h1>
     <article class="article-body">
-      <p>You often see a tab named <em>Reference Values</em> in software packages such as Abaqus and Ansys. These are characteristic quantities used for normalization, coefficient reporting, and post-processing.</p>
+      <h3>Normalization and Characteristic Quantities</h3>
+      <p>In simulation software like <strong>Abaqus</strong>, <strong>Ansys</strong>, and <strong>OpenFOAM</strong>, "Reference Values" are characteristic quantities used for normalization, reporting nondimensional coefficients (like $C_d$ or $C_l$), and post-processing.</p>
 
-      <p>Problems are frequently <strong>non-dimensionalized</strong> for analysis and comparison. Typical reference data include free-stream velocity, characteristic length, area, density, pressure, temperature, viscosity, and specific heats.</p>
+      <div class="callout block-color-blue_background">
+        <p>💡 <strong>Nondimensionalization:</strong> Problems are frequently scaled to characteristic values to allow for comparison across different scales. Typical reference data include free-stream velocity ($U_\infty$), characteristic length ($L$), area ($A$), and density ($\rho$).</p>
+      </div>
 
-      <h3>Ansys</h3>
-      <p>In Ansys Fluent, reference values can be entered manually or computed from a selected boundary zone. Common reference quantities are area, density, enthalpy, length, pressure, temperature, velocity, dynamic viscosity, and ratio of specific heats.</p>
+      <h4>Industry Standard: Ansys Fluent</h4>
+      <p>In Fluent, reference values computed from a boundary zone or entered manually include:</p>
+      <ul>
+        <li><strong>Density and Velocity:</strong> Typically taken from the inlet or far-field.</li>
+        <li><strong>Area and Length:</strong> Used for computing force coefficients ($C_d = \frac{F_d}{\frac{1}{2}\rho U^2 A}$).</li>
+        <li><strong>Dynamic Viscosity:</strong> Used for Reynolds number calculation.</li>
+      </ul>
 
-      <p>For 2D simulations, <strong>Depth</strong> is an additional quantity used when reporting forces and flux-related outputs (e.g., flow rate, mass flow rate, and integrated quantities).</p>
+      <div class="callout block-color-orange_background">
+        <p>⚠️ <strong>2D Simulations:</strong> For 2D cases, the <strong>Depth</strong> (spanwise thickness) must be specified correctly to report accurate force magnitudes. Default depth is usually $1.0$.</p>
+      </div>
 
-      <p><code>In the Set Units dialog box, depth units are specified separately from length units.</code></p>
-
-      <p>If you use <em>Compute From</em>, only quantities implied by that boundary condition are populated. Reference length and area are often set manually.</p>
-
-      <p>To set values manually, provide each field under the <em>Reference Values</em> panel.</p>
+      <p>If using the <em>"Compute From"</em> option, Fluent only populates values derived from that boundary condition. Geometric values like <em>Reference Length</em> and <em>Area</em> almost always require manual entry.</p>
     </article>
   </div>
 </main>

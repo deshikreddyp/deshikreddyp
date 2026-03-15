@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -31,15 +44,21 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">STL to brep (stl2brep.py)</h1>
     <article class="article-body">
-      <pre class="code code code-wrap language-python"><code class="language-python"># This script takes an STL triangulation and creates a brep with a plane surface
+      <p>In CFD mesh generation, raw STL files often lack the topological information required for advanced boolean operations or conformal meshing. Converting these surface triangulations into a <strong>BRep (Boundary Representation)</strong> allows GMSH's OpenCascade kernel to treat each facet as a geometric entity.</p>
+
+      <div class="callout block-color-blue_background">
+        <p>💡 <strong>Usage Note:</strong> This script iterates through every triangle in an STL file, creates geometrical points and lines, and then defines plane surfaces to construct a closed volume. This is essential for converting "dead" STL meshes into "live" CAD geometries.</p>
+      </div>
+
+      <pre class="code-wrap language-python"><code class="language-python"># This script takes an STL triangulation and creates a brep with a plane surface
 # for each triangle
 
 import gmsh
 import sys
 import numpy as np
 
-if len(sys.argv) &lt; 2:
-    print(&#x27;usage: {} file.stl&#x27;.format(sys.argv[0]))
+if len(sys.argv) < 2:
+    print('usage: {} file.stl'.format(sys.argv[0]))
     exit(0)
 
 gmsh.initialize()
@@ -52,7 +71,7 @@ nodeTags, nodeCoord, _ = gmsh.model.mesh.getNodesByElementType(typ)
 edgeNodes = gmsh.model.mesh.getElementEdgeNodes(typ)
 
 # create a new model to store the BREP
-gmsh.model.add(&#x27;my brep&#x27;)
+gmsh.model.add('my brep')
 
 # create a geometrical point for each mesh node
 nodes = dict(zip(nodeTags, np.reshape(nodeCoord, (len(nodeTags), 3))))
@@ -81,11 +100,11 @@ sl = gmsh.model.occ.addSurfaceLoop(allsurfaces)
 gmsh.model.occ.addVolume([sl])
 
 gmsh.model.occ.synchronize()
-gmsh.write(&quot;CORD.brep&quot;)
+gmsh.write("CORD.brep")
 
 gmsh.fltk.run()
-
-gmsh.finalize()</code></pre></div>
+gmsh.finalize()</code></pre>
+    </article>
     </article>
   </div>
 </main>

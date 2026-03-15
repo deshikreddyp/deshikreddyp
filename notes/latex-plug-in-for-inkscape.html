@@ -31,6 +31,29 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">Latex plug-in for inkscape</h1>
     <article class="article-body">
+      <h3>LaTeX Equations in Vector Graphics</h3>
+      <p>For scientific publications, it is often necessary to render LaTeX equations directly inside <strong>Inkscape</strong> to ensure that labels and annotations match the font and style of the main document.</p>
+
+      <div class="callout block-color-blue_background">
+        <p>💡 <strong>Recommended Extension: TexText</strong></p>
+        <p>While Inkscape has a built-in "LaTeX (pdflatex)" input, <strong>TexText</strong> is the industry standard. It allows for re-editing existing LaTeX objects and supports packages like <code>amsmath</code> and <code>physics</code>.</p>
+      </div>
+
+      <h4>Installation (Linux/HPC)</h4>
+      <p>If you are working on a cluster or managed workstation, ensure you have a working TeX distribution (<code>texlive</code>) and <code>python3-lxml</code>.</p>
+      <pre class="code-wrap language-bash"><code class="language-bash"># Install dependencies
+sudo apt-get install inkscape texlive pstoedit python3-lxml</code></pre>
+
+      <h4>Usage Workflow</h4>
+      <ol type="1">
+        <li>Open Inkscape and go to <code>Extensions > Text > TexText</code>.</li>
+        <li>Enter your LaTeX code in the dialog box (e.g., <code>$ \nabla \cdot \mathbf{u} = 0 $</code>).</li>
+        <li>Specify the preamble (if you need custom packages).</li>
+        <li>Click <strong>Apply</strong> to render the vector object.</li>
+      </ol>
+
+      <div class="callout block-color-orange_background">
+        <p>⚠️ <strong>Troubleshooting:</strong> If equations fail to render, check the <code>inkscape.log</code>. Common issues include missing <code>pstoedit</code> or <code>ghostscript</code> binaries in the system <code>PATH</code>.</p>
       </div>
     </article>
   </div>

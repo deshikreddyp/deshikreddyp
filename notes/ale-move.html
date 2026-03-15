@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -31,7 +44,44 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">ALE.move</h1>
     <article class="article-body">
-      <p><a href="https://gist.github.com/Paulms/3cf944d1111a222ac00f9e1eb775d7d2">https://gist.github.com/Paulms/3cf944d1111a222ac00f9e1eb775d7d2</a></p></div>
+      <h3>Mesh Motion in FEniCS</h3>
+      <p>In <strong>Fluid-Structure Interaction (FSI)</strong> or problems with moving boundaries, we often use the <strong>Arbitrary Lagrangian-Eulerian (ALE)</strong> formulation. In FEniCS, mesh deformation is handled by the <code>ALE.move()</code> function, which updates the vertex coordinates of a mesh based on a displacement field.</p>
+
+      <div class="callout block-color-blue_background">
+        <p>💡 <strong>Key Concept:</strong> The ALE method allows the mesh to move independently of the material (fluid), preventing excessive distortion that would occur in a pure Lagrangian approach.</p>
+      </div>
+
+      <h4>Implementation Example</h4>
+      <p>To move a mesh, you first solve for a displacement field (often using a harmonic or linear elastic extension) and then apply it:</p>
+      
+      <pre class="code-wrap language-python"><code class="language-python">import dolfin as df
+
+# Define mesh
+mesh = df.UnitSquareMesh(10, 10)
+
+# Define a vector function space for displacement
+V = df.VectorFunctionSpace(mesh, "CG", 1)
+displacement = df.Function(V)
+
+# ... Calculate displacement field (e.g., solve Laplace/Elasticity) ...
+
+# Move the mesh
+df.ALE.move(mesh, displacement)
+
+# Optional: Update the boundary conditions and Jacobian if necessary
+mesh.bounding_box_tree().build(mesh)</code></pre>
+
+      <h3>Harmonic Extension</h3>
+      <p>A common way to determine the interior mesh displacement from a known boundary move is to solve the Laplace equation:</p>
+      <div class="equation-container">
+        $$\Delta \mathbf{d} = 0 \text{ in } \Omega$$
+        $$\mathbf{d} = \mathbf{d}_{\text{boundary}} \text{ on } \Gamma$$
+      </div>
+
+      <div class="callout block-color-orange_background">
+        <p>⚠️ <strong>Important:</strong> <code>ALE.move</code> modifies the mesh in-place. If you need the original mesh for comparison, ensure you create a <code>Mesh(mesh)</code> copy beforehand.</p>
+      </div>
+    </article>
     </article>
   </div>
 </main>

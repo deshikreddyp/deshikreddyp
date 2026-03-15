@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -46,7 +59,7 @@
       </div>
 
       <h3>In CFD</h3>
-      <p>In most incompressible CFD solvers (like OpenFOAM's <code>simpleFoam</code> or <code>pisoFoam</code>), the pressure solved for is often the <em>kinematic pressure</em> ($p/\rho$), which has units of $m^2/s^2$.</p>
+      <p>In most incompressible CFD solvers, the pressure solved for is often the <strong>kinematic pressure</strong> ($p/\rho$), which has units of $m^2/s^2$. This decouples the density from the pressure-velocity coupling, simplifying the numerical schemes.</p>
 
       <div class="callout block-color-gray_background">
         <p>💡 <strong>Note:</strong> Static pressure should not be confused with <em>stagnation pressure</em>, which is the pressure the fluid would attain if it were brought to rest isentropically.</p>

@@ -7,6 +7,19 @@
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -31,129 +44,75 @@
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
     <h1 class="page-title">mark_boundaries.py</h1>
     <article class="article-body">
-      <h3>Generate facegroups</h3></div><p>Define a function that returns angle between facets v1, v2.</p><pre class="code code code-wrap language-python"><code class="language-python">import os
+      <h3>Automated Boundary Tagging</h3>
+      <p>In complex CFD simulations, especially those involving patient-specific geometries, manually tagging boundaries (inlet, outlet, walls) is impractical. The <code>mark_boundaries.py</code> utility automates this by grouping facets based on the angle between their normals.</p>
+
+      <div class="callout block-color-blue_background">
+        <p>💡 <strong>Algorithm Overview:</strong> The script identifies "feature edges" where the angle between neighboring facets exceeds a specified threshold (e.g., 30°). It then uses a region-growing approach to assign unique tags to continuous surface patches.</p>
+      </div>
+
+      <h4>1. Vector Math utilities</h4>
+      <pre class="code-wrap language-python"><code class="language-python">import os
 import sys
 from dolfin import *
 import numpy as np
 
 def angle_between(v1, v2):
+    """Compute the angle in radians between two vectors."""
     v1 = v1 / np.linalg.norm(v1)
     v2 = v2 / np.linalg.norm(v2)
-    angle = np.arccos(abs(np.dot(v1, v2)))
-    if np.isnan(angle):
-        if (v1 == v2).all():
-            return 0.0
-        else:
-            return 0.0
-    return angle</code></pre><pre class="code code code-wrap language-python"><code class="language-python">def _mark_loop(bmesh, normals, threshold_angles, boundaries, queue, visited, marker, threshold=30):
-    queue_indices = np.where(queue.array())[0]
+    angle = np.arccos(abs(np.clip(np.dot(v1, v2), -1.0, 1.0)))
+    return angle</code></pre>
 
-    num_marked = 0
-    emap = bmesh.entity_map(2)
-    while len(queue_indices) &gt; 0:
+      <h4>2. Region Growing Loop</h4>
+      <pre class="code-wrap language-python"><code class="language-python">def _mark_loop(bmesh, normals, threshold_angles, boundaries, queue, visited, marker):
+    queue_indices = np.where(queue.array())[0]
+    while len(queue_indices) > 0:
         idx = queue_indices[0]
         facet = Cell(bmesh, idx)
-        #FACET = Facet(mesh, emap[idx])
         visited[facet] = True
         queue[facet] = False
         boundaries[facet] = marker
         N = normals[idx]
         threshold_radians = np.pi*threshold_angles[facet]/180.        
 
-	# check if the facets are neighbours and share an edge
-	# if they do, then they are in the same boundary
-        neighbours = []
         for edge in edges(facet):
             for neighbour in cells(edge):
                 if not visited[neighbour]:
-                    neighbours.append(neighbour)
-	# Also, check if the angle between them is less than threshold
-	# get the normal of the cells appended in neighbours
-        for neighbour in neighbours:
-            n = normals[neighbour.index()]
-	# get the angle between the normals
-            angle = angle_between(N,n)
-            if angle &lt; threshold_radians:
-                queue[neighbour] = not visited[neighbour]
-        queue_indices = np.where(queue.array())[0]
-        num_marked += 1</code></pre><pre class="code code code-wrap language-python"><code class="language-python">def mark_boundaries(mesh, threshold_angle=30, I=0, min_facets=10):
-    &quot;&quot;&quot;Mark boundaries automatically by feature edges in mesh. Will connect
-    facets to the same boundary if angle between them is less than threshold_angle.
-    Will also detect and mark disconnected parts of boundary.
-    &quot;&quot;&quot;
-    assert MPI.size(mesh.mpi_comm()) == 1, &quot;Currently only works on non-partitioned meshes.&quot;
-    bmesh = BoundaryMesh(mesh, &quot;exterior&quot;)
-    # Number of volumetric domains in the mesh
-    visited_facets = MeshFunction(&quot;bool&quot;, bmesh, bmesh.topology().dim())
+                    n = normals[neighbour.index()]
+                    if angle_between(N, n) < threshold_radians:
+                        queue[neighbour] = True
+        queue_indices = np.where(queue.array())[0]</code></pre>
+
+      <h4>3. Main Marking Function</h4>
+      <pre class="code-wrap language-python"><code class="language-python">def mark_boundaries(mesh, threshold_angle=30, I=0, min_facets=10):
+    """Mark boundaries automatically by feature edges."""
+    bmesh = BoundaryMesh(mesh, "exterior")
+    visited_facets = MeshFunction("bool", bmesh, bmesh.topology().dim())
     visited_facets.set_all(False)
-    bmesh.init(1,2)
-
-    queue = MeshFunction(&quot;bool&quot;, bmesh, bmesh.topology().dim())
-    queue.set_all(False)
-
-    boundaries = MeshFunction(&quot;size_t&quot;, bmesh,  bmesh.topology().dim())
-    boundaries.set_all(0)
-
-    normals = np.zeros((bmesh.num_cells(), 3), dtype=np.float_)
+    
+    boundaries = MeshFunction("size_t", bmesh, bmesh.topology().dim())
+    normals = np.zeros((bmesh.num_cells(), 3))
+    
+    # Store normals for performance
     for facet in cells(bmesh):
         N = Facet(mesh, bmesh.entity_map(2)[facet.index()]).normal()
-        normals[facet.index()][0] = N.x()
-        normals[facet.index()][1] = N.y()
-        normals[facet.index()][2] = N.z()
-
-
-    threshold_angles = MeshFunction(&quot;size_t&quot;, bmesh, bmesh.topology().dim())
-    threshold_angles.set_all(threshold_angle)
+        normals[facet.index()] = [N.x(), N.y(), N.z()]
 
     unvisited = np.where(visited_facets.array() == False)[0]
-    # I = 0
-    while len(unvisited) &gt; 0:
+    while len(unvisited) > 0:
         I += 1
+        queue = MeshFunction("bool", bmesh, bmesh.topology().dim())
         queue[unvisited[0]] = True
         _mark_loop(bmesh, normals, threshold_angles, boundaries, queue, visited_facets, I)
-        unvisited = np.where(visited_facets.array() == False)[0]        
+        unvisited = np.where(visited_facets.array() == False)[0]
 
-    # check number of facets in each boundary marker
-    # if it is less than 10, then remove it
-    # Check for the facet&#x27;s neighbours and set the boundary marker to the one with the least angle between them
-    # This is to avoid having a boundary marker with only one facet
-    print(&quot;&gt;&gt; Actual number of boundaries detected= &quot;+ str(I))
-    print(&quot;&gt;&gt; Merging boundaries with less than &quot;+ str(min_facets)+ &quot; facets&quot;)
+    return boundaries, I</code></pre>
 
-    for i in range(1,I+1):
-        facets = np.where(boundaries.array() == i)[0]
-        if len(facets) &lt; min_facets:
-            for facet in facets:
-                neighbours = []
-                for edge in edges(Cell(bmesh, facet)):
-                    for neighbour in cells(edge):
-                        if boundaries[neighbour] != i:
-                            neighbours.append(neighbour)
-                if len(neighbours) &gt; 0:
-                    N = normals[facet]
-                    angles = []
-                    for neighbour in neighbours:
-                        n = normals[neighbour.index()]
-                        angles.append(angle_between(N,n))
-                    
-                boundaries[facet] = boundaries[neighbours[np.argmin(angles)]]
-
-    # renumber the boundaries
-    # this is to have the boundary markers in proper order
-    print(&quot;&gt;&gt; Renumbering boundaries...&quot;)
-    tag = 0
-    for i in range(1,I+1):
-        facets = np.where(boundaries.array() == i)[0]
-        if len(facets) &gt; 0:
-            tag = tag + 1
-            boundaries.array()[facets] = tag
-
-
-    boundaries_full = MeshFunction(&quot;size_t&quot;, mesh, 2)
-    boundaries_full.set_all(0)
-    for facet in cells(bmesh):
-        boundaries_full[bmesh.entity_map(2)[facet.index()]] = boundaries[facet]
-    return boundaries_full, tag</code></pre>
+      <div class="callout block-color-orange_background">
+        <p>⚠️ <strong>Cleanup:</strong> The full script includes logic to merge small "orphan" facets (less than <code>min_facets</code>) into their nearest neighbors and renumber the tags consecutively.</p>
+      </div>
+    </article>
     </article>
   </div>
 </main>
