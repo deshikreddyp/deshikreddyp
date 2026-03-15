@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fluid Structure Interaction — ALE | Notes | Deshik Reddy Putluru</title>
-  <meta name="description" content="Notes on the Arbitrary Lagrangian-Eulerian (ALE) formulation for fluid-structure interaction problems.">
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -27,11 +26,12 @@
   </div>
 </header>
 
-<div class="note-content">
+<main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-
     <h1 class="page-title">Fluid Structure Interaction — ALE</h1>
+    <article class="article-body">
+      
     <p class="note-meta">Fluid mechanics · FSI · Mesh motion · ALE framework</p>
 
     <!-- ── Overview ── -->
@@ -51,8 +51,7 @@
       <p>There are also several approaches based on how the <em>fluid-structure interface</em> is represented:</p>
 
       <div class="two-col">
-        <div>
-          <ul>
+        <ul>
             <li><strong>Body-fitted method</strong> — mesh conforms to the structure boundary; typically
                 used with the ALE framework.</li>
             <li><strong>Immersed boundary method</strong> — the structure is embedded in a fixed
@@ -60,7 +59,6 @@
             <li><strong>Mesh-free method</strong> — no background mesh; particles or radial basis
                 functions carry solution data.</li>
           </ul>
-        </div>
         <div class="note-image-wrap">
           <img src="images/Untitled.png" alt="FSI classification diagram" class="note-image">
         </div>
@@ -76,9 +74,9 @@
       </ol>
 
       <div class="callout block-color-gray_background">
-        <div>😶</div>
-        <div>My own work uses the <strong>monolithic + body-fitted + fully coupled</strong> strategy
-             with <em>quasi-direct coupling</em>.</div>
+        😶
+        My own work uses the <strong>monolithic + body-fitted + fully coupled</strong> strategy
+             with <em>quasi-direct coupling</em>.
       </div>
     </section>
 
@@ -140,13 +138,11 @@
       </ol>
 
       <div class="callout block-color-blue_background">
-        <div>📌</div>
-        <div>
-          <p><strong>Key insight:</strong> In the solid domain, the mesh displacement equals the physical
+        📌
+        <p><strong>Key insight:</strong> In the solid domain, the mesh displacement equals the physical
           material displacement — these coincide by definition. In the <em>fluid</em> domain, the mesh
           motion carries no physical meaning for the fluid material; it is a purely computational device
           that introduces a modified convection term into the Navier-Stokes equations.</p>
-        </div>
       </div>
     </section>
 
@@ -191,70 +187,15 @@
     </section>
 
   </div>
-</div>
+    </article>
+  </div>
+</main>
 
 <footer>
-  <div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div>
+  <div class="container small">
+    Deshik Reddy Putluru · <a href="../notes.html">All Notes</a>
+  </div>
 </footer>
-
-<style>
-/* ── Page-specific styles ── */
-.note-meta {
-  font-size: 0.82rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: -0.8rem 0 1.8rem;
-}
-.note-section {
-  margin: 2.5rem 0;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
-}
-.note-section:last-child { border-bottom: none; }
-
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1.5rem;
-  align-items: start;
-  margin: 1rem 0;
-}
-@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
-
-.note-image-wrap { flex-shrink: 0; }
-.note-image {
-  max-width: 260px;
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-}
-
-.note-eq {
-  background: var(--code-bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.7rem 1rem;
-  margin: 0.8rem 0;
-  font-size: 0.95rem;
-  overflow-x: auto;
-}
-
-/* Reference card */
-.ref-card {
-  display: block;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.85rem 1rem;
-  margin: 1rem 0;
-  transition: background 0.15s;
-  text-decoration: none;
-}
-.ref-card:hover { background: rgba(96,165,250,0.08); }
-.ref-title { color: var(--accent); font-weight: 600; font-size: 0.95rem; }
-.ref-source { color: var(--muted); font-size: 0.82rem; margin-top: 0.25rem; }
-</style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>

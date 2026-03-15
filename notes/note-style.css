@@ -97,13 +97,33 @@ header {
 .page-header-icon img { width: 2.5rem; height: 2.5rem; border-radius: 4px; }
 
 /* ── Headings ── */
-h1,h2,h3,h4 { color: var(--brand-color); line-height: 1.2; margin-top: 1.8rem; margin-bottom: 0.4rem; }
-h1 { font-size: 1.75rem; }
-h2 { font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
-h3 { font-size: 1.15rem; }
+h1,h2,h3,h4 { 
+  color: var(--brand-color); 
+  line-height: 1.3; 
+  margin-top: 2.5rem; 
+  margin-bottom: 1rem; 
+  font-weight: 700;
+}
+h1 { font-size: 2.2rem; }
+h2 { 
+  font-size: 1.6rem; 
+  border-bottom: 2px solid var(--border); 
+  padding-bottom: 0.5rem;
+  margin-top: 3rem;
+}
+h3 { font-size: 1.3rem; margin-top: 2rem; }
+h4 { font-size: 1.1rem; color: var(--muted); }
+
+/* ── Article Content ── */
+.article-body {
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.75;
+}
+.article-body > *:first-child { margin-top: 0; }
 
 /* ── Paragraphs ── */
-p { margin: 0.55rem 0; color: var(--text); }
+p { margin: 1.25rem 0; color: var(--text); }
 
 /* ── Callouts ── */
 .callout {
@@ -176,8 +196,19 @@ blockquote {
 }
 
 /* ── Lists ── */
-ul, ol { padding-left: 1.6rem; margin: 0.5rem 0; }
-li { margin: 0.25rem 0; }
+ul, ol { 
+  padding-left: 1.8rem; 
+  margin: 1.5rem 0; 
+}
+li { 
+  margin: 0.6rem 0; 
+  padding-left: 0.2rem;
+}
+.bulleted-list, .numbered-list {
+  list-style-position: outside;
+}
+.bulleted-list { list-style-type: disc; }
+.numbered-list { list-style-type: decimal; }
 ul.toggle { padding: 0; list-style: none; }
 ul.toggle > li > details { padding-left: 1.4rem; }
 ul.toggle > li > details > summary {

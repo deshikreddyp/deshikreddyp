@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>STL to brep (stl2brep.py) | Notes | Deshik Reddy Putluru</title>
-  <meta name="description" content="Technical notes on STL to brep (stl2brep.py) by Deshik Reddy Putluru.">
   <link rel="stylesheet" href="note-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -27,10 +26,12 @@
   </div>
 </header>
 
-<div class="note-content">
+<main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-<header><h1 class="page-title" dir="auto">STL to brep (stl<strong>2brep.py)</strong></h1></header><div class="page-body"><div style="display:contents" dir="auto"><pre id="87254213-7d12-4398-b6ea-5553d74ebab4" class="code code code-wrap language-python"><code class="language-python"># This script takes an STL triangulation and creates a brep with a plane surface
+    <h1 class="page-title">STL to brep (stl2brep.py)</h1>
+    <article class="article-body">
+      <pre class="code code code-wrap language-python"><code class="language-python"># This script takes an STL triangulation and creates a brep with a plane surface
 # for each triangle
 
 import gmsh
@@ -84,11 +85,16 @@ gmsh.write(&quot;CORD.brep&quot;)
 
 gmsh.fltk.run()
 
-gmsh.finalize()</code></pre></div></div>
+gmsh.finalize()</code></pre></div>
+    </article>
   </div>
-</div>
+</main>
 
-<footer><div class="container small">Deshik Reddy Putluru · <a href="../notes.html">All Notes</a></div></footer>
+<footer>
+  <div class="container small">
+    Deshik Reddy Putluru · <a href="../notes.html">All Notes</a>
+  </div>
+</footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
