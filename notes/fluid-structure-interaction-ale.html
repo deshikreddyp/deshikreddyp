@@ -29,8 +29,7 @@
 <main class="note-content">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
-    <h1 class="page-title">Fluid Structure Interaction — ALE</h1>
-    <article class="article-body">
+    <h1 class="page-title">Fluid Structure Interaction �    <article class="article-body">
       
     <p class="note-meta">Fluid mechanics · FSI · Mesh motion · ALE framework</p>
 
@@ -50,19 +49,14 @@
 
       <p>There are also several approaches based on how the <em>fluid-structure interface</em> is represented:</p>
 
-      <div class="two-col">
-        <ul>
-            <li><strong>Body-fitted method</strong> — mesh conforms to the structure boundary; typically
-                used with the ALE framework.</li>
-            <li><strong>Immersed boundary method</strong> — the structure is embedded in a fixed
-                background fluid mesh; interface conditions imposed via body forces.</li>
-            <li><strong>Mesh-free method</strong> — no background mesh; particles or radial basis
-                functions carry solution data.</li>
-          </ul>
-        <div class="note-image-wrap">
-          <img src="images/Untitled.png" alt="FSI classification diagram" class="note-image">
-        </div>
-      </div>
+      <ul>
+        <li><strong>Body-fitted method</strong> — mesh conforms to the structure boundary; typically
+            used with the ALE framework.</li>
+        <li><strong>Immersed boundary method</strong> — the structure is embedded in a fixed
+            background fluid mesh; interface conditions imposed via body forces.</li>
+        <li><strong>Mesh-free method</strong> — no background mesh; particles or radial basis
+            functions carry solution data.</li>
+      </ul>
 
       <p>The interface coupling itself can further be classified by the type of mesh matching:</p>
       <ol>
@@ -74,9 +68,11 @@
       </ol>
 
       <div class="callout block-color-gray_background">
-        😶
-        My own work uses the <strong>monolithic + body-fitted + fully coupled</strong> strategy
-             with <em>quasi-direct coupling</em>.
+        <div>💡</div>
+        <div style="width:100%">
+          My own work uses the <strong>monolithic + body-fitted + fully coupled</strong> strategy
+          with <em>quasi-direct coupling</em>.
+        </div>
       </div>
     </section>
 
@@ -114,35 +110,33 @@
           <strong>Mesh motion problem</strong> — given the solid displacement field at the interface as
           a boundary condition, extend a smooth mesh deformation into the fluid domain. This is typically
           posed as a harmonic extension or a pseudo-elastic problem:
-          <div class="note-eq">
-            <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true">
-              <span class="base"><span class="mord">∇·(μ<sub>m</sub> ∇<b>w</b>) = <b>0</b>&ensp;in&ensp;Ω<sub>f</sub></span>
-            </span></span></span>
+          <div class="equation-container">
+            $$\nabla \cdot (\mu_m \nabla \mathbf{w}) = \mathbf{0} \quad \text{in} \quad \Omega_f$$
           </div>
-          where <strong>w</strong> is the mesh displacement field and μ<sub>m</sub> is a stiffening
+          where $\mathbf{w}$ is the mesh displacement field and $\mu_m$ is a stiffening
           parameter (often inverse-proportional to element size to protect small elements near the
           interface).
         </li>
         <li>
           <strong>Moving-domain problem</strong> — solve the fluid and solid equations on the updated
           (deformed) mesh. The fluid momentum equation acquires an ALE convection term involving the
-          mesh velocity <strong>ẇ</strong>:
-          <div class="note-eq">
-            <span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true">
-              <span class="base"><span class="mord">ρ(∂<b>u</b>/∂t|<sub>χ</sub> + (<b>u</b> − <b>ẇ</b>)·∇<b>u</b>) = −∇p + μ∇²<b>u</b></span>
-            </span></span></span>
+          mesh velocity $\mathbf{\dot{w}}$:
+          <div class="equation-container">
+            $$\rho \left( \left. \frac{\partial \mathbf{u}}{\partial t} \right|_{\chi} + (\mathbf{u} - \mathbf{\dot{w}}) \cdot \nabla \mathbf{u} \right) = -\nabla p + \mu \nabla^2 \mathbf{u}$$
           </div>
-          where the derivative ∂/∂t|<sub>χ</sub> is taken at a fixed <em>ALE reference point</em> χ,
+          where the derivative $\partial/\partial t|_{\chi}$ is taken at a fixed <em>ALE reference point</em> $\chi$,
           not a fixed material point or a fixed spatial point.
         </li>
       </ol>
 
       <div class="callout block-color-blue_background">
-        📌
-        <p><strong>Key insight:</strong> In the solid domain, the mesh displacement equals the physical
+        <div>📌</div>
+        <div style="width:100%">
+          <strong>Key insight:</strong> In the solid domain, the mesh displacement equals the physical
           material displacement — these coincide by definition. In the <em>fluid</em> domain, the mesh
           motion carries no physical meaning for the fluid material; it is a purely computational device
-          that introduces a modified convection term into the Navier-Stokes equations.</p>
+          that introduces a modified convection term into the Navier-Stokes equations.
+        </div>
       </div>
     </section>
 
@@ -154,30 +148,25 @@
         strategies, roughly ordered from loosest to tightest coupling:
       </p>
 
-      <div class="two-col">
-        <ol>
-          <li>
-            <strong>Block-iterative (Gauss-Seidel) method</strong> — fluid and solid are solved in
-            sequence, exchanging interface data, and the loop is iterated to convergence within each
-            time step. Robust but may converge slowly for strongly coupled problems (e.g. added-mass
-            instability for light structures).
-          </li>
-          <li>
-            <strong>Quasi-direct coupling</strong> — the Jacobian of the coupled system is approximated
-            using the individual sub-problem Jacobians. Faster convergence than block-iterative with
-            moderate implementation complexity. This is the approach used in my current solver.
-          </li>
-          <li>
-            <strong>Direct (monolithic) strategy</strong> — fluid, solid, and mesh motion DOFs are
-            assembled into a single system matrix and solved with a coupled preconditioner. Optimal
-            convergence but demands a unified discretization and a sophisticated solver/preconditioner
-            (e.g., nested block solvers with approximate Schur complements).
-          </li>
-        </ol>
-        <div class="note-image-wrap">
-          <img src="images/Untitled 1.png" alt="Coupling strategies diagram" class="note-image">
-        </div>
-      </div>
+      <ol>
+        <li>
+          <strong>Block-iterative (Gauss-Seidel) method</strong> — fluid and solid are solved in
+          sequence, exchanging interface data, and the loop is iterated to convergence within each
+          time step. Robust but may converge slowly for strongly coupled problems (e.g. added-mass
+          instability for light structures).
+        </li>
+        <li>
+          <strong>Quasi-direct coupling</strong> — the Jacobian of the coupled system is approximated
+          using the individual sub-problem Jacobians. Faster convergence than block-iterative with
+          moderate implementation complexity. This is the approach used in my current solver.
+        </li>
+        <li>
+          <strong>Direct (monolithic) strategy</strong> — fluid, solid, and mesh motion DOFs are
+          assembled into a single system matrix and solved with a coupled preconditioner. Optimal
+          convergence but demands a unified discretization and a sophisticated solver/preconditioner
+          (e.g., nested block solvers with approximate Schur complements).
+        </li>
+      </ol>
 
       <p>Key reference for the isogeometric ALE-FSI formulation:</p>
       <a href="https://link.springer.com/article/10.1007/s00466-008-0315-x" class="ref-card" target="_blank" rel="noopener">
@@ -186,7 +175,6 @@
       </a>
     </section>
 
-  </div>
     </article>
   </div>
 </main>
@@ -198,6 +186,25 @@
 </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script>Prism.highlightAll();</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ],
+        throwOnError : false
+      });
+    });
+  </script>
+</body>
+</html>
+ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script>Prism.highlightAll();</script>
 </body>
 </html>
