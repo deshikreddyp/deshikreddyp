@@ -1,0 +1,4 @@
+.DS_Store
+
+# Local Python web-server artifacts
+__pycache__/

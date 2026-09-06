@@ -32,8 +32,8 @@
 
     <section class="section">
       <article class="card">
-        <h2>Computational modeling of tissue compliance and intrathecal drug delivery in the spinal canal</h2>
-        <p class="muted">Abstract: work in progress.</p>
+        <h2>High-Péclet intrathecal drug transport</h2>
+        <p>Ongoing research on injection-driven, advection-dominated drug transport in the spinal canal. I model flows at Péclet numbers near 10<sup>7</sup> using streamline upwind/Petrov-Galerkin and discontinuity-capturing stabilization to limit nonphysical oscillations and artificial diffusion.</p>
       </article>
     </section>
 
@@ -43,7 +43,7 @@
         <p><strong>Publication:</strong> Putluru, D.R., Tepole, A.B. &amp; Gomez, H. <em>Mixed-dimensional fluid–structure interaction simulations reveal key mechanisms of cerebrospinal fluid dynamics in the spinal canal</em>. <em>Fluids and Barriers of the CNS</em> 22, 81 (2025). <a href="https://doi.org/10.1186/s12987-025-00691-4">DOI link</a></p>
         <p>Cerebrospinal fluid flow dynamics plays a critical role in structural disorders of the central nervous system and in the design of effective procedures for intrathecal drug delivery. Medical imaging has only partially characterized CSF dynamics, while computational models can provide a high-resolution description and improve mechanistic understanding.</p>
         <p>Many anatomically accurate computational models of CSF dynamics in the spinal canal ignore tissue compliance, even though compliance is important for capturing pulse wave velocity and the craniocaudal decay of CSF pulsations.</p>
-        <p>This project proposes a mixed-dimensional fluid–structure interaction method for high-fidelity simulation of CSF dynamics in anatomically accurate spinal canal models while accounting for compliance effects from the dura mater and epidural fat. The approach bypasses a computational bottleneck associated with the multiscale geometry of spinal tissues.</p>
+        <p>This work developed a mixed-dimensional fluid–structure interaction method for high-fidelity simulation of CSF dynamics in anatomically accurate spinal canal models while accounting for compliance effects from the dura mater and epidural fat. The approach bypasses a computational bottleneck associated with the multiscale geometry of spinal tissues.</p>
         <p>The results show that accurate modeling of tissue compliance is critical for capturing key aspects of CSF dynamics and opens new possibilities for optimizing intrathecal drug delivery and understanding structural abnormalities of the CNS.</p>
       </article>
     </section>
@@ -57,8 +57,15 @@
 
     <section class="section">
       <article class="card">
-        <h2>1D FEM code [Open Source]</h2>
-        <p>As part of the MIN-324 Finite Element Method course at IIT Roorkee, I studied strong and weak forms, residual methods, Galerkin methods, Ritz methods, and 1D/2D finite element frameworks for solid mechanics problems. I then developed a 1D FEM code that can solve a broad class of problems.</p>
+        <h2><a href="https://github.com/deshikreddyp/Structural-FEM">1D FEM code</a></h2>
+        <p>As part of the MIN-324 Finite Element Method course at IIT Roorkee, I developed a MATLAB implementation for one-dimensional axial-bar problems with linear and quadratic elements, distributed and point loads, and displacement boundary conditions.</p>
+      </article>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <h2><a href="https://github.com/deshikreddyp/segment-surfaces">segment-surfaces</a></h2>
+        <p>A Python command-line toolkit for converting STL meshes to BREP geometry and grouping boundary faces by dihedral angle before exporting Gmsh physical groups.</p>
       </article>
     </section>
   </div>

@@ -1,29 +1,19 @@
 # Deshik Reddy Putluru
 
-PhD Student, Mechanical Engineering  
-Purdue University
+Ph.D. candidate in Mechanical Engineering at Purdue University, working in computational mechanics, finite-element methods, multiphysics PDEs, fluid-structure interaction, transport, and scientific machine learning.
 
-[Website](https://deshikreddyp.github.io) | [Projects](https://deshikreddyp.github.io/projects.html) | [CV](https://deshikreddyp.github.io/resume.pdf) | [GitHub](https://github.com/deshikreddyp)
+[Portfolio](https://deshikreddyp.github.io/deshikreddyp/index.html) · [Projects](https://deshikreddyp.github.io/deshikreddyp/projects.html) · [CV](https://deshikreddyp.github.io/deshikreddyp/resume.pdf) · [LinkedIn](https://www.linkedin.com/in/deshik-reddy-putluru) · [Published paper](https://doi.org/10.1186/s12987-025-00691-4)
 
 ## Background
-I am a PhD student in the Gomez Lab at Purdue University. I received my bachelor's degree in Mechanical Engineering from IIT Roorkee in 2022. 
 
-## Research Interests
-- Computational Fluid Dynamics (CFD)
-- Finite Element Method (FEM) 
-- Scientific Computing
+I am a Ph.D. candidate in the Gomez Lab at Purdue University. I received a B.Tech. in Production and Industrial Engineering, with Honors, from IIT Roorkee in 2022.
 
-## Selected Works
-- **CSF Dynamics Simulation**: Mixed-dimensional fluid-structure interaction model for simulating cerebrospinal fluid flow in the spinal canal. Published in *Fluids and Barriers of the CNS* (2025).
-- **1D FEM Code**: Open-source 1D finite element method framework for solid mechanics problems.
-- **Savonius Wind Turbine Analysis**: Numerical shape optimization and experimental analysis of a Savonius-style wind turbine operating at low wind speeds.
+## Selected work
 
----
+- **Mixed-dimensional spinal fluid-structure interaction:** Developed a finite-element model that couples a 2D Kirchhoff-Love dura membrane to a 3D hyperelastic solid, reducing computational cost by 60× relative to volumetric FSI while preserving key compliance-driven dynamics. [Publication](https://doi.org/10.1186/s12987-025-00691-4)
+- **[segment-surfaces](https://github.com/deshikreddyp/segment-surfaces):** Python command-line tools for converting STL meshes to BREP geometry and grouping boundary faces for Gmsh physical groups.
+- **[codex-science-skills](https://github.com/deshikreddyp/codex-science-skills):** Reusable, validated workflows for scientific-computing post-processing, Slurm submission, and technical documentation.
 
-### Local Preview (Website Source)
-This repository hosts my personal academic website. To preview the site locally:
+## Technical focus
 
-```bash
-python -m http.server 8000
-```
-Then visit `http://localhost:8000`.
+Finite-element and finite-volume methods · FEniCS · OpenFOAM · Python · MATLAB · PETSc · MPI · JAX · Scientific computing
