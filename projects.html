@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Projects | Deshik Reddy Putluru</title>
+  <meta name="description" content="Research, simulation, and engineering projects by Deshik Reddy Putluru.">
   <link rel="stylesheet" href="style.css">
   <script src="theme.js"></script>
 </head>
@@ -28,48 +29,169 @@
     <section class="section">
       <div class="kicker">Research and technical work</div>
       <h1>Projects</h1>
+      <p class="muted">Jump to: <a href="#research">Ph.D. research</a> · <a href="#code">Code</a> · <a href="#undergrad">Undergraduate research and coursework</a> · <a href="#teams">Design teams</a></p>
     </section>
+
+    <!-- ───────────── Ph.D. research ───────────── -->
+    <h2 id="research" class="section-title">Ph.D. research</h2>
 
     <section class="section">
       <article class="card">
-        <h2>High-Péclet intrathecal drug transport</h2>
-        <p>Ongoing research on injection-driven, advection-dominated drug transport in the spinal canal. I model flows at Péclet numbers near 10<sup>7</sup> using streamline upwind/Petrov-Galerkin and discontinuity-capturing stabilization to limit nonphysical oscillations and artificial diffusion.</p>
+        <h2>Intrathecal drug transport and injection-protocol optimization</h2>
+        <p class="meta">Gomez Lab, Purdue University · Feb. 2025 – present</p>
+        <ul>
+          <li>Developed a multicomponent finite-element solver for intrathecal drug transport, with SUPG stabilization and a custom discontinuity-capturing operator for the advection-dominated problem.</li>
+          <li>Adapted the coupled-momentum method for small-deformation spinal FSI to avoid ALE mesh motion, reducing computational cost by approximately 30× and enabling simulations over long time scales.</li>
+          <li>Quantified how injection-induced CSF pressure dynamics, drug solution baricity, gravity, and body posture affect intrathecal drug distribution.</li>
+          <li>Developed a reduced-order transport model that cuts compute time for a 1-hour drug-transport prediction from 20 hours to 1 second.</li>
+          <li>Enabled in silico evaluation of AAV injection protocols for ALS to inform the design of nonhuman primate trials.</li>
+        </ul>
       </article>
     </section>
 
     <section class="section">
       <article class="card">
-        <h2>Mixed-dimensional fluid-structure interaction model for simulating CSF flow in the spinal canal</h2>
+        <h2>Mixed-dimensional fluid–structure interaction model for CSF flow in the spinal canal</h2>
+        <p class="meta">Gomez Lab, Purdue University · May 2023 – Jan. 2025</p>
         <p><strong>Publication:</strong> Putluru, D.R., Tepole, A.B. &amp; Gomez, H. <em>Mixed-dimensional fluid–structure interaction simulations reveal key mechanisms of cerebrospinal fluid dynamics in the spinal canal</em>. <em>Fluids and Barriers of the CNS</em> 22, 81 (2025). <a href="https://doi.org/10.1186/s12987-025-00691-4">DOI link</a></p>
         <p>Cerebrospinal fluid flow dynamics plays a critical role in structural disorders of the central nervous system and in the design of effective procedures for intrathecal drug delivery. Medical imaging has only partially characterized CSF dynamics, while computational models can provide a high-resolution description and improve mechanistic understanding.</p>
         <p>Many anatomically accurate computational models of CSF dynamics in the spinal canal ignore tissue compliance, even though compliance is important for capturing pulse wave velocity and the craniocaudal decay of CSF pulsations.</p>
-        <p>This work developed a mixed-dimensional fluid–structure interaction method for high-fidelity simulation of CSF dynamics in anatomically accurate spinal canal models while accounting for compliance effects from the dura mater and epidural fat. The approach bypasses a computational bottleneck associated with the multiscale geometry of spinal tissues.</p>
-        <p>The results show that accurate modeling of tissue compliance is critical for capturing key aspects of CSF dynamics and opens new possibilities for optimizing intrathecal drug delivery and understanding structural abnormalities of the CNS.</p>
+        <p>This work developed a mixed-dimensional fluid–structure interaction method for high-fidelity simulation of CSF dynamics in anatomically accurate spinal canal models while accounting for compliance effects from the dura mater and epidural fat. The approach bypasses a computational bottleneck associated with the multiscale geometry of spinal tissues, enabling full-length patient-specific simulations at approximately 60× lower cost than fully volumetric FSI.</p>
+        <ul>
+          <li>Implemented residual-based VMS stabilization and a custom Newton–Krylov solver in PETSc.</li>
+          <li>Formulated a deformation-Jacobian-based stiffening model for ALE mesh motion that suppresses element inversion under large deformation and near-contact.</li>
+          <li>Developed a custom preconditioner that is 3× faster than PETSc's GAMG on the mixed-dimensional FSI problem.</li>
+        </ul>
+        <div class="figs">
+          <figure><img src="https://madmaxx.notion.site/image/attachment%3Ac56857bd-7a14-4377-af87-7f09d3cb8215%3Aimage.png?table=block&amp;id=2f96911b-971d-80c5-ba7a-d6414458f942&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="Spinal canal anatomy and mixed-dimensional computational domain" loading="lazy"><figcaption>Spinal anatomy and the mixed-dimensional domain</figcaption></figure>
+          <figure><img src="https://madmaxx.notion.site/image/attachment%3Af59ab3b2-bbd8-427b-918c-0e902335ae02%3Aimage.png?table=block&amp;id=2f96911b-971d-80bf-94e6-f82620c4a88f&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="CSF flow rates along the spinal canal compared with MRI" loading="lazy"><figcaption>CSF flow along the canal: FSI vs. rigid-wall simulations and MRI</figcaption></figure>
+        </div>
+      </article>
+    </section>
+
+    <!-- ───────────── Code ───────────── -->
+    <h2 id="code" class="section-title">Code</h2>
+
+    <section class="section">
+      <div class="grid">
+        <article class="card half">
+          <h2><a href="https://github.com/deshikreddyp/segment-surfaces">segment-surfaces</a></h2>
+          <p>A Python command-line toolkit for converting STL meshes to BREP geometry and grouping boundary faces by dihedral angle before exporting Gmsh physical groups.</p>
+        </article>
+        <article class="card half">
+          <h2><a href="https://github.com/deshikreddyp/Structural-FEM">1D FEM code</a></h2>
+          <p>Built for the MIN-324 Finite Element Method course at IIT Roorkee: a MATLAB implementation for one-dimensional axial-bar problems with linear and quadratic elements, distributed and point loads, and displacement boundary conditions.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ───────────── Undergraduate ───────────── -->
+    <h2 id="undergrad" class="section-title">Undergraduate research and coursework</h2>
+
+    <section class="section">
+      <article class="card">
+        <h2>Numerical and experimental analysis of a Savonius-style wind turbine at low wind speeds</h2>
+        <p class="meta">Bachelor's thesis, IIT Roorkee · Advisor: Prof. Sushanta Dutta</p>
+        <p>The performance of a Savonius-style wind turbine depends on overlap ratio and blade shape characteristics. This project optimized geometric parameters of the blade design, including aspect ratios, blade profile, and overlap distance, to improve the coefficient of moment <em>C<sub>m</sub></em>.</p>
+        <div class="figs">
+          <figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F4d40b137-13eb-4a55-90d7-c0c30a1e6e34%2Fimage.png?table=block&amp;id=8c078e77-02e2-4933-9772-05d836e41fd2&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="Wind-tunnel and PIV experimental setup" loading="lazy"><figcaption>Wind-tunnel and PIV setup</figcaption></figure>
+          <figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F9a3796ba-2e8f-4029-8662-34684e10a5be%2Fimage.png?table=block&amp;id=542b8de8-7b34-426b-a60a-83e74a104f35&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="CFD streamlines around Savonius rotor blades" loading="lazy"><figcaption>CFD streamlines around the rotor</figcaption></figure>
+        </div>
       </article>
     </section>
 
     <section class="section">
       <article class="card">
-        <h2>Numerical and experimental analysis of a Savonius-style wind turbine operating at low wind speeds</h2>
-        <p>The performance of a Savonius-style wind turbine depends on overlap ratio and blade shape characteristics. This project aimed to optimize geometric parameters of the blade design, including aspect ratios, blade profile, and overlap distance, to improve the power conversion efficiency parameter coefficient of moment <em>C<sub>m</sub></em>.</p>
+        <h2>Transient film boiling around a hot sphere using the volume-of-fluid method</h2>
+        <p class="meta">Flow Physics Laboratory, IIT Roorkee · Jul. – Dec. 2021</p>
+        <p>Developed an OpenFOAM finite-volume solver using the volume-of-fluid method and phase-change physics to simulate transient film boiling around a heated sphere (diameter 6.35 mm, 1063 K) in a quiescent water pool. Analyzed vapor-film evolution and validated Nusselt number and heat-transfer coefficient against experimental measurements and analytical benchmarks.</p>
+        <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/FYVKDSApBe4" title="Film boiling simulation in OpenFOAM" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
       </article>
     </section>
 
     <section class="section">
       <article class="card">
-        <h2><a href="https://github.com/deshikreddyp/Structural-FEM">1D FEM code</a></h2>
-        <p>As part of the MIN-324 Finite Element Method course at IIT Roorkee, I developed a MATLAB implementation for one-dimensional axial-bar problems with linear and quadratic elements, distributed and point loads, and displacement boundary conditions.</p>
+        <h2>Shock-wave propagation through a Y-split bifurcation</h2>
+        <p class="meta">Compressible Flow course project, IIT Roorkee · Aug. – Nov. 2021</p>
+        <p>Recreated a shock-tube bifurcation experiment in OpenFOAM v6 using the shock-capturing <code>rhoCentralFoam</code> solver, and validated pressure and flow predictions against measurements. A parametric study of the branch angle quantified its effect on junction overpressure and flow structures, informing tunnel designs that limit damage from blast-induced waves.</p>
+        <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/S9VMP8tW4LE" title="Shock wave through a Y-split in OpenFOAM" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
       </article>
     </section>
 
     <section class="section">
       <article class="card">
-        <h2><a href="https://github.com/deshikreddyp/segment-surfaces">segment-surfaces</a></h2>
-        <p>A Python command-line toolkit for converting STL meshes to BREP geometry and grouping boundary faces by dihedral angle before exporting Gmsh physical groups.</p>
+        <h2>Hybrid finite-element method for guided-wave propagation in a 3D elbow joint</h2>
+        <p class="meta">Undergraduate research, IIT Roorkee · Feb. – May 2021</p>
+        <p>Developed a hybrid semi-analytical finite-element (SAFE) framework in MATLAB and COMSOL to characterize Lamb-wave propagation through elbow pipes, targeting detection of crack-induced wave anomalies in large, hard-to-inspect pipelines. A 3-inch Schedule 40 steel elbow (bend radius 133.35 mm, 90° bend) with semi-infinite extensions was modeled by coupling the 3D FE bend to 2D SAFE models through extracted mass and stiffness matrices and node-wise matching of end-face degrees of freedom.</p>
+        <div class="figs">
+          <figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F8e387d29-401f-4957-8445-04a937ab897f%2Fimage.png?table=block&amp;id=c9fbdb99-4006-47f1-b453-c847a2ee9cf1&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="Elbow pipe geometry with straight and bent regions" loading="lazy"><figcaption>Straight (R1, R3) and bent (R2) regions</figcaption></figure>
+          <figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2Fb05d48d7-6465-4bf9-8460-6bde762a113c%2Fimage.png?table=block&amp;id=7771ad8b-074f-461d-a6fd-ebd2c596aa3c&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="Finite-element mesh of the elbow joint" loading="lazy"><figcaption>3D finite-element mesh of the bend</figcaption></figure>
+        </div>
       </article>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <h2>H<sub>2</sub>S dispersion cloud modeling in FLACS and OpenFOAM</h2>
+        <p>Modeled the dispersion of an H<sub>2</sub>S gas cloud from a leak inside an open plant. Simulations were run in FLACS and in OpenFOAM, first with <code>reactingFoam</code> and then with <code>PDRFoam</code> and a buoyancy solver.</p>
+        <div class="figs">
+          <figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F77cc5ce1-ab3f-469e-a19f-e2661b5e3517%2Fimage.png?table=block&amp;id=d8c5fecc-560f-48ad-9139-2db4b38f9316&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="H2S concentration shortly after the leak" loading="lazy"><figcaption>Early release</figcaption></figure>
+          <figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F0e388a37-dc14-4120-a0b0-08f76bf28723%2Fimage.png?table=block&amp;id=caf2c300-d3f3-4e75-8a5d-1c02707c9a64&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="H2S cloud spreading across the plant floor" loading="lazy"><figcaption>Cloud spreading across the plant floor</figcaption></figure>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <h2>Failure analysis of a wind-turbine blade at high wind speeds</h2>
+        <p class="meta">Team lead, course project, IIT Roorkee · Autumn 2019</p>
+        <p>Studied material selection and failure of a wind-turbine blade and shaft at critical wind speeds using ANSYS Fluent, Structural, and fatigue analyses.</p>
+        <div class="figs">
+          <figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F223e281b-544d-46a8-b7b8-48e19b521733%2Fimage.png?table=block&amp;id=2ab42044-3b04-431d-8bbd-80f5331a74d8&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="Structural deformation contour of a wind-turbine blade" loading="lazy"><figcaption>Blade deformation under high wind load</figcaption></figure>
+        </div>
+      </article>
+    </section>
+
+    <!-- ───────────── Teams ───────────── -->
+    <h2 id="teams" class="section-title">Design teams</h2>
+
+    <section class="section">
+      <div class="grid">
+        <article class="card half">
+          <h2>SAE BAJA all-terrain vehicle</h2>
+          <p class="meta">Braking and vehicle dynamics lead, Team KNOx, IIT Roorkee</p>
+          <ul>
+            <li>Performed transient thermal and structural FEA of brake discs in ANSYS and assessed resonance risk through modal analysis.</li>
+            <li>Designed an inboard caliper mount using topology optimization.</li>
+            <li>Built a full-vehicle braking model in MATLAB/Simulink (Simscape) to predict single-stop braking performance and stopping distance.</li>
+          </ul>
+          <div class="figs"><figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F235feee9-37f2-4861-97a7-0e04ae6dced4%2Fimage.png?table=block&amp;id=e122b9e5-a0e8-428c-92ab-18b6eeb33feb&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="Team KNOx all-terrain vehicle" loading="lazy"></figure></div>
+        </article>
+        <article class="card half">
+          <h2>ASME human-powered vehicle</h2>
+          <p class="meta">Technical head, ASME IIT Roorkee · 2019–2020</p>
+          <ul>
+            <li>Designed the mainframe and rear fork, and led design and fabrication of the aerodynamic fairing.</li>
+            <li>Optimized the fairing for lower drag with CFD, improving top speed by 28%.</li>
+            <li>Team ranked 1st in design and 4th overall in the ASME Human-Powered Vehicle Challenge.</li>
+          </ul>
+          <div class="figs"><figure><img src="https://madmaxx.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F20e55c6e-4d5a-43b2-8ef3-134175c81259%2F7fad9389-9a8b-4b61-ab8a-6c852b45b081%2Fimage.png?table=block&amp;id=ca8eadd4-5633-473a-909a-2d9a67e64eb1&amp;spaceId=20e55c6e-4d5a-43b2-8ef3-134175c81259&amp;width=1200&amp;cache=v2" alt="ASME IIT Roorkee HPVC team receiving the design award" loading="lazy"></figure></div>
+        </article>
+      </div>
     </section>
   </div>
 </main>
-<footer><div class="container small">Projects page</div></footer>
+<footer>
+  <div class="container small">
+    Deshik Reddy Putluru · Ph.D. Candidate at Purdue University
+    <div class="social">
+      <a href="mailto:dputluru@purdue.edu">Email</a>
+      <a href="https://www.linkedin.com/in/deshik-reddy-putluru">LinkedIn</a>
+      <a href="https://github.com/deshikreddyp">GitHub</a>
+      <a href="https://scholar.google.com/citations?user=9HtoRMgAAAAJ&amp;hl=en">Google Scholar</a>
+      <a href="https://www.youtube.com/@deshik2001">YouTube</a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
