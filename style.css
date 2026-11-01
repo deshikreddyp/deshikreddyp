@@ -166,7 +166,7 @@ footer .social { margin-top: 0.5rem; }
 
 /* ── Table of contents ── */
 .toc { margin-top: 1.5rem; }
-.toc ol { list-style: none; padding: 0; margin: 0.75rem 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem 1.5rem; counter-reset: sec; }
+.toc ol { list-style: none; padding: 0; margin: 0.75rem 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem 1.5rem; counter-reset: sec; }
 .toc ol > li { counter-increment: sec; margin: 0; }
 .toc ol > li > a { font-weight: 700; color: var(--text); }
 .toc ol > li > a::before { content: counter(sec, decimal-leading-zero); color: var(--accent-2); font-size: 0.8rem; margin-right: 0.45rem; }
