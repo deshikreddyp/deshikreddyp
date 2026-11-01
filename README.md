@@ -2,11 +2,11 @@
 
 Ph.D. candidate in Mechanical Engineering at Purdue University, working in computational mechanics, finite-element methods, multiphysics PDEs, fluid-structure interaction, transport, and scientific machine learning.
 
-[Portfolio](https://deshikreddyp.github.io/deshikreddyp/index.html) · [Projects](https://deshikreddyp.github.io/deshikreddyp/projects.html) · [CV](https://deshikreddyp.github.io/deshikreddyp/resume.pdf) · [LinkedIn](https://www.linkedin.com/in/deshik-reddy-putluru) · [Published paper](https://doi.org/10.1186/s12987-025-00691-4)
+[Portfolio](https://deshikreddyp.github.io/deshikreddyp/index.html) · [Projects](https://deshikreddyp.github.io/deshikreddyp/projects.html) · [CV](https://deshikreddyp.github.io/deshikreddyp/resume.pdf) · [LinkedIn](https://www.linkedin.com/in/deshik-reddy-putluru) · [Publications](https://scholar.google.com/citations?user=9HtoRMgAAAAJ&hl=en)
 
 ## Background
 
-I am a Ph.D. candidate in the Gomez Lab at Purdue University. I received a B.Tech. in Industrial Engineering, with Honors, from IIT Roorkee in 2022.
+I am a Ph.D. candidate in the Gomez Lab at Purdue University. I received a B.Tech. in Mechanical and Industrial Engineering, with Honors, from IIT Roorkee in 2022.
 
 ## Selected work
 
