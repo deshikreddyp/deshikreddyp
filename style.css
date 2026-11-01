@@ -171,14 +171,11 @@ hr.sep { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 footer .social { margin-top: 0.5rem; }
 
 /* ── Table of contents ── */
-.toc ol { list-style: none; padding: 0; margin: 0.75rem 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem 1.5rem; counter-reset: sec; }
-.toc ol > li { counter-increment: sec; margin: 0; }
-.toc ol > li > a { font-weight: 700; color: var(--text); }
-.toc ol > li > a::before { content: counter(sec, decimal-leading-zero); color: var(--accent-2); font-size: 0.8rem; margin-right: 0.45rem; }
-.toc ul { list-style: none; padding: 0; margin: 0.4rem 0 0; }
-.toc ul li { margin: 0.2rem 0; font-size: 0.9rem; }
-.toc ul a { color: var(--muted); }
-.toc ul a:hover { color: var(--accent); }
+.toc ul { list-style: disc; padding-left: 1.2rem; margin: 0.6rem 0 0; }
+.toc li { margin: 0.3rem 0; }
+.toc li::marker { color: var(--accent-2); }
+.toc a { color: var(--text); font-weight: 600; }
+.toc a:hover { color: var(--accent); }
 h2[id], article[id] { scroll-margin-top: 80px; }
 
 /* ── Open to work ── */
