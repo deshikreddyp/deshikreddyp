@@ -1,29 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>FSI Solver Notes and Preconditioner Study</title>
-<script>
-window.MathJax = {tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
-</script>
-<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<style>
-body { font-family: Georgia, serif; line-height: 1.55; max-width: 980px; margin: 0 auto; padding: 28px 36px 60px; color: #1f2937; background: #ffffff; }
-h1,h2,h3 { color: #111827; line-height: 1.2; }
-h1 { font-size: 2rem; border-bottom: 3px solid #d1d5db; padding-bottom: 10px; margin-bottom: 18px; }
-h2 { margin-top: 34px; border-left: 6px solid #9ca3af; padding-left: 12px; font-size: 1.45rem; }
-h3 { margin-top: 24px; font-size: 1.15rem; }
-p { margin: 10px 0 12px; text-align: justify; }
-.box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
-.note { background: #eff6ff; border-left: 5px solid #60a5fa; padding: 12px 14px; margin: 16px 0; }
-.warn { background: #fff7ed; border-left: 5px solid #fb923c; padding: 12px 14px; margin: 16px 0; }
-.diary { background: #f0fdf4; border-left: 5px solid #4ade80; padding: 12px 14px; margin: 16px 0; }
-table { width: 100%; border-collapse: collapse; margin: 14px 0 18px; font-size: 0.97rem; }
-th, td { border: 1px solid #d1d5db; padding: 10px 12px; vertical-align: top; }
-th { background: #f3f4f6; text-align: left; }
-.small { font-size: 0.92rem; color: #4b5563; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FSI Solver Notes and Preconditioner Study | Notes | Deshik Reddy Putluru</title>
+  <link rel="stylesheet" href="note-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="../theme.js"></script>
+  <style>
+    .note  { background: rgba(96,165,250,0.08); border-left: 5px solid #60a5fa; padding: 12px 14px; margin: 16px 0; }
+    .warn  { background: rgba(251,146,60,0.08); border-left: 5px solid #fb923c; padding: 12px 14px; margin: 16px 0; }
+    .diary { background: rgba(74,222,128,0.08); border-left: 5px solid #4ade80; padding: 12px 14px; margin: 16px 0; }
+  </style>
 </head>
+<body>
+<header>
+  <div class="container nav">
+    <nav class="navlinks">
+      <a href="../index.html">Home</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../coursework.html">Coursework</a>
+      <a class="active" href="../notes.html">Notes</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+      <span class="sun">☀️</span>
+      <span class="moon">🌙</span>
+    </button>
+  </div>
+</header>
+
 <main class="note-content" data-tags="FSI, PETSc, Preconditioning">
   <div class="container">
     <div class="breadcrumb"><a href="../notes.html">← Notes</a></div>
@@ -332,7 +351,14 @@ P^{-1}_{\text{tri}}
 
 <footer>
   <div class="container small">
-    Deshik Reddy Putluru · <a href="../notes.html">All Notes</a>
+    Deshik Reddy Putluru · Ph.D. Candidate at Purdue University
+    <div class="social">
+      <a href="mailto:dputluru@purdue.edu">Email</a>
+      <a href="https://www.linkedin.com/in/deshik-reddy-putluru">LinkedIn</a>
+      <a href="https://github.com/deshikreddyp">GitHub</a>
+      <a href="https://scholar.google.com/citations?user=9HtoRMgAAAAJ&amp;hl=en">Google Scholar</a>
+      <a href="https://www.youtube.com/@deshik2001">YouTube</a>
+    </div>
   </div>
 </footer>
 </body>
