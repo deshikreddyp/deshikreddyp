@@ -6,7 +6,7 @@ Ph.D. candidate in Mechanical Engineering at Purdue University, working in compu
 
 ## Background
 
-I am a Ph.D. candidate in the Gomez Lab at Purdue University. I received a B.Tech. in Production and Industrial Engineering, with Honors, from IIT Roorkee in 2022.
+I am a Ph.D. candidate in the Gomez Lab at Purdue University. I received a B.Tech. in Industrial Engineering, with Honors, from IIT Roorkee in 2022.
 
 ## Selected work
 
